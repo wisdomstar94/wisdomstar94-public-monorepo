@@ -1,15 +1,15 @@
 {
   "name": "@wisdomstar94/react-add-event-listener",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "pack:build": "vite build && tsc --project ./tsconfig.package.json",
-    "publish": "npm publish"
+    "publish": "npm publish --access=public"
   },
   "dependencies": {
     "next": "14.2.4",
