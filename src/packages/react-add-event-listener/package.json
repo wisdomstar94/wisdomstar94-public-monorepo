@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/react-add-event-listener",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -34,7 +34,8 @@
   "module": "./dist/index.mjs",
   "files": [
     "package.json",
-    "dist/*"
+    "dist/*",
+    "!dist/*.tsbuildinfo"
   ],
   "exports": {
     ".": {
