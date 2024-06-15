@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "pack:build": "vite build && tsc --project ./tsconfig.package.json",
-    "publish": "npm publish --access=public"
+    "publish": "npm publish"
   },
   "dependencies": {
     "next": "14.2.4",
