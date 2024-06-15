@@ -2,7 +2,7 @@
   "name": "@wisdomstar94/react-add-event-listener",
   "version": "0.0.6",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
