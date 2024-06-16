@@ -1,19 +1,4 @@
-import type { Config } from "tailwindcss";
+import { getCommonTailwindConfig } from "../../libs/packages-common-lib/src/configs/tailwind.common.config.mjs";
 
-const config: Config = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "../../libs/packages-common-lib/src/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
-    },
-  },
-  plugins: [],
-};
+const config = getCommonTailwindConfig(undefined);
 export default config;

@@ -1,7 +1,7 @@
 "use client"
 
 // import "@wisdomstar94/react-add-event-listener/style.css";
-import { TestBox, useAddEventListener } from "@wisdomstar94/react-add-event-listener";
+import { TestBox, useAddEventListener, getVersion } from "@wisdomstar94/react-add-event-listener";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -20,6 +20,9 @@ export default function Page() {
     <>
       test/basic!  
       <TestBox />
+      <div>
+        { getVersion() }
+      </div>
       <div>
         <button 
           onClick={() => {
