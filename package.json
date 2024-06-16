@@ -5,6 +5,7 @@
     "@wisdomstar94/packages-common-lib": "yarn workspace @wisdomstar94/packages-common-lib",
     "@wisdomstar94/react-add-event-listener": "yarn workspace @wisdomstar94/react-add-event-listener",
     "@wisdomstar94/react-indexeddb-manager": "yarn workspace @wisdomstar94/react-indexeddb-manager",
+    "@wisdomstar94/react-multiple-api-manager": "yarn workspace @wisdomstar94/react-multiple-api-manager",
     "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web"
   },
   "workspaces": [

@@ -11,6 +11,7 @@ export default function RootLayout({
     { name: 'test/react-add-event-listener2', href: '/test/react-add-event-listener2' },
     { name: 'test/react-indexeddb-manager/basic', href: '/test/react-indexeddb-manager/basic' },
     { name: 'test/react-indexeddb-manager/sync-get-and-delete-test', href: '/test/react-indexeddb-manager/sync-get-and-delete-test' },
+    { name: 'test/react-multiple-api-manager', href: '/test/react-multiple-api-manager' },
   ];
 
   return (
