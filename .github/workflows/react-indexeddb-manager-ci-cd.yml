@@ -1,9 +1,9 @@
-name: react-add-event-listener-ci-cd
+name: react-indexeddb-manager-ci-cd
 
 on:
   push:
     tags:
-      - 'react-add-event-listener-v[0-9]+.[0-9]+.[0-9]+'
+      - 'react-indexeddb-manager-v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   publish-release-registry:
@@ -18,7 +18,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: yarn install
-      - run: yarn @wisdomstar94/react-add-event-listener pack:build      
-      - run: yarn @wisdomstar94/react-add-event-listener npm:publish
+      - run: yarn @wisdomstar94/react-indexeddb-manager pack:build      
+      - run: yarn @wisdomstar94/react-indexeddb-manager npm:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.PACKAGE_PUBLISH_KEY_NPM}}

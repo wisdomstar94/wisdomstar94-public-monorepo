@@ -2,9 +2,10 @@
   "name": "@wisdomstar94/public-monorepo",
   "packageManager": "yarn@4.3.0",
   "scripts": {
-    "@libs/packages-common-lib": "yarn workspace @wisdomstar94/packages-common-lib",
-    "@packages/react-add-event-listener": "yarn workspace @wisdomstar94/react-add-event-listener",
-    "@webs/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web"
+    "@wisdomstar94/packages-common-lib": "yarn workspace @wisdomstar94/packages-common-lib",
+    "@wisdomstar94/react-add-event-listener": "yarn workspace @wisdomstar94/react-add-event-listener",
+    "@wisdomstar94/react-indexeddb-manager": "yarn workspace @wisdomstar94/react-indexeddb-manager",
+    "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web"
   },
   "workspaces": [
     "src/packages/*",

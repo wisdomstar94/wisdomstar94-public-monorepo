@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@wisdomstar94/react-add-event-listener": "workspace:^",
+    "@wisdomstar94/react-indexeddb-manager": "workspace:^",
     "next": "14.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

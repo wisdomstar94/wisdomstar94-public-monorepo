@@ -1,6 +1,6 @@
 {
-  "name": "@wisdomstar94/react-add-event-listener",
-  "version": "0.0.13",
+  "name": "@wisdomstar94/react-indexeddb-manager",
+  "version": "0.0.8",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",
@@ -21,11 +21,6 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "@wisdomstar94/tsconfig-lib": "workspace:^",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.4",
-    "next": "14.2.4",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.4",
     "typescript": "^5.4.5",
     "vite": "^5.3.1"
   },
@@ -47,9 +42,6 @@
         "types": "./dist/src/index.d.ts",
         "default": "./dist/index.cjs"
       }
-    },
-    "./style.css": {
-      "default": "./dist/style.css"
     }
   }
 }
