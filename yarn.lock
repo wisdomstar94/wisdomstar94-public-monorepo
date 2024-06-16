@@ -1256,6 +1256,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     "@wisdomstar94/react-add-event-listener": "workspace:^"
     "@wisdomstar94/react-api": "workspace:^"
+    "@wisdomstar94/react-body": "workspace:^"
     "@wisdomstar94/react-indexeddb-manager": "workspace:^"
     "@wisdomstar94/react-multiple-api-manager": "workspace:^"
     "@wisdomstar94/react-promise-interval": "workspace:^"
@@ -1313,6 +1314,30 @@ __metadata:
     "@wisdomstar94/tsconfig-lib": "workspace:^"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
+    typescript: "npm:^5.4.5"
+    vite: "npm:^5.3.1"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  languageName: unknown
+  linkType: soft
+
+"@wisdomstar94/react-body@workspace:^, @wisdomstar94/react-body@workspace:src/packages/react-body":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/react-body@workspace:src/packages/react-body"
+  dependencies:
+    "@types/node": "npm:^20.14.2"
+    "@types/react": "npm:^18.3.3"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    eslint: "npm:^8.57.0"
+    eslint-config-next: "npm:14.2.4"
+    next: "npm:14.2.4"
+    postcss: "npm:^8.4.38"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5.4.5"
     vite: "npm:^5.3.1"
   peerDependencies:

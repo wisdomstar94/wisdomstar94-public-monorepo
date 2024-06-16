@@ -1,0 +1,25 @@
+.html-window-scroll-deny {
+  touch-action: none;
+  overscroll-behavior-y: none;
+}
+
+.body-window-scroll-deny {
+  touch-action: none;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
+.scroll-target-scroll-block {  
+  touch-action: none;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
+.no-text-drag {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

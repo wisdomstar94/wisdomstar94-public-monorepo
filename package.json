@@ -8,6 +8,7 @@
     "@wisdomstar94/react-multiple-api-manager": "yarn workspace @wisdomstar94/react-multiple-api-manager",
     "@wisdomstar94/react-api": "yarn workspace @wisdomstar94/react-api",
     "@wisdomstar94/react-promise-interval": "yarn workspace @wisdomstar94/react-promise-interval",
+    "@wisdomstar94/react-body": "yarn workspace @wisdomstar94/react-body",
     "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web"
   },
   "workspaces": [

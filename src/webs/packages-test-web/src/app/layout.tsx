@@ -14,6 +14,7 @@ export default function RootLayout({
     { name: 'test/react-multiple-api-manager', href: '/test/react-multiple-api-manager' },
     { name: 'test/react-api', href: '/test/react-api' },
     { name: 'test/react-promise-interval', href: '/test/react-promise-interval' },
+    { name: 'test/react-body', href: '/test/react-body' },
   ];
 
   return (
