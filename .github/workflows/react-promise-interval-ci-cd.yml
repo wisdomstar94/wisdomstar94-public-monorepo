@@ -1,12 +1,9 @@
-env:
-  PACKAGE_NAME: react-promise-interval
-
-name: $PACKAGE_NAME-ci-cd
+name: react-promise-interval-ci-cd
 
 on:
   push:
     tags:
-      - "$PACKAGE_NAME-v[0-9]+.[0-9]+.[0-9]+"
+      - "react-promise-interval-v[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   publish-release-registry:
@@ -21,7 +18,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: yarn install
-      - run: yarn @wisdomstar94/$PACKAGE_NAME pack:build      
-      - run: yarn @wisdomstar94/$PACKAGE_NAME npm:publish
+      - run: yarn @wisdomstar94/react-promise-interval pack:build      
+      - run: yarn @wisdomstar94/react-promise-interval npm:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.PACKAGE_PUBLISH_KEY_NPM}}
