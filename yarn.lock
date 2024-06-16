@@ -1289,7 +1289,7 @@ __metadata:
     postcss: "npm:^8.4.38"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
-    tailwindcss: "npm:^3.4.1"
+    tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5.4.5"
     vite: "npm:^5.3.1"
   languageName: unknown
@@ -6150,7 +6150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^3, tailwindcss@npm:^3.4.1, tailwindcss@npm:^3.4.4":
+"tailwindcss@npm:^3, tailwindcss@npm:^3.4.4":
   version: 3.4.4
   resolution: "tailwindcss@npm:3.4.4"
   dependencies:
