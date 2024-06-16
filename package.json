@@ -11,5 +11,8 @@
     "src/libs/*",
     "src/webs/*",
     "src/apps/*"
-  ]
+  ],
+  "devDependencies": {
+    "npm-check-updates": "^16.14.20"
+  }
 }
