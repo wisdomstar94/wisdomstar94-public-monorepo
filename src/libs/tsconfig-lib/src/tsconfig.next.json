@@ -19,7 +19,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@wisdomstar94/packages-common-lib/*": ["../../libs/packages-common-lib/src/*"]
+      "#packages-common-lib": ["../../libs/packages-common-lib/src/index"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../libs/packages-common-lib/src/index.ts"],

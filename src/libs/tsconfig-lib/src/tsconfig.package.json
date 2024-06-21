@@ -15,9 +15,9 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@wisdomstar94/packages-common-lib/*": ["../../libs/packages-common-lib/src/*"]
+      "#packages-common-lib": ["../../libs/packages-common-lib/src/index"]
     }
   },
-  "include": ["next-env.d.ts", "src/index.ts"],
+  "include": ["next-env.d.ts", "src/index.ts", "../../libs/packages-common-lib/src/index.ts"],
   "exclude": ["node_modules"]
 }

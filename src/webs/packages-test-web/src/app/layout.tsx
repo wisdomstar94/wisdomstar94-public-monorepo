@@ -1,5 +1,5 @@
 import "./globals.css";
-import { CommonRootLayout, ICommonRootLayout } from "@wisdomstar94/packages-common-lib/index";
+import { CommonRootLayout, ICommonRootLayout } from "#packages-common-lib";
 
 export default function RootLayout({
   children,
@@ -15,6 +15,7 @@ export default function RootLayout({
     { name: 'test/react-api', href: '/test/react-api' },
     { name: 'test/react-promise-interval', href: '/test/react-promise-interval' },
     { name: 'test/react-body', href: '/test/react-body' },
+    { name: 'test/react-api-again-request-scheduler', href: '/test/react-api-again-request-scheduler' },
   ];
 
   return (

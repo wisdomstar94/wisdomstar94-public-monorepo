@@ -1,0 +1,17 @@
+{
+  "extends": "@wisdomstar94/tsconfig-lib/src/tsconfig.package.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "#react-indexeddb-manager": ["../react-indexeddb-manager/src/index"],
+      "#react-promise-interval": ["../react-promise-interval/src/index"],
+    }
+  },
+  "include": [
+    "./src/index.ts", 
+    "../react-indexeddb-manager/src/index.ts", 
+    "../react-promise-interval/src/index.ts"
+  ],
+  "exclude": ["node_modules"]
+}
