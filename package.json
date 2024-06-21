@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/public-monorepo",
-  "packageManager": "yarn@4.3.0",
+  "packageManager": "yarn@4.3.1",
   "scripts": {
     "@wisdomstar94/packages-common-lib": "yarn workspace @wisdomstar94/packages-common-lib",
     "@wisdomstar94/react-add-event-listener": "yarn workspace @wisdomstar94/react-add-event-listener",
@@ -10,7 +10,8 @@
     "@wisdomstar94/react-promise-interval": "yarn workspace @wisdomstar94/react-promise-interval",
     "@wisdomstar94/react-body": "yarn workspace @wisdomstar94/react-body",
     "@wisdomstar94/react-api-again-request-scheduler": "yarn workspace @wisdomstar94/react-api-again-request-scheduler",
-    "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web"
+    "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web",
+    "@wisdomstar94/babylon-js-example": "yarn workspace @wisdomstar94/babylon-js-example"
   },
   "workspaces": [
     "src/packages/*",
