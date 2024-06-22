@@ -289,6 +289,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babylonjs/core@npm:^7.12.0":
+  version: 7.12.0
+  resolution: "@babylonjs/core@npm:7.12.0"
+  checksum: 10c0/a42c786f152275f8ab15eaa1c333f55c803f2077653b5d0459a807094f50e71ad0a3a6106340cb94dacf8fe5facc8e57edbd39bcdeafb62e466da12deb7dbb64
+  languageName: node
+  linkType: hard
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -1249,9 +1256,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/babylon-js-example@workspace:src/webs/babylon-js-example"
   dependencies:
+    "@babylonjs/core": "npm:^7.12.0"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
+    "@wisdomstar94/react-add-event-listener": "workspace:^"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.4"
     next: "npm:14.2.4"
@@ -6656,11 +6665,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>":
   version: 5.5.2
-  resolution: "typescript@patch:typescript@npm%3A5.5.2#optional!builtin<compat/typescript>::version=5.5.2&hash=b45daf"
+  resolution: "typescript@patch:typescript@npm%3A5.5.2#optional!builtin<compat/typescript>::version=5.5.2&hash=379a07"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/6721ac8933a70c252d7b640b345792e103d881811ff660355617c1836526dbb71c2044e2e77a8823fb3570b469f33276875a4cab6d3c4de4ae7d7ee1c3074ae4
+  checksum: 10c0/a7b7ede75dc7fc32a76d0d0af6b91f5fbd8620890d84c906f663d8783bf3de6d7bd50f0430b8bb55eac88a38934af847ff709e7156e5138b95ae94cbd5f73e5b
   languageName: node
   linkType: hard
 

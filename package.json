@@ -11,7 +11,8 @@
     "@wisdomstar94/react-body": "yarn workspace @wisdomstar94/react-body",
     "@wisdomstar94/react-api-again-request-scheduler": "yarn workspace @wisdomstar94/react-api-again-request-scheduler",
     "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web",
-    "@wisdomstar94/babylon-js-example": "yarn workspace @wisdomstar94/babylon-js-example"
+    "@wisdomstar94/babylon-js-example": "yarn workspace @wisdomstar94/babylon-js-example",
+    "pack:build": "yarn dlx concurrently \"yarn @wisdomstar94/react-add-event-listener pack:build\" \"yarn @wisdomstar94/react-indexeddb-manager pack:build\" \"yarn @wisdomstar94/react-multiple-api-manager pack:build\" \"yarn @wisdomstar94/react-api pack:build\" \"yarn @wisdomstar94/react-promise-interval pack:build\" \"yarn @wisdomstar94/react-body pack:build\" \"yarn @wisdomstar94/react-api-again-request-scheduler pack:build\""
   },
   "workspaces": [
     "src/packages/*",
