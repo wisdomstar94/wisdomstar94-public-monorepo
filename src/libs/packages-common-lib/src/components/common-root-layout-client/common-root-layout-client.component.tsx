@@ -25,7 +25,7 @@ export function CommonRootLayoutClient(props: ICommonRootLayoutClient.Props) {
                   href={menu.href} 
                   className={classes(
                     "inline-flex px-4 py-2 cursor-pointer border border-slate-400 text-slate-600 text-xs hover:bg-slate-100",
-                    pathname === menu.href ? "bg-blue-400 text-white hover:bg-blue-500" : undefined
+                    pathname === menu.href ? "bg-blue-400 text-white hover:!bg-blue-500" : undefined
                   )}>
                   { menu.name }
                 </Link>
