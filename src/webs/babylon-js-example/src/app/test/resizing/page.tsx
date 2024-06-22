@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { AnimationPropertiesOverride, MeshBuilder, SceneLoader, UniversalCamera, WebGPUEngine } from "@babylonjs/core";
+import { AbstractEngine, AnimationPropertiesOverride, Engine, MeshBuilder, SceneLoader, UniversalCamera, WebGPUEngine } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import { IBabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.interface";
 // import '@babylonjs/core/Engines/WebGPU/Extensions';
@@ -19,13 +19,7 @@ export default function Page() {
     if (canvas === null) return;
 
     const engine = engines.engine;
-    // engine.enableGPUTimingMeasurements = true;
-    // engine.snapshotRendering = true;
     const scene = new Scene(engine);
-    // scene.animationPropertiesOverride = new AnimationPropertiesOverride();
-    // scene.animationPropertiesOverride.enableBlending = true;
-    // scene.animationPropertiesOverride.blendingSpeed = 0.05;
-    // scene.animationPropertiesOverride.loopMode = 1;
     
     const camera = new UniversalCamera("camera1", new Vector3(0, 10, -5), scene);
     camera.setTarget(new Vector3(0, 0, 30));
@@ -39,9 +33,6 @@ export default function Page() {
 
     SceneLoader.ImportMeshAsync(undefined, "/models/", "untitled.glb", scene).then((result) => {
       console.log('@result', result);
-      // result.animationGroups.at(0)?.stop();
-      // result.animationGroups.at(2)?.start(true);
-      console.log('@scene.animationPropertiesOverride', scene.animationPropertiesOverride); 
 
       // animation group 간에 부드럽게 전환되는 효과를 위해서는 아래와 같이 작성해주어야 함.
       if (scene.animationPropertiesOverride === null) {
@@ -64,7 +55,6 @@ export default function Page() {
         x.position.y = 8;
         x.position.z = 0;
         x.rotate(new Vector3(0, 0, 0), 10);
-
       });
     });
 
@@ -73,14 +63,12 @@ export default function Page() {
     });
   }
 
-  useEffect(() => {
-    
-  }, []);
-
   return (
     <>
-      <div className="w-[1000px] h-[600px] bg-blue-200 relative">
-        <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
+      <div className="w-full h-full bg-blue-200 relative">
+        <div className="w-1/2 aspect-square relative">
+          <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
+        </div>
       </div>
     </>
   );

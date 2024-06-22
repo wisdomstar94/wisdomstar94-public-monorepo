@@ -10,8 +10,9 @@ import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { MeshBuilder, SceneLoader } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
+import { IBabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.interface";
 
-export default function Page() {
+export default function Page(engines: IBabylonCanvas.Engines) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   function onReady() {
@@ -19,7 +20,7 @@ export default function Page() {
     const canvas = canvasRef.current;
     if (canvas === null) return;
 
-    const engine = new Engine(canvas);
+    const engine = engines.engine;
     const scene = new Scene(engine);
 
     const camera = new FreeCamera("camera1", new Vector3(0, 5, -5), scene);
