@@ -1,11 +1,26 @@
 import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
 import { IBabylonCanvas } from "./babylon-canvas.interface";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function BabylonCanvas(props: IBabylonCanvas.Props) {
   const {
     canvasRef,
+    onReady,
   } = props;
+
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (isReady) {
+      if (typeof onReady === 'function') {
+        onReady();
+      }
+    }
+  }, [isReady]);
 
   function resizeCanvas() {
     const canvasElement = canvasRef?.current;

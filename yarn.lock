@@ -296,6 +296,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babylonjs/loaders@npm:^7.12.0":
+  version: 7.12.0
+  resolution: "@babylonjs/loaders@npm:7.12.0"
+  peerDependencies:
+    "@babylonjs/core": ^7.0.0
+    babylonjs-gltf2interface: ^7.0.0
+  checksum: 10c0/1c7319da5e5f7e73958a3b37ff0fdcada74281aecd2d646c30f7612b6c5237824c615f0ac44c3ee214c34a71994de074d923bf0c00fa0c3898a92472d4be7bbd
+  languageName: node
+  linkType: hard
+
 "@colors/colors@npm:1.5.0":
   version: 1.5.0
   resolution: "@colors/colors@npm:1.5.0"
@@ -1257,6 +1267,7 @@ __metadata:
   resolution: "@wisdomstar94/babylon-js-example@workspace:src/webs/babylon-js-example"
   dependencies:
     "@babylonjs/core": "npm:^7.12.0"
+    "@babylonjs/loaders": "npm:^7.12.0"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
