@@ -29,7 +29,7 @@ export default function Page() {
     const scene = new Scene(engine);
     scene.actionManager = new ActionManager(scene);
 
-    const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.7, 8, new Vector3(5, 1.2, 0), scene);
+    const camera = new ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 10, new Vector3(5, 0.4, 0), scene);
     cameraRef.current = camera;
     // const camera = new FreeCamera("camera1", new Vector3(0, 5, 10), scene);
     // camera.setTarget(new Vector3(0, 0, -5));
@@ -41,7 +41,7 @@ export default function Page() {
     // camera.inputs.addMouseWheel();
     // camera.inputs.remove
 
-    const gravityVector = new Vector3(0, -9.81, 0);
+    const gravityVector = new Vector3(0, -11.81, 0);
     const havokInstance = await HavokPhysics();
     const physicsPlugin = new HavokPlugin(undefined, havokInstance);
     scene.enablePhysics(gravityVector, physicsPlugin);
@@ -61,11 +61,15 @@ export default function Page() {
     const box = MeshBuilder.CreateBox("box", { size: 1 }, scene);
     box.position.y = 5;
     box.position.x = 5;
+    // box.rotation.x = Math.PI / 2;
+    // box.rotation.y = Math.PI;
     box.rotationQuaternion = Quaternion.Identity();
     console.log('@@@@@box.rotationQuaternion', box.rotationQuaternion);
     box.visibility = 1;
     // box.rotate(Vector3.Up(), -Math.PI / 2);
     camera.setTarget(box);
+
+    (window as any).box = box;
 
     const boxBody = new PhysicsBody(box, PhysicsMotionType.DYNAMIC, false, scene);
     boxBody.shape = new PhysicsShapeCylinder(
@@ -119,10 +123,13 @@ export default function Page() {
         
         o.scaling.scaleInPlace(0.01);
         // o.rotate(Vector3.Up(), Math.PI);
-        o.rotation.x = Math.PI / 2;
-        o.rotation.y = Math.PI;
+        // o.rotation.x = Math.PI / 2;
+        // o.rotation.y = Math.PI;
         // o.rotation.x = Math.PI;
         o.position.y = -0.5;
+
+        // o.rotationQuaternion = Quaternion.RotationAxis(Axis.X, Math.PI / 2);
+        o.rotationQuaternion = Quaternion.Identity();
 
         camera.setTarget(o);
       });
@@ -158,67 +165,105 @@ export default function Page() {
         const forward = new Vector3(direction.normalize().x, 0, direction.normalize().z);
         const rot = Quaternion.FromLookDirectionLH(forward, Vector3.Up());
         const euler = rot.toEulerAngles();
+        // const euler = box.rotationQuaternion!.toEulerAngles();
         let keydown = false;
         let moveDirection = new Vector3(0, 0, 0);
         let isEulerChanged = false;
 
+        // only 'w' (Up Arrow)
         if (inputMap['w'] && !inputMap['d'] && !inputMap['a']) {
           isEulerChanged = true;
-          euler.y = euler.y;
+          // euler.y = euler.y;
+          euler.y = euler.y + angle180;
           moveDirection = forward;
         }
+        // only 's' (Down Arrow)
         if (inputMap['s'] && !inputMap['d'] && !inputMap['a']) {
           isEulerChanged = true;
-          euler.y = euler.y + angle180;
+          // euler.y = euler.y + angle180;
+          euler.y = euler.y;
           moveDirection = forward.negate();
         }
+        // only 'a' (Left Arrow)
         if (inputMap['a'] && !inputMap['w'] && !inputMap['s']) {
           isEulerChanged = true;
-          euler.y = euler.y - angle90;
+          // euler.y = euler.y - angle90;
+          euler.y = euler.y + angle90;
           moveDirection = Vector3.Cross(forward, Vector3.Up()).normalize();
         }
+        // only 'd' (Right Arrow)
         if (inputMap['d'] && !inputMap['w'] && !inputMap['s']) {
           isEulerChanged = true;
-          euler.y = euler.y + angle90;
+          // euler.y = euler.y + angle90;
+          euler.y = euler.y - angle90;
           moveDirection = Vector3.Cross(Vector3.Up(), forward).normalize();
         }
+        // (Up Arrow + Right Arrow)
         if (inputMap['w'] && inputMap['d']) {
           isEulerChanged = true;
-          euler.y = euler.y + angle45;
+          // euler.y = euler.y + angle45;
+          euler.y = euler.y - angle135;
           moveDirection = forward.add(Vector3.Cross(Vector3.Up(), forward)).normalize();
         }
+        // (Up Arrow + Left Arrow)
         if (inputMap['w'] && inputMap['a']) {
           isEulerChanged = true;
-          euler.y = euler.y - angle45;
+          // euler.y = euler.y - angle45;
+          euler.y = euler.y + angle135;
           moveDirection = forward.add(Vector3.Cross(forward, Vector3.Up())).normalize();
         }
+        // (Down Arrow + Right Arrow)
         if (inputMap['s'] && inputMap['d']) {
           isEulerChanged = true;
-          euler.y = euler.y + angle135;
+          // euler.y = euler.y + angle135;
+          euler.y = euler.y - angle45;
           moveDirection = forward.negate().add(Vector3.Cross(Vector3.Up(), forward)).normalize();
         }
+        // (Down Arrow + Left Arrow)
         if (inputMap['s'] && inputMap['a']) {
           isEulerChanged = true;
-          euler.y = euler.y - angle135;
+          // euler.y = euler.y - angle135;
+          euler.y = euler.y + angle45;
           moveDirection = forward.negate().add(Vector3.Cross(forward, Vector3.Up())).normalize();
         }
         if (inputMap['w'] || inputMap['s'] || inputMap['a'] || inputMap['d']) {
           keydown = true;
-          const quaternion = euler.toQuaternion();
-          console.log('quaternion', quaternion);
-          console.log('box.rotationQuaternion', box.rotationQuaternion);
+          const quaternion = euler.toQuaternion().clone();
+          // console.log('@@ @@ @@ 1. quaternion', quaternion);
+          // console.log('quaternion', quaternion);
+          // console.log('box.rotationQuaternion', box.rotationQuaternion);
           if (box.rotationQuaternion !== null) {
-            Quaternion.SlerpToRef(
-              box.rotationQuaternion,
-              // moveDirection.toQuaternion(),
-              quaternion,
-              0.1,
-              box.rotationQuaternion,
-            );
+            console.log('@SlerpToRef');
+            result.meshes.forEach(o => {
+              Quaternion.SlerpToRef(
+                o.rotationQuaternion!,
+                quaternion,
+                0.1,
+                o.rotationQuaternion!,
+              );
+            });
+            // Quaternion.SlerpToRef(
+            //   box.rotationQuaternion,
+            //   // moveDirection.toQuaternion(),
+            //   // boxBody.transformNode.rotationQuaternion!,
+            //   quaternion,
+            //   0.1,
+            //   box.rotationQuaternion,
+            // );
           }
+          // console.log('@@ @@ @@ 2. quaternion', quaternion);
           
           const currentVelocity = boxBody.getLinearVelocity();
           boxBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y, moveDirection.z * 3));
+          // boxBody.setAngularVelocity(box.rotationQuaternion?.toEulerAngles()!);
+          // box.rotation = quaternion.toEulerAngles();
+          // console.log('@boxBody.getAngularVelocity()', boxBody.getAngularVelocity());
+          // if (isEulerChanged) {
+          //   box.rotationQuaternion = quaternion;
+          // }
+          // (window as any).quaternion = quaternion;
+          // console.log('@box.rotation', box.rotation);
+          // console.log('@box.rotationQuaternion', box.rotationQuaternion);
           // boxBody.setTargetTransform(new Vector3(box.absolutePosition.x + (moveDirection.x / 20), box.absolutePosition.y - 0.03, box.absolutePosition.z + (moveDirection.z / 20)), box.rotationQuaternion!);
           // if (isEulerChanged) {
           //   box.rotation = quaternion.toEulerAngles();
@@ -239,11 +284,14 @@ export default function Page() {
             // 점프 코드 작성..
             const currentVelocity = boxBody.getLinearVelocity();
             setTimeout(() => {
-              boxBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 8, moveDirection.z * 3));
-              box.state = '';
+              boxBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 9, moveDirection.z * 3));
+              setTimeout(() => {
+                box.state = '';
+              }, 2000);
             }, 500);
               
-            jumpAnim?.start(false, 1.0);
+            idleAnim?.stop();
+            jumpAnim?.start(false, 1.0, jumpAnim.from, jumpAnim.to, true);
             // 점프 완료 후 state 초기화 코드 작성..
             // box.state = '';
           }
@@ -262,7 +310,8 @@ export default function Page() {
             }
           }
         } else {
-          idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
+          idleAnim?.stop();
+          walkingAnim?.stop();
         }
       });
       // setTimeout(() => {
