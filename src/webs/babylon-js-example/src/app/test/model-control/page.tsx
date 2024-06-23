@@ -218,8 +218,8 @@ export default function Page() {
           }
           
           const currentVelocity = boxBody.getLinearVelocity();
-          // boxBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y, moveDirection.z * 3));
-          boxBody.setTargetTransform(new Vector3(box.absolutePosition.x + (moveDirection.x / 20), box.absolutePosition.y - 0.03, box.absolutePosition.z + (moveDirection.z / 20)), box.rotationQuaternion!);
+          boxBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y, moveDirection.z * 3));
+          // boxBody.setTargetTransform(new Vector3(box.absolutePosition.x + (moveDirection.x / 20), box.absolutePosition.y - 0.03, box.absolutePosition.z + (moveDirection.z / 20)), box.rotationQuaternion!);
           // if (isEulerChanged) {
           //   box.rotation = quaternion.toEulerAngles();
           // }
@@ -227,22 +227,42 @@ export default function Page() {
           // boxBody.setAngularVelocity();
           // boxBody.setAngularVelocity(quaternion.toEulerAngles());
           // box.rotationQuaternion = quaternion; // 잘 되는데, 보간이 적용 안됨.
+          // console.log('box.state', box.state);
         } else {
           // x축과 z축 속도를 0으로 설정, y축 속도는 유지
           const currentVelocity = boxBody.getLinearVelocity();
           boxBody.setLinearVelocity(new Vector3(0, currentVelocity.y, 0));
         }
-        if (keydown) {
-          if (!animating) {
-            animating = true;
-            walkingAnim!.start(true, 1.0, walkingAnim!.from, walkingAnim!.to, true);
+        if (inputMap[' ']) {
+          if (box.state !== 'jumping') {
+            box.state = 'jumping';
+            // 점프 코드 작성..
+            const currentVelocity = boxBody.getLinearVelocity();
+            setTimeout(() => {
+              boxBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 8, moveDirection.z * 3));
+              box.state = '';
+            }, 500);
+              
+            jumpAnim?.start(false, 1.0);
+            // 점프 완료 후 state 초기화 코드 작성..
+            // box.state = '';
+          }
+        }
+        if (box.state !== 'jumping') {
+          if (keydown) {
+            if (!animating) {
+              animating = true;
+              walkingAnim!.start(true, 1.0, walkingAnim!.from, walkingAnim!.to, true);
+            }
+          } else {
+            if (animating) {
+              idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
+              walkingAnim!.stop();
+              animating = false;
+            }
           }
         } else {
-          if (animating) {
-            idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
-            walkingAnim!.stop();
-            animating = false;
-          }
+          idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
         }
       });
       // setTimeout(() => {
