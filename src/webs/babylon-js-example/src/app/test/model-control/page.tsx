@@ -121,6 +121,8 @@ export default function Page() {
       const idleAnim = result.animationGroups.find(k => k.name === 'idle');
       const jumpAnim = result.animationGroups.find(k => k.name === 'jump');
 
+      walkingAnim!.start(true);
+
       let inputMap: Record<string, any> = {};
 
       scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, function (evt) {
@@ -229,7 +231,7 @@ export default function Page() {
             box.state = 'jumping';
             // 점프 코드 작성..
             idleAnim?.stop();
-            jumpAnim?.start(false, 1.0, jumpAnim.from, jumpAnim.to, true);
+            jumpAnim?.start(false);
 
             const currentVelocity = boxBody.getLinearVelocity();
             setTimeout(() => {
@@ -240,7 +242,7 @@ export default function Page() {
                 console.log('jump end!', { keydown });
                 box.state = '';
                 jumpAnim?.stop();
-                idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
+                idleAnim!.start(true);
               }, 850);
             }, 500);
           }
@@ -250,11 +252,11 @@ export default function Page() {
             // console.log('keydown...', animating);
             if (!animating) {
               animating = true;
-              walkingAnim!.start(true, 1.0, walkingAnim!.from, walkingAnim!.to, true);
+              walkingAnim!.start(true);
             }
           } else {
             if (animating) {
-              idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
+              idleAnim!.start(true);
               walkingAnim!.stop();
               animating = false;
             }
@@ -267,7 +269,7 @@ export default function Page() {
         if (!keydown && box.state !== 'jumping') {
           console.log('!!?');
           walkingAnim?.stop();
-          idleAnim!.start(true, 1.0, idleAnim!.from, idleAnim!.to, true);
+          idleAnim!.start(true);
         }
       });
     });
