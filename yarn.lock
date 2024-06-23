@@ -296,6 +296,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babylonjs/havok@npm:^1.3.5":
+  version: 1.3.5
+  resolution: "@babylonjs/havok@npm:1.3.5"
+  dependencies:
+    "@types/emscripten": "npm:^1.39.6"
+  checksum: 10c0/00f2b993a893499dbd321a57502eacdff055ad859649beb2e6fced7b4a104c2cdbfe941f94cbe66051a5f15088b8871563527c062c8ad4ca0e940cee368a1919
+  languageName: node
+  linkType: hard
+
 "@babylonjs/loaders@npm:^7.12.0":
   version: 7.12.0
   resolution: "@babylonjs/loaders@npm:7.12.0"
@@ -1056,6 +1065,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/animejs@npm:^3":
+  version: 3.1.12
+  resolution: "@types/animejs@npm:3.1.12"
+  checksum: 10c0/21d10ed4fbaa99572e252b4d6e666b62a19089f63b13b0e9f8edf5fb0b708afc2b38c3055c52f6a4771bc71793d7a7aec83754c16d0e5606a0ad92b34778ba61
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.20.5":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
@@ -1094,6 +1110,13 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.20.7"
   checksum: 10c0/7ba7db61a53e28cac955aa99af280d2600f15a8c056619c05b6fc911cbe02c61aa4f2823299221b23ce0cce00b294c0e5f618ec772aa3f247523c2e48cf7b888
+  languageName: node
+  linkType: hard
+
+"@types/emscripten@npm:^1.39.6":
+  version: 1.39.13
+  resolution: "@types/emscripten@npm:1.39.13"
+  checksum: 10c0/99c314418b6fbe113c4c81dc89501bdf723020d1de262a36a4e45236b268dcec3deab104e3a7d3569e6d7c5c942de30c9c6d77b93170c1bcaa85620c7ee4c2ba
   languageName: node
   linkType: hard
 
@@ -1267,11 +1290,14 @@ __metadata:
   resolution: "@wisdomstar94/babylon-js-example@workspace:src/webs/babylon-js-example"
   dependencies:
     "@babylonjs/core": "npm:^7.12.0"
+    "@babylonjs/havok": "npm:^1.3.5"
     "@babylonjs/loaders": "npm:^7.12.0"
+    "@types/animejs": "npm:^3"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
     "@wisdomstar94/react-add-event-listener": "workspace:^"
+    animejs: "npm:^3.2.2"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.4"
     next: "npm:14.2.4"
@@ -1566,6 +1592,13 @@ __metadata:
     json-schema-traverse: "npm:^0.4.1"
     uri-js: "npm:^4.2.2"
   checksum: 10c0/41e23642cbe545889245b9d2a45854ebba51cda6c778ebced9649420d9205f2efb39cb43dbc41e358409223b1ea43303ae4839db682c848b891e4811da1a5a71
+  languageName: node
+  linkType: hard
+
+"animejs@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "animejs@npm:3.2.2"
+  checksum: 10c0/f43dfcc0c743a2774e76fbfcb16a22350da7104f413d9d1b85c48128b0c078090642809deb631e21dfa0a40651111be39d9d7f694c9c1b70d8637ce8b6d63116
   languageName: node
   linkType: hard
 

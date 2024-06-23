@@ -16,6 +16,7 @@ export default function RootLayout({
     { name: 'test/model-import', href: '/test/model-import' },
     { name: 'test/webgpu', href: '/test/webgpu' },
     { name: 'test/resizing', href: '/test/resizing' },
+    { name: 'test/model-control', href: '/test/model-control' },
   ];
 
   return (
