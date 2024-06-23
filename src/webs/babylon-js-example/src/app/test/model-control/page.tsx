@@ -121,7 +121,13 @@ export default function Page() {
       const idleAnim = result.animationGroups.find(k => k.name === 'idle');
       const jumpAnim = result.animationGroups.find(k => k.name === 'jump');
 
-      walkingAnim!.start(true);
+      (window as any).test = {
+        walkingAnim,
+        idleAnim,
+        jumpAnim,
+      };
+
+      idleAnim?.start(true);
 
       let inputMap: Record<string, any> = {};
 
@@ -242,7 +248,7 @@ export default function Page() {
                 console.log('jump end!', { keydown });
                 box.state = '';
                 jumpAnim?.stop();
-                idleAnim!.start(true);
+                idleAnim?.start(true);
               }, 850);
             }, 500);
           }
@@ -252,12 +258,13 @@ export default function Page() {
             // console.log('keydown...', animating);
             if (!animating) {
               animating = true;
-              walkingAnim!.start(true);
+              idleAnim?.stop();
+              walkingAnim?.start(true);
             }
           } else {
             if (animating) {
-              idleAnim!.start(true);
-              walkingAnim!.stop();
+              walkingAnim?.stop();
+              idleAnim?.start(true);
               animating = false;
             }
           }
@@ -267,9 +274,17 @@ export default function Page() {
         }
 
         if (!keydown && box.state !== 'jumping') {
-          console.log('!!?');
-          walkingAnim?.stop();
-          idleAnim!.start(true);
+          // console.log('!!?');
+          // console.log({ 'walkingAnim?.isPlaying': walkingAnim?.isPlaying, 'idleAnim?.isPlaying': idleAnim?.isPlaying });
+
+          // if (walkingAnim?.isPlaying) {
+          //   console.log('@! 2');
+          //   walkingAnim?.stop();
+          // }
+          // if (idleAnim?.isPlaying === false) {
+          //   console.log('@! 1');
+          //   idleAnim?.start(true);
+          // }
         }
       });
     });
