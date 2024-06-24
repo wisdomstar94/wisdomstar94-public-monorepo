@@ -17,6 +17,7 @@ export default function RootLayout({
     { name: 'test/webgpu', href: '/test/webgpu' },
     { name: 'test/resizing', href: '/test/resizing' },
     { name: 'test/model-control', href: '/test/model-control' },
+    { name: 'test/model-control-v2', href: '/test/model-control-v2' },
   ];
 
   return (

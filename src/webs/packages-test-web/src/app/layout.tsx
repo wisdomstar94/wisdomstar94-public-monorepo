@@ -16,6 +16,7 @@ export default function RootLayout({
     { name: 'test/react-promise-interval', href: '/test/react-promise-interval' },
     { name: 'test/react-body', href: '/test/react-body' },
     { name: 'test/react-api-again-request-scheduler', href: '/test/react-api-again-request-scheduler' },
+    { name: 'test/react-request-animation-frame-manager', href: '/test/react-request-animation-frame-manager' },
   ];
 
   return (

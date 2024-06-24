@@ -1342,6 +1342,7 @@ __metadata:
     "@wisdomstar94/react-indexeddb-manager": "workspace:^"
     "@wisdomstar94/react-multiple-api-manager": "workspace:^"
     "@wisdomstar94/react-promise-interval": "workspace:^"
+    "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     axios: "npm:^1.7.2"
     eslint: "npm:^8.57.0"
     eslint-config-next: "npm:14.2.4"
@@ -1492,6 +1493,25 @@ __metadata:
 "@wisdomstar94/react-promise-interval@workspace:^, @wisdomstar94/react-promise-interval@workspace:src/packages/react-promise-interval":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/react-promise-interval@workspace:src/packages/react-promise-interval"
+  dependencies:
+    "@types/node": "npm:^20.14.2"
+    "@types/react": "npm:^18.3.3"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    typescript: "npm:^5.4.5"
+    vite: "npm:^5.3.1"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  languageName: unknown
+  linkType: soft
+
+"@wisdomstar94/react-request-animation-frame-manager@workspace:^, @wisdomstar94/react-request-animation-frame-manager@workspace:src/packages/react-request-animation-frame-manager":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/react-request-animation-frame-manager@workspace:src/packages/react-request-animation-frame-manager"
   dependencies:
     "@types/node": "npm:^20.14.2"
     "@types/react": "npm:^18.3.3"
