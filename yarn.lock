@@ -1297,6 +1297,7 @@ __metadata:
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
     "@wisdomstar94/react-add-event-listener": "workspace:^"
+    "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     animejs: "npm:^3.2.2"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.4"
