@@ -15,3 +15,4 @@
 | [@wisdomstar94/react-indexeddb-manager](https://www.npmjs.com/package/@wisdomstar94/react-indexeddb-manager) | src/packages/react-indexeddb-manager | `indexeddb` 를 react 에서 편리하게 사용할 수 있도록 관련된 `hooks` 함수를 제공합니다. | 
 | [@wisdomstar94/react-multiple-api-manager](https://www.npmjs.com/package/@wisdomstar94/react-multiple-api-manager) | src/packages/react-multiple-api-manager | react 에서 여러 api 를 동시에 호출 할 때 유용한 `hooks` 함수를 제공합니다. | 
 | [@wisdomstar94/react-promise-interval](https://www.npmjs.com/package/@wisdomstar94/react-promise-interval) | src/packages/react-promise-interval | react 에서 특정 promise 비동기 작업이 성공할 때 까지 주기적으로 계속 실행하는 `hooks` 함수를 제공합니다. | 
+| [@wisdomstar94/react-request-animation-frame-manager](https://www.npmjs.com/package/@wisdomstar94/react-request-animation-frame-manager) | src/packages/react-request-animation-frame-manager | `requestAnimationFrame` 함수를 리액트 환경에 맞게 사용할 수 있도록 관련 훅을 제공합니다. | 
