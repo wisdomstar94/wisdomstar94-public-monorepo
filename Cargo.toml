@@ -1,0 +1,12 @@
+[workspace]
+members = [
+  "src/packages/electron-keyboard-event-listener"
+]
+
+[package]
+name = "wisdomstar94-public-monorepo"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+

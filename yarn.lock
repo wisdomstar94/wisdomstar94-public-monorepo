@@ -1310,6 +1310,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/electron-keyboard-event-listener@workspace:src/packages/electron-keyboard-event-listener":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/electron-keyboard-event-listener@workspace:src/packages/electron-keyboard-event-listener"
+  languageName: unknown
+  linkType: soft
+
 "@wisdomstar94/packages-common-lib@workspace:src/libs/packages-common-lib":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/packages-common-lib@workspace:src/libs/packages-common-lib"

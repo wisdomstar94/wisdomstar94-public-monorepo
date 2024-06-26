@@ -1,0 +1,8 @@
+{
+  "name": "@wisdomstar94/electron-keyboard-event-listener",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "cargo": "cargo"
+  }
+}

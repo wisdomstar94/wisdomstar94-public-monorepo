@@ -11,6 +11,7 @@
     "@wisdomstar94/react-body": "yarn workspace @wisdomstar94/react-body",
     "@wisdomstar94/react-api-again-request-scheduler": "yarn workspace @wisdomstar94/react-api-again-request-scheduler",
     "@wisdomstar94/react-request-animation-frame-manager": "yarn workspace @wisdomstar94/react-request-animation-frame-manager",
+    "@wisdomstar94/electron-keyboard-event-listener": "yarn workspace @wisdomstar94/electron-keyboard-event-listener",
     "@wisdomstar94/packages-test-web": "yarn workspace @wisdomstar94/packages-test-web",
     "@wisdomstar94/babylon-js-example": "yarn workspace @wisdomstar94/babylon-js-example",
     "pack:build:all": "yarn dlx concurrently \"yarn @wisdomstar94/react-add-event-listener pack:build\" \"yarn @wisdomstar94/react-indexeddb-manager pack:build\" \"yarn @wisdomstar94/react-multiple-api-manager pack:build\" \"yarn @wisdomstar94/react-api pack:build\" \"yarn @wisdomstar94/react-promise-interval pack:build\" \"yarn @wisdomstar94/react-body pack:build\" \"yarn @wisdomstar94/react-api-again-request-scheduler pack:build\" \"yarn @wisdomstar94/react-request-animation-frame-manager pack:build\""
