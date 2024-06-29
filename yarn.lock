@@ -1297,6 +1297,7 @@ __metadata:
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
     "@wisdomstar94/react-add-event-listener": "workspace:^"
+    "@wisdomstar94/react-joystick": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     animejs: "npm:^3.2.2"
     babylonjs-gltf2interface: "npm:^7.13.1"
@@ -1348,7 +1349,7 @@ __metadata:
     "@wisdomstar94/react-api-again-request-scheduler": "workspace:^"
     "@wisdomstar94/react-body": "workspace:^"
     "@wisdomstar94/react-indexeddb-manager": "workspace:^"
-    "@wisdomstar94/react-joystick": "workspace:^"
+    "@wisdomstar94/react-joystick": "npm:0.0.1"
     "@wisdomstar94/react-multiple-api-manager": "workspace:^"
     "@wisdomstar94/react-promise-interval": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
@@ -1480,7 +1481,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wisdomstar94/react-joystick@workspace:^, @wisdomstar94/react-joystick@workspace:src/packages/react-joystick":
+"@wisdomstar94/react-joystick@npm:0.0.1, @wisdomstar94/react-joystick@workspace:^, @wisdomstar94/react-joystick@workspace:src/packages/react-joystick":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/react-joystick@workspace:src/packages/react-joystick"
   dependencies:

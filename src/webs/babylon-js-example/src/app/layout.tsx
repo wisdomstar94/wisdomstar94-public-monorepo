@@ -18,6 +18,7 @@ export default function RootLayout({
     { name: 'test/resizing', href: '/test/resizing' },
     { name: 'test/model-control', href: '/test/model-control' },
     { name: 'test/model-control-v2', href: '/test/model-control-v2' },
+    { name: 'test/model-control-v3', href: '/test/model-control-v3' },
   ];
 
   return (
