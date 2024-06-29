@@ -2,10 +2,9 @@
 
 import { BabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.component";
 import { useEffect, useRef } from "react";
-import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { AnimationPropertiesOverride, MeshBuilder, SceneLoader, UniversalCamera, WebGPUEngine } from "@babylonjs/core";
+import { AnimationPropertiesOverride, MeshBuilder, SceneLoader, UniversalCamera } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import { IBabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.interface";
 // import '@babylonjs/core/Engines/WebGPU/Extensions';
@@ -13,15 +12,17 @@ import { IBabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.inter
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  async function onReady(engines: IBabylonCanvas.Engines) {
-    console.log('@canvasRef', canvasRef); 
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
+  async function onReady(initInfo: IBabylonCanvas.InitInfo) {
+    const {
+      engines, 
+      scene,
+      canvas,
+    } = initInfo;
 
     const engine = engines.engine;
     // engine.enableGPUTimingMeasurements = true;
     // engine.snapshotRendering = true;
-    const scene = new Scene(engine);
+
     // scene.animationPropertiesOverride = new AnimationPropertiesOverride();
     // scene.animationPropertiesOverride.enableBlending = true;
     // scene.animationPropertiesOverride.blendingSpeed = 0.05;
@@ -80,7 +81,7 @@ export default function Page() {
   return (
     <>
       <div className="w-[1000px] h-[600px] bg-blue-200 relative">
-        <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
+        <BabylonCanvas onReady={onReady} />
       </div>
     </>
   );

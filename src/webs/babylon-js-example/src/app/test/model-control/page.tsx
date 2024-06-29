@@ -17,13 +17,14 @@ export default function Page() {
   const modelRef = useRef<ISceneLoaderAsyncResult>();
   const cameraRef = useRef<ArcRotateCamera>();
 
-  async function onReady(engines: IBabylonCanvas.Engines) {
-    console.log('@canvasRef', canvasRef); 
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
+  async function onReady(initInfo: IBabylonCanvas.InitInfo) {
+    const {
+      engines, 
+      scene,
+      canvas,
+    } = initInfo;
 
     const engine = engines.engine;
-    const scene = new Scene(engine);
     scene.actionManager = new ActionManager(scene);
 
     const axes = new AxesViewer(scene);
@@ -298,7 +299,7 @@ export default function Page() {
     <>
       <div className="w-full h-full bg-blue-200 relative">
         <div className="w-1/2 aspect-square relative">
-          <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
+          <BabylonCanvas onReady={onReady} />
         </div>
       </div>
     </>

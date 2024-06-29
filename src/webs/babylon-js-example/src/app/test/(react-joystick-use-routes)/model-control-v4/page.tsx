@@ -226,13 +226,14 @@ export default function Page() {
     },
   });
 
-  async function onReady(engines: IBabylonCanvas.Engines) {
-    // console.log('@canvasRef', canvasRef); 
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
+  async function onReady(initInfo: IBabylonCanvas.InitInfo) {
+    const {
+      engines, 
+      scene,
+      canvas,
+    } = initInfo;
 
     const engine = engines.engine;
-    const scene = new Scene(engine);
     scene.actionManager = new ActionManager(scene);
 
     const axes = new AxesViewer(scene);
@@ -346,7 +347,7 @@ export default function Page() {
     <>
       <div className="w-full h-full bg-blue-200 relative">
         <div className="w-full h-full fixed top-0 left-0">
-          <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
+          <BabylonCanvas onReady={onReady} />
         </div>
       </div>
       <div className="fixed bottom-10 right-10 z-10">

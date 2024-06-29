@@ -1,5 +1,4 @@
-import { AbstractEngine, Engine, WebGPUEngine } from "@babylonjs/core";
-import { RefObject } from "react";
+import { AbstractEngine, Engine, Scene, WebGPUEngine } from "@babylonjs/core";
 
 export declare namespace IBabylonCanvas {
   export interface Engines {
@@ -8,8 +7,13 @@ export declare namespace IBabylonCanvas {
     engine: AbstractEngine;
   }
 
+  export interface InitInfo {
+    engines: Engines;
+    scene: Scene;
+    canvas: HTMLCanvasElement;
+  }
+
   export interface Props {
-    canvasRef?: RefObject<HTMLCanvasElement>;
-    onReady?: (engines: Engines) => void;
+    onReady?: (initInfo: InitInfo) => void;
   }
 }

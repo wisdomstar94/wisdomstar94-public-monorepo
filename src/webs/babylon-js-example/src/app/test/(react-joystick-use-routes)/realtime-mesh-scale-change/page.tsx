@@ -232,13 +232,15 @@ export default function Page() {
     },
   });
 
-  async function onReady(engines: IBabylonCanvas.Engines) {
-    // console.log('@canvasRef', canvasRef); 
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
+  async function onReady(initInfo: IBabylonCanvas.InitInfo) {
+    const {
+      engines, 
+      scene,
+      canvas,
+    } = initInfo;
 
     const engine = engines.engine;
-    const scene = new Scene(engine);
+
     sceneRef.current = scene;
     scene.actionManager = new ActionManager(scene);
 
@@ -371,7 +373,7 @@ export default function Page() {
     <>
       <div className="w-full h-full bg-blue-200 relative">
         <div className="w-[1000px] h-[700px] relative">
-          <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
+          <BabylonCanvas onReady={onReady} />
         </div>
       </div>
       <div className="w-[200px] h-[500px] flex flex-wrap items-start content-start gap-2 fixed top-[100px] right-[20px] bg-slate-700/50">
