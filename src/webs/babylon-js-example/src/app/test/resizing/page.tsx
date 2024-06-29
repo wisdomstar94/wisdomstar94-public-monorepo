@@ -1,13 +1,12 @@
 "use client"
 
-import { BabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.component";
 import { useEffect, useRef } from "react";
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { AbstractEngine, AnimationPropertiesOverride, Engine, MeshBuilder, SceneLoader, UniversalCamera, WebGPUEngine } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
-import { IBabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.interface";
+import { BabylonCanvas, IBabylonCanvas } from "@wisdomstar94/react-babylon-utils";
 // import '@babylonjs/core/Engines/WebGPU/Extensions';
 
 export default function Page() {

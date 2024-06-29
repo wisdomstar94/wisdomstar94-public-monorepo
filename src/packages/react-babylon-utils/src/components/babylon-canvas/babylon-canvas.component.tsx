@@ -7,6 +7,7 @@ export function BabylonCanvas(props: IBabylonCanvas.Props) {
   const {
     onReady,
   } = props;
+  const isDisableWebGPU = props.isDisableWebGPU ?? false;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const enginesRef = useRef<IBabylonCanvas.Engines>();
@@ -48,25 +49,33 @@ export function BabylonCanvas(props: IBabylonCanvas.Props) {
     if (canvas === null || canvas === undefined) return;
     if (isReady !== true) return;
 
-    WebGPUEngine.IsSupportedAsync.then((isSupported) => {
-      if (isSupported) {
-        const engine = new WebGPUEngine(canvas);
-        enginesRef.current = { engine };
-        enginesRef.current.webGPUEngine = engine;
-        engine.initAsync().then(() => {
-          // if (typeof onReady === 'function') onReady({ webGPUEngine: engine, engine });
-          // setIsReadyed(true);
-          onEngines({ webGPUEngine: engine, engine });
-        });
-      } else {
-        const engine = new Engine(canvas);
-        enginesRef.current = { engine };
-        enginesRef.current.webGLEngine = engine;
-        // if (typeof onReady === 'function') onReady({ webGLEngine: engine, engine });
-        // setIsReadyed(true);
-        onEngines({ webGLEngine: engine, engine });
-      }
-    });
+    const onWebGPU = () => {
+      const engine = new WebGPUEngine(canvas);
+      enginesRef.current = { engine };
+      enginesRef.current.webGPUEngine = engine;
+      engine.initAsync().then(() => {
+        onEngines({ webGPUEngine: engine, engine });
+      });
+    };
+
+    const onWebGL = () => {
+      const engine = new Engine(canvas);
+      enginesRef.current = { engine };
+      enginesRef.current.webGLEngine = engine;
+      onEngines({ webGLEngine: engine, engine });
+    };
+
+    if (isDisableWebGPU) {
+      onWebGL();
+    } else {
+      WebGPUEngine.IsSupportedAsync.then((isSupported) => {
+        if (isSupported) {
+          onWebGPU();
+        } else {
+          onWebGL();
+        }
+      });
+    }
 
     return () => {
       sceneRef.current?.dispose();

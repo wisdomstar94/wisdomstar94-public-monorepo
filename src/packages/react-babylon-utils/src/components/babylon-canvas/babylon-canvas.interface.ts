@@ -14,6 +14,7 @@ export declare namespace IBabylonCanvas {
   }
 
   export interface Props {
+    isDisableWebGPU?: boolean;
     onReady?: (initInfo: InitInfo) => void;
   }
 }

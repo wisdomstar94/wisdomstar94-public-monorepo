@@ -1,14 +1,12 @@
 "use client"
 
-import { BabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.component";
 import { useRef } from "react";
-import { Scene } from "@babylonjs/core/scene";
 import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { ActionManager, AnimationPropertiesOverride, ArcRotateCamera, AxesViewer, ExecuteCodeAction, HavokPlugin, ISceneLoaderAsyncResult, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, PhysicsShapeCylinder, SceneLoader } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
-import { IBabylonCanvas } from "@/components/babylon-canvas/babylon-canvas.interface";
 import HavokPhysics from "@babylonjs/havok";
+import { BabylonCanvas, IBabylonCanvas } from "@wisdomstar94/react-babylon-utils";
 // import anime from 'animejs/lib/anime.es.js';
 
 export default function Page() {

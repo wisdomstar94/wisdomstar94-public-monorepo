@@ -17,5 +17,12 @@
 | [@wisdomstar94/react-promise-interval](https://www.npmjs.com/package/@wisdomstar94/react-promise-interval) | src/packages/react-promise-interval | react 에서 특정 promise 비동기 작업이 성공할 때 까지 주기적으로 계속 실행하는 `hooks` 함수를 제공합니다. | 
 | [@wisdomstar94/react-request-animation-frame-manager](https://www.npmjs.com/package/@wisdomstar94/react-request-animation-frame-manager) | src/packages/react-request-animation-frame-manager | `requestAnimationFrame` 함수를 리액트 환경에 맞게 사용할 수 있도록 관련 훅을 제공합니다. | 
 | [@wisdomstar94/react-joystick](https://www.npmjs.com/package/@wisdomstar94/react-joystick) | src/packages/react-joystick | 상하좌우 및 대각선 방향으로 조이스틱 핸들러를 조작할 수 있는 리액트용 `component` 를 제공합니다. 키보드의 방향키를 대체하는 용도로도 사용할 수도 있습니다. | 
+| [@wisdomstar94/react-babylon-utils](https://www.npmjs.com/package/@wisdomstar94/react-babylon-utils) | src/packages/react-babylon-utils | [babylon.js](https://www.babylonjs.com/) 를 좀 더 편하게 사용할 수 있도록 이와 관련된 리액트용 `component`, `hook`, `class` 를 제공합니다. | 
 
-각 패키지별 예제 코드는 본 모노레포의 `src/webs/packages-test-web/src/app/test` 경로를 참고해주세요. 예제 페이지는 `yarn @wisdomstar94/packages-test-web dev` 명령어로 열 수 있습니다.
+<br />
+
+각 패키지별 예제 코드는 본 모노레포의 `src/webs/packages-test-web/src/app/test` 경로를 참고해주세요. 예제 페이지는 `yarn @wisdomstar94/packages-test-web dev` 명령어로 열 수 있습니다. 
+
+<br />
+
+`@wisdomstar94/react-babylon-utils` 패키지에 대한 예제 코드는 `src/webs/babylon-js-example/src/app/test` 경로를 참고해주세요.
