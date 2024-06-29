@@ -22,6 +22,7 @@ export function CommonRootLayoutClient(props: ICommonRootLayoutClient.Props) {
             return (
               <li key={menu.href}>
                 <Link 
+                  scroll={false}
                   href={menu.href} 
                   className={classes(
                     "inline-flex px-4 py-2 cursor-pointer border border-slate-400 text-slate-600 text-xs hover:bg-slate-100",

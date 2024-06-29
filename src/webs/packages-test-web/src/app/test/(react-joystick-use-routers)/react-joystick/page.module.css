@@ -1,0 +1,8 @@
+.my-joystick-container {
+  border-radius: 0;
+  border: 1px solid #0e68f8;
+  border-radius: 200px;
+}
+.my-joystick-handler {
+  background-color: #f00 !important;
+}

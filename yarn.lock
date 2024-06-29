@@ -1299,6 +1299,7 @@ __metadata:
     "@wisdomstar94/react-add-event-listener": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     animejs: "npm:^3.2.2"
+    babylonjs-gltf2interface: "npm:^7.13.1"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.4"
     next: "npm:14.2.4"
@@ -1347,6 +1348,7 @@ __metadata:
     "@wisdomstar94/react-api-again-request-scheduler": "workspace:^"
     "@wisdomstar94/react-body": "workspace:^"
     "@wisdomstar94/react-indexeddb-manager": "workspace:^"
+    "@wisdomstar94/react-joystick": "workspace:^"
     "@wisdomstar94/react-multiple-api-manager": "workspace:^"
     "@wisdomstar94/react-promise-interval": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
@@ -1470,6 +1472,31 @@ __metadata:
     "@wisdomstar94/tsconfig-lib": "workspace:^"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
+    typescript: "npm:^5.4.5"
+    vite: "npm:^5.3.1"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  languageName: unknown
+  linkType: soft
+
+"@wisdomstar94/react-joystick@workspace:^, @wisdomstar94/react-joystick@workspace:src/packages/react-joystick":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/react-joystick@workspace:src/packages/react-joystick"
+  dependencies:
+    "@types/node": "npm:^20.14.2"
+    "@types/react": "npm:^18.3.3"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@wisdomstar94/react-add-event-listener": "workspace:^"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    eslint: "npm:^8.57.0"
+    eslint-config-next: "npm:14.2.4"
+    next: "npm:14.2.4"
+    postcss: "npm:^8.4.38"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5.4.5"
     vite: "npm:^5.3.1"
   peerDependencies:
@@ -1905,6 +1932,13 @@ __metadata:
   dependencies:
     dequal: "npm:^2.0.3"
   checksum: 10c0/f7debc2012e456139b57d888c223f6d3cb4b61eb104164a85e3d346273dd6ef0bc9a04b6660ca9407704a14a8e05fa6b6eb9d55f44f348c7210de7ffb350c3a7
+  languageName: node
+  linkType: hard
+
+"babylonjs-gltf2interface@npm:^7.13.1":
+  version: 7.13.1
+  resolution: "babylonjs-gltf2interface@npm:7.13.1"
+  checksum: 10c0/064b7fae3526c373f0ba16fe7960cb686c150aa47df45077582fd8e57e1b8e457e447a24cea63385693a19b65261cc56bb4546d797c7a1e80adae413dac5a76f
   languageName: node
   linkType: hard
 

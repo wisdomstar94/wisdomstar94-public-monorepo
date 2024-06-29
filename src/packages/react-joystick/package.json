@@ -1,0 +1,57 @@
+{
+  "name": "@wisdomstar94/react-joystick",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "ncu:update": "ncu -u",
+    "pack:build": "vite build && tsc",
+    "npm:publish": "npm publish --access=public"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@wisdomstar94/react-add-event-listener": "^0"
+  },
+  "dependencies": {
+    "@wisdomstar94/react-add-event-listener": "workspace:^",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@wisdomstar94/tsconfig-lib": "workspace:^",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.4",
+    "next": "14.2.4",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1"
+  },
+  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "files": [
+    "package.json",
+    "dist/*",
+    "!dist/*.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./style.css": {
+      "default": "./dist/style.css"
+    }
+  }
+}

@@ -15,6 +15,7 @@
     "@wisdomstar94/react-api-again-request-scheduler": "workspace:^",
     "@wisdomstar94/react-body": "workspace:^",
     "@wisdomstar94/react-indexeddb-manager": "workspace:^",
+    "@wisdomstar94/react-joystick": "workspace:^",
     "@wisdomstar94/react-multiple-api-manager": "workspace:^",
     "@wisdomstar94/react-promise-interval": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
