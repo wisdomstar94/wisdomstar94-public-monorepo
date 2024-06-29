@@ -350,7 +350,7 @@ export default function Page() {
       </div>
       <div className="fixed bottom-10 right-10 z-10">
         <Joystick
-          onPressed={(keys) => {
+          onPressed={(keys, isStrenth) => {
             // ⬆
             if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) {
               keyDownMap.current.set('w', true);
@@ -407,12 +407,14 @@ export default function Page() {
               keyDownMap.current.set('d', true);
               keyDownMap.current.set('s', true);
             }
+            keyDownMap.current.set('shift', isStrenth);
           }}
           onPressOut={() => {
             keyDownMap.current.set('w', false);
             keyDownMap.current.set('a', false);
             keyDownMap.current.set('d', false);
             keyDownMap.current.set('s', false);
+            keyDownMap.current.set('shift', false);
           }}
           />
       </div>
