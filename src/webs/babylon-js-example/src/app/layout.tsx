@@ -19,6 +19,7 @@ export default function RootLayout({
     { name: 'test/model-control', href: '/test/model-control' },
     { name: 'test/model-control-v2', href: '/test/model-control-v2' },
     { name: 'test/model-control-v3', href: '/test/model-control-v3' },
+    { name: 'test/model-control-v4', href: '/test/model-control-v4' },
   ];
 
   return (
