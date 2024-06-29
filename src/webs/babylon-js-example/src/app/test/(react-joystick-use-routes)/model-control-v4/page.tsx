@@ -31,7 +31,7 @@ export default function Page() {
       eventName: 'keyup',
       eventListener(event) {
         const key = event.key;
-        console.log('@keyup', key);
+        // console.log('@keyup', key);
         keyDownMap.current.set(key.toLowerCase(), false);
       },
     },
@@ -42,7 +42,7 @@ export default function Page() {
       eventName: 'keydown',
       eventListener(event) {
         const key = event.key;
-        console.log('@keydown', key);
+        // console.log('@keydown', key);
         keyDownMap.current.set(key.toLowerCase(), true);
       },
     },
@@ -85,7 +85,7 @@ export default function Page() {
 
       // ⬆
       if (keyDownMap.current.get('w') && !keyDownMap.current.get('a') && !keyDownMap.current.get('s') && !keyDownMap.current.get('d')) {
-        console.log('⬆');
+        // console.log('⬆');
         isEulerChanged = true;
         // euler.y = euler.y;
         euler.y = euler.y + angle180;
@@ -93,7 +93,7 @@ export default function Page() {
       }
       // ⬇
       if (!keyDownMap.current.get('w') && !keyDownMap.current.get('a') && keyDownMap.current.get('s') && !keyDownMap.current.get('d')) {
-        console.log('⬇');
+        // console.log('⬇');
         isEulerChanged = true;
         // euler.y = euler.y + angle180;
         euler.y = euler.y;
@@ -101,7 +101,7 @@ export default function Page() {
       }
       // ⬅
       if (!keyDownMap.current.get('w') && keyDownMap.current.get('a') && !keyDownMap.current.get('s') && !keyDownMap.current.get('d')) {
-        console.log('⬅');
+        // console.log('⬅');
         isEulerChanged = true;
         // euler.y = euler.y - angle90;
         euler.y = euler.y + angle90;
@@ -109,7 +109,7 @@ export default function Page() {
       }
       // ⮕
       if (!keyDownMap.current.get('w') && !keyDownMap.current.get('a') && !keyDownMap.current.get('s') && keyDownMap.current.get('d')) {
-        console.log('⮕');
+        // console.log('⮕');
         isEulerChanged = true;
         // euler.y = euler.y + angle90;
         euler.y = euler.y - angle90;
@@ -117,7 +117,7 @@ export default function Page() {
       }
       // ⬅ + ⬆
       if (keyDownMap.current.get('w') && keyDownMap.current.get('a') && !keyDownMap.current.get('s') && !keyDownMap.current.get('d')) {
-        console.log('⬅ + ⬆');
+        // console.log('⬅ + ⬆');
         isEulerChanged = true;
         // euler.y = euler.y - angle45;
         euler.y = euler.y + angle135;
@@ -125,7 +125,7 @@ export default function Page() {
       }
       // ⬆ + ⮕
       if (keyDownMap.current.get('w') && !keyDownMap.current.get('a') && !keyDownMap.current.get('s') && keyDownMap.current.get('d')) {
-        console.log('⬆ + ⮕');
+        // console.log('⬆ + ⮕');
         isEulerChanged = true;
         // euler.y = euler.y + angle45;
         euler.y = euler.y - angle135;
@@ -133,7 +133,7 @@ export default function Page() {
       }
       // ⬅ + ⬇
       if (!keyDownMap.current.get('w') && keyDownMap.current.get('a') && keyDownMap.current.get('s') && !keyDownMap.current.get('d')) {
-        console.log('⬅ + ⬇');
+        // console.log('⬅ + ⬇');
         isEulerChanged = true;
         // euler.y = euler.y - angle135;
         euler.y = euler.y + angle45;
@@ -141,7 +141,7 @@ export default function Page() {
       }
       // ⬇ + ⮕
       if (!keyDownMap.current.get('w') && !keyDownMap.current.get('a') && keyDownMap.current.get('s') && keyDownMap.current.get('d')) {
-        console.log('⬇ + ⮕');
+        // console.log('⬇ + ⮕');
         isEulerChanged = true;
         // euler.y = euler.y + angle135;
         euler.y = euler.y - angle45;
@@ -181,11 +181,11 @@ export default function Page() {
 
           const currentVelocity = characterBoxPhysicsBody.getLinearVelocity();
           setTimeout(() => {
-            console.log('jump start!');
+            // console.log('jump start!');
             // animatingRef.current = false;
             characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 9, moveDirection.z * 3));
             setTimeout(() => {
-              console.log('jump end!', { keydown });
+              // console.log('jump end!', { keydown });
               characterBox.state = '';
               jumpAnim?.stop();
               idleAnim?.start(true);
@@ -201,7 +201,7 @@ export default function Page() {
           // if (!animatingRef.current) {
           // animatingRef.current = true;
           idleAnim?.stop();
-          console.log('@@@ @@@ @@@');
+          // console.log('@@@ @@@ @@@');
           if (keyDownMap.current.get('shift')) {
             walkingAnim?.stop();
             runningAnim?.start(true);
@@ -227,7 +227,7 @@ export default function Page() {
   });
 
   async function onReady(engines: IBabylonCanvas.Engines) {
-    console.log('@canvasRef', canvasRef); 
+    // console.log('@canvasRef', canvasRef); 
     const canvas = canvasRef.current;
     if (canvas === null) return;
 
@@ -236,11 +236,6 @@ export default function Page() {
     scene.actionManager = new ActionManager(scene);
 
     const axes = new AxesViewer(scene);
-
-    const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 4, 10, new Vector3(5, 0.4, 0), scene);
-    cameraRef.current = camera;
-    camera.attachControl(canvas, true);
-    camera.lowerRadiusLimit = 5; // 캐릭터와 카메라 간의 최소 거리 (이 값보다 더 가까워 지지 않음)
 
     const gravityVector = new Vector3(0, -11.81, 0);
     const havokInstance = await HavokPhysics();
@@ -258,11 +253,17 @@ export default function Page() {
     const box = MeshBuilder.CreateBox("box", { size: 1 }, scene);
     box.position.y = 5;
     box.position.x = 5;
+    box.position.z = 5;
     box.rotationQuaternion = Quaternion.Identity();
     box.visibility = 0;
-    camera.setTarget(box);
     characterBoxRef.current = box;
 
+    const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, new Vector3(box.position.x, box.position.y, box.position.z - 1), scene);
+    cameraRef.current = camera;
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = 5; // 캐릭터와 카메라 간의 최소 거리 (이 값보다 더 가까워 지지 않음)
+    camera.setTarget(box);
+    
     // (window as any).box = box;
 
     const boxBody = new PhysicsBody(box, PhysicsMotionType.DYNAMIC, false, scene);
@@ -344,7 +345,7 @@ export default function Page() {
   return (
     <>
       <div className="w-full h-full bg-blue-200 relative">
-        <div className="w-1/2 aspect-square relative">
+        <div className="w-full h-full fixed top-0 left-0">
           <BabylonCanvas canvasRef={canvasRef} onReady={onReady} />
         </div>
       </div>
