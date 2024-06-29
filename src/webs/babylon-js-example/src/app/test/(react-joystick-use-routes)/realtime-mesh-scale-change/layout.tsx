@@ -5,7 +5,7 @@ export default function Layout(props: { children: ReactNode }) {
     <>
       <div className="w-full flex flex-wrap gap-2 relative">
         <div className="w-full flex flex-wrap gap-2 relative">
-          <h1 className="text-3xl font-extrabold">/test/model-control-v5</h1>
+          <h1 className="text-3xl font-extrabold">/test/realtime-mesh-scale-change</h1>
         </div>
         <div className="w-full flex flex-wrap gap-2 relative">
           { props.children }
