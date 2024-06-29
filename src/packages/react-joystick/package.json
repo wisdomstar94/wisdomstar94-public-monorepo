@@ -8,9 +8,9 @@
     "npm:publish": "npm publish --access=public"
   },
   "peerDependencies": {
+    "@wisdomstar94/react-add-event-listener": "^0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@wisdomstar94/react-add-event-listener": "^0"
+    "react-dom": "^18.3.1"
   },
   "dependencies": {
     "@wisdomstar94/react-add-event-listener": "workspace:^",
