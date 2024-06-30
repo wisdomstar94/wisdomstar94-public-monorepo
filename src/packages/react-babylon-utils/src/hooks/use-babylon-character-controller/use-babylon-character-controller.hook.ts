@@ -81,11 +81,11 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
     // 카메라 설정
     camera.alpha = Math.PI / 2;
-    camera.beta = -Math.PI / 2.5;
-    camera.radius = 10;
+    camera.beta = -Math.PI;
+    camera.radius = 30;
     camera.position.x = characterBoxRef.current.position.x;
-    camera.position.y = characterBoxRef.current.position.y + 3;
-    camera.position.z = characterBoxRef.current.position.z - 10;
+    camera.position.y = characterBoxRef.current.position.y + 5;
+    camera.position.z = characterBoxRef.current.position.z - 9;
     camera.setTarget(characterBoxRef.current);
 
     // model import!!!
