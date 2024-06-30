@@ -1,24 +1,23 @@
 "use client"
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Scene } from "@babylonjs/core/scene";
-import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
+import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { ActionManager, ArcRotateCamera, GroundMesh, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import HavokPhysics from "@babylonjs/havok";
 import { Joystick } from "@wisdomstar94/react-joystick";
-import { BabylonCanvas, IBabylonCanvas, useBabylonCharacterController } from "@wisdomstar94/react-babylon-utils";
+import { BabylonCanvas, IBabylonCanvas, useBabylonCharacterController, useBabylonMeshPhysicsManager } from "@wisdomstar94/react-babylon-utils";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 import { TouchContainer } from "@wisdomstar94/react-touch-container";
 
 export default function Page() {
   const sceneRef = useRef<Scene>();
-  const groundRef = useRef<GroundMesh>();
-  const groundPhysicsBodyRef = useRef<PhysicsBody>();
-
   const [groundWidth, setGroundWidth] = useState(40);
   const [groundHeight, setGroundHeight] = useState(40);
+
+  const babylonMeshPhysicsManager = useBabylonMeshPhysicsManager();
 
   const babylonCharacterController = useBabylonCharacterController({
     debugOptions: {
@@ -78,38 +77,80 @@ export default function Page() {
     const light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    const ground = MeshBuilder.CreateGround("ground1", { width: groundWidth, height: groundHeight });
-    ground.position.y = 0;
-    ground.receiveShadows = true;
-    groundRef.current = ground;
-
     const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, Vector3.Zero(), scene);
     // camera.attachControl(canvas, true);
 
-    // 바닥과 맵핑할 메쉬
-    const groundBody = new PhysicsBody(ground, PhysicsMotionType.STATIC, false, scene);
-    groundBody.shape = new PhysicsShapeBox(
-      new Vector3(0, 0, 0),
-      Quaternion.Identity(),
-      new Vector3(groundWidth, 0.1, groundHeight),
-      scene,
-    );
-    groundBody.setMassProperties({ mass: 0 });
-    groundPhysicsBodyRef.current = groundBody;
+    babylonMeshPhysicsManager.injectObject({
+      manageName: 'ground',
+      mesh: (params) => {
+        const { manageName } = params;
+        const mesh = MeshBuilder.CreateGround(manageName, { width: groundWidth, height: groundHeight });
+        mesh.position.y = 0;
+        mesh.receiveShadows = true;
+        return mesh;
+      },
+      physicsBody: (params) => {
+        const { mesh } = params;
+        const body = new PhysicsBody(mesh, PhysicsMotionType.STATIC, false, scene);
+        body.shape = new PhysicsShapeBox(
+          new Vector3(0, 0, 0),
+          Quaternion.Identity(),
+          new Vector3(groundWidth, 0.1, groundHeight),
+          scene,
+        );
+        body.setMassProperties({ mass: 0 });
+        return body;
+      },
+    });
 
-    // fixedBox
-    const fixedBox = MeshBuilder.CreateBox("box2", { size: 2 }, scene);
-    fixedBox.position.y = 2.2;
-    fixedBox.visibility = 1;
+    babylonMeshPhysicsManager.injectObject({
+      manageName: 'center-box',
+      mesh: (params) => {
+        const { manageName } = params;
+        const mesh = MeshBuilder.CreateBox(manageName, { width: 2, height: 2, depth: 2 }, scene); // width == x, height == y, depth == z 
+        mesh.position.y = 2.2;
+        mesh.position.x = 0;
+        mesh.position.z = 0;
+        return mesh;
+      },
+      physicsBody: (params) => {
+        const { mesh } = params;
+        const body = new PhysicsBody(mesh, PhysicsMotionType.STATIC, false, scene);
+        body.shape = new PhysicsShapeBox(
+          new Vector3(0, 0, 0),
+          Quaternion.Identity(),
+          new Vector3(2, 2, 2),
+          scene,
+        );
+        body.setMassProperties({ mass: 0 });
+        return body;
+      },
+    });
 
-    const fixedBoxBody = new PhysicsBody(fixedBox, PhysicsMotionType.STATIC, false, scene);
-    fixedBoxBody.shape = new PhysicsShapeBox(
-      new Vector3(0, 0, 0),
-      Quaternion.Identity(),
-      new Vector3(2, 2, 2),
-      scene,
-    );
-    fixedBoxBody.setMassProperties({ mass: 0 });
+    babylonMeshPhysicsManager.injectObject({
+      manageName: 'left-wall',
+      mesh: (params) => {
+        const { manageName } = params;
+        const mesh = MeshBuilder.CreateBox(manageName, { width: 0.5, height: 5, depth: 40 }, scene); // width == x, height == y, depth == z 
+        mesh.position.y = 2.5;
+        mesh.position.x = -20;
+        mesh.position.z = 0;
+        mesh.visibility = 1;
+        return mesh;
+      },
+      physicsBody: (params) => {
+        const { mesh } = params;
+        const body = new PhysicsBody(mesh, PhysicsMotionType.STATIC, false, scene);
+        body.shape = new PhysicsShapeBox(
+          new Vector3(0, 0, 0),
+          Quaternion.Identity(),
+          new Vector3(0.5, 5, 40),
+          scene,
+        );
+        body.setMassProperties({ mass: 0 });
+        return body;
+      },
+    });
 
     babylonCharacterController.init({
       camera,
@@ -123,21 +164,26 @@ export default function Page() {
     });
   }
 
-  if (groundRef.current !== undefined) {
-    // groundRef.current._width = groundWidth;
-    // groundRef.current._height = groundHeight;
-    // groundRef.current.update
-    groundRef.current.scaling = new Vector3(groundWidth / 40, 1, groundHeight / 40);
-  }
-  
-  if (groundPhysicsBodyRef.current !== undefined && sceneRef.current !== undefined) {
-    groundPhysicsBodyRef.current.shape = new PhysicsShapeBox(
+  useEffect(() => {
+    const scene = sceneRef.current;
+    const groundMesh = babylonMeshPhysicsManager.getObjectMesh<GroundMesh>('ground');
+    const groundPhysicsBody = babylonMeshPhysicsManager.getObjectPhysicsBody('ground');
+
+    if (scene === undefined) return;
+    if (groundMesh === undefined) return;
+    if (groundPhysicsBody === undefined) return;
+
+    const matrix = Matrix.Scaling(groundWidth / 40, 1, groundHeight / 40);
+    groundMesh.setPreTransformMatrix(matrix);
+
+    groundPhysicsBody.shape = new PhysicsShapeBox(
       new Vector3(0, 0, 0),
       Quaternion.Identity(),
       new Vector3(groundWidth, 0.1, groundHeight),
-      sceneRef.current,
+      scene,
     );
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groundWidth, groundHeight]);
 
   return (
     <>
@@ -151,7 +197,7 @@ export default function Page() {
           onReady={onReady} 
           />
       </div>
-      <div className="w-[200px] h-[500px] hidden flex-wrap items-start content-start gap-2 fixed top-[100px] right-[20px] bg-slate-700/50">
+      <div className="w-[200px] h-[500px] flex flex-wrap items-start content-start gap-2 fixed top-[100px] right-[20px] bg-slate-700/50">
         <div className="w-full">
           ground width : <input type="number" value={groundWidth} onChange={e => setGroundWidth(Number(e.target.value))} />
         </div>
