@@ -20,6 +20,7 @@
     "@wisdomstar94/react-multiple-api-manager": "workspace:^",
     "@wisdomstar94/react-promise-interval": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
+    "@wisdomstar94/react-touch-container": "workspace:^",
     "axios": "^1.7.2",
     "luxon": "^3.4.4",
     "next": "14.2.4",

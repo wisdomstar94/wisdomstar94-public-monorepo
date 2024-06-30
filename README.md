@@ -19,6 +19,7 @@
 | [@wisdomstar94/react-joystick](https://www.npmjs.com/package/@wisdomstar94/react-joystick) | src/packages/react-joystick | 상하좌우 및 대각선 방향으로 조이스틱 핸들러를 조작할 수 있는 리액트용 `component` 를 제공합니다. 키보드의 방향키를 대체하는 용도로도 사용할 수도 있습니다. | 
 | [@wisdomstar94/react-babylon-utils](https://www.npmjs.com/package/@wisdomstar94/react-babylon-utils) | src/packages/react-babylon-utils | [babylon.js](https://www.babylonjs.com/) 를 좀 더 편하게 사용할 수 있도록 이와 관련된 리액트용 `component`, `hook` 을 제공합니다. | 
 | [@wisdomstar94/react-keyboard-manager](https://www.npmjs.com/package/@wisdomstar94/react-keyboard-manager) | src/packages/react-keyboard-manager | 키보드 입력과 관련된 처리를 위한 리액트용 `hook` 을 제공합니다. | 
+| [@wisdomstar94/react-touch-container](https://www.npmjs.com/package/@wisdomstar94/react-touch-container) | src/packages/react-touch-container | touch 또는 mousedown 이벤트를 이용하여 사용자가 터치 했는지 아닌지 여부를 알 수 있도록 해주는 기능을 제공하는 리액트용 `component` 를 제공합니다. <br /><br /> 해당 컴포넌트는 PC와 Mobile 환경에서 모두 사용가능하며 Mobile 환경인 경우에는 멀티 터치 상황에서도 동작하도록 설계되었습니다. | 
 
 <br />
 
