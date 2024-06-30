@@ -64,8 +64,6 @@ export default function Page() {
       axesViewer,
     } = initInfo;
 
-    const engine = engines.engine;
-
     sceneRef.current = scene;
     scene.actionManager = new ActionManager(scene);
 
