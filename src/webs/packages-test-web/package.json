@@ -16,6 +16,7 @@
     "@wisdomstar94/react-body": "workspace:^",
     "@wisdomstar94/react-indexeddb-manager": "workspace:^",
     "@wisdomstar94/react-joystick": "0.0.1",
+    "@wisdomstar94/react-keyboard-manager": "workspace:^",
     "@wisdomstar94/react-multiple-api-manager": "workspace:^",
     "@wisdomstar94/react-promise-interval": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",

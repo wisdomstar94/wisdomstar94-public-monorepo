@@ -18,6 +18,7 @@ export default function RootLayout({
     { name: 'test/react-api-again-request-scheduler', href: '/test/react-api-again-request-scheduler' },
     { name: 'test/react-request-animation-frame-manager', href: '/test/react-request-animation-frame-manager' },
     { name: 'test/react-joystick', href: '/test/react-joystick' },
+    { name: 'test/react-keyboard-manager', href: '/test/react-keyboard-manager' },
   ];
 
   return (

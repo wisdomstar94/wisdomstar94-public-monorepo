@@ -21,6 +21,7 @@ export default function RootLayout({
     { name: 'test/model-control-v3', href: '/test/model-control-v3' },
     { name: 'test/model-control-v4', href: '/test/model-control-v4' },
     { name: 'test/realtime-mesh-scale-change', href: '/test/realtime-mesh-scale-change' },
+    { name: 'test/with-controller-hook', href: '/test/with-controller-hook' },
   ];
 
   return (

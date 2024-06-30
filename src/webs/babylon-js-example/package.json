@@ -15,6 +15,7 @@
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "@wisdomstar94/react-babylon-utils": "workspace:^",
     "@wisdomstar94/react-joystick": "workspace:^",
+    "@wisdomstar94/react-keyboard-manager": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
     "animejs": "^3.2.2",
     "next": "14.2.4",

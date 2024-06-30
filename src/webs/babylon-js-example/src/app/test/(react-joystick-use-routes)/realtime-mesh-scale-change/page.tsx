@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Scene } from "@babylonjs/core/scene";
 import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { ActionManager, AnimationGroup, AnimationPropertiesOverride, ArcRotateCamera, AxesViewer, ExecuteCodeAction, GroundMesh, HavokPlugin, ISceneLoaderAsyncResult, Mesh, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, PhysicsShapeCylinder, SceneLoader } from "@babylonjs/core";
+import { ActionManager, AnimationGroup, AnimationPropertiesOverride, ArcRotateCamera, AxesViewer, GroundMesh, HavokPlugin, ISceneLoaderAsyncResult, Mesh, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, PhysicsShapeCylinder, SceneLoader } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import HavokPhysics from "@babylonjs/havok";
 import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
@@ -300,7 +300,7 @@ export default function Page() {
 
     // fixedBox
     const fixedBox = MeshBuilder.CreateBox("box2", { size: 2 }, scene);
-    fixedBox.position.y = 1;
+    fixedBox.position.y = 10;
     fixedBox.visibility = 1;
 
     const fixedBoxBody = new PhysicsBody(fixedBox, PhysicsMotionType.STATIC, false, scene);
@@ -310,6 +310,7 @@ export default function Page() {
       new Vector3(2, 2, 2),
       scene,
     );
+    // fixedBoxBody.setTargetTransform(new Vector3(0, 3, 0), Quaternion.Identity());
     fixedBoxBody.setMassProperties({ mass: 0 });
 
     // model import!!!

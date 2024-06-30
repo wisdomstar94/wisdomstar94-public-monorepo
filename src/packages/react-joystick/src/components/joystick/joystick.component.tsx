@@ -12,14 +12,14 @@ export function Joystick(props: IJoystick.Props) {
   } = props;
 
   const handlerElementRef = useRef<HTMLDivElement>(null);
+
   const isJoystickPressed = useRef<boolean>(false);
   const pressedCoordinate = useRef<IJoystick.Coordinate>({ x: 0, y: 0 });
   const movedCoordinate = useRef<IJoystick.Coordinate>({ x: 0, y: 0 });
   const [handlerTransformState, setHandlerTransformState] = useState<string>();
 
   useAddEventListener({
-    domEventRequiredInfo: {
-      target: handlerElementRef,
+    windowEventRequiredInfo: {
       eventName: 'mousedown',
       eventListener(event) {
         joystickPressed(event);
@@ -28,8 +28,7 @@ export function Joystick(props: IJoystick.Props) {
   });
 
   useAddEventListener({
-    domEventRequiredInfo: {
-      target: handlerElementRef,
+    windowEventRequiredInfo: {
       eventName: 'touchstart',
       eventListener(event) {
         joystickPressed(event);
@@ -68,21 +67,32 @@ export function Joystick(props: IJoystick.Props) {
     windowEventRequiredInfo: {
       eventName: 'touchend',
       eventListener(event) {
+        const touch = getHandlerTouchItem(event);
+        if (touch !== undefined) return;
         joystickHandOuted(event);
       },
     },
   });
+
+  function getHandlerTouchItem(event: TouchEvent) {
+    const touches = Array.from(event.touches);
+    const touch = touches.find(x => x.target === handlerElementRef.current);
+    return touch;
+  }
 
   function calculateDistance(event: MouseEvent | TouchEvent): IJoystick.Coordinate {
     let x = 0;
     let y = 0;
 
     if (event instanceof MouseEvent) {
-      x = event.pageX - pressedCoordinate.current.x;
-      y = event.pageY - pressedCoordinate.current.y;
+      x = event.clientX - pressedCoordinate.current.x;
+      y = event.clientY - pressedCoordinate.current.y;
     } else {
-      x = event.touches[0].pageX - pressedCoordinate.current.x;
-      y = event.touches[0].pageY - pressedCoordinate.current.y;
+      const touch = getHandlerTouchItem(event);
+      if (touch === undefined) throw new Error('핸들러 요소를 찾을 수 없습니다.');
+
+      x = touch.clientX - pressedCoordinate.current.x;
+      y = touch.clientY - pressedCoordinate.current.y;
     }
 
     return {
@@ -96,18 +106,31 @@ export function Joystick(props: IJoystick.Props) {
   }
 
   function joystickPressed(event: MouseEvent | TouchEvent) {
-    // console.log('joystickPressed.event', event);
-    
-    isJoystickPressed.current = true;
-    // setIsHandlerAllowAreaShow(true);
+    if (isJoystickPressed.current) return;
 
+    const handlerElement = handlerElementRef.current;
+    if (handlerElement === null) return;
+
+    let clientX = 0;
+    let clientY = 0;
+  
     if (event instanceof MouseEvent) {
-      pressedCoordinate.current.x = event.pageX;
-      pressedCoordinate.current.y = event.pageY;
+      clientX = event.clientX;
+      clientY = event.clientY;
     } else {
-      pressedCoordinate.current.x = event.touches[0].pageX;
-      pressedCoordinate.current.y = event.touches[0].pageY;
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
     }
+
+    const handlerBounds = handlerElement.getBoundingClientRect();
+    const isContained = (handlerBounds.x <= clientX && handlerBounds.x + handlerBounds.width >= clientX) && (handlerBounds.y <= clientY && handlerBounds.y + handlerBounds.height >= clientY);
+    if (!isContained) {
+      return;
+    }
+
+    isJoystickPressed.current = true;
+    pressedCoordinate.current.x = clientX;
+    pressedCoordinate.current.y = clientY;
   }
 
   function joystickMoved(event: MouseEvent | TouchEvent) {
@@ -115,13 +138,23 @@ export function Joystick(props: IJoystick.Props) {
       return;
     }
 
+    let clientX = 0;
+    let clientY = 0;
+  
     if (event instanceof MouseEvent) {
-      movedCoordinate.current.x = event.pageX;
-      movedCoordinate.current.y = event.pageY;
+      clientX = event.clientX;
+      clientY = event.clientY;
     } else {
-      movedCoordinate.current.x = event.touches[0].pageX;
-      movedCoordinate.current.y = event.touches[0].pageY;
+      const touch = getHandlerTouchItem(event);
+      if (touch === undefined) throw new Error('핸들러 요소를 찾을 수 없습니다.');
+      clientX = touch.clientX;
+      clientY = touch.clientY;
     }
+
+    // console.log('@movedCoordinate.current', movedCoordinate.current);
+
+    movedCoordinate.current.x = clientX;
+    movedCoordinate.current.y = clientY;
 
     const distanceCoordinate = calculateDistance(event);
     const maxValue = 40;
