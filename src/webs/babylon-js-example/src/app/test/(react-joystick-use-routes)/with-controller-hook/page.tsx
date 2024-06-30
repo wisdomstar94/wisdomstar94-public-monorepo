@@ -29,7 +29,7 @@ export default function Page() {
     animationGroupNames: {
       idleAnimationGroupName: 'idle',
       walkingAnimationGroupName: 'walking',
-      jumpingAnimationGroupName: 'jump',
+      jumpingAnimationGroupName: 'jumping',
       runningAnimationGroupName: 'running',
     },
   });
@@ -52,7 +52,7 @@ export default function Page() {
       if (!isUpPress && isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving('Down+Left', isShiftPress);
       if (!isUpPress && isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving('Down+Right', isShiftPress);
       if (!isUpPress && !isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving(undefined);
-      if (isJumpPress) babylonCharacterController.setCharacterJumping(500, 850);
+      if (isJumpPress) babylonCharacterController.setCharacterJumping(300, 500);
     },
   });
 
@@ -161,7 +161,7 @@ export default function Page() {
       characterSize: { x: 0.5, y: 1, z: 0.5 },
       glbFileUrl: {
         baseUrl: '/models/',
-        filename: 'untitled.glb',
+        filename: 'casual-lowpoly-male.glb',
       },
     });
   }
@@ -227,7 +227,7 @@ export default function Page() {
       <div className="fixed bottom-10 left-10 z-10">
         <TouchContainer
           className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
-          onTouchStart={() => { babylonCharacterController.setCharacterJumping(500, 850) }}
+          onTouchStart={() => { babylonCharacterController.setCharacterJumping(300, 500) }}
           />
       </div>
     </>
