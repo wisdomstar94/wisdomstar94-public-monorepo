@@ -8,12 +8,12 @@
     "npm:publish": "npm publish --access=public"
   },
   "peerDependencies": {
-    "@babylonjs/core": "^7.12.0",
+    "@babylonjs/core": "~7.12.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "dependencies": {
-    "@babylonjs/core": "^7.12.0",
+    "@babylonjs/core": "~7.12.0",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
     "react": "^18.3.1",
