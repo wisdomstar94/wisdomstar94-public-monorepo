@@ -23,7 +23,16 @@ export default function Page() {
   const babylonCharacterController = useBabylonCharacterController({
     debugOptions: {
       isShowCharacterParentBoxMesh: false,
-    }
+    },
+    onLoaded(info) {
+      console.log('info.characterAnimationGroups', info.characterAnimationGroups);
+    },
+    animationGroupNames: {
+      idleAnimationGroupName: 'idle',
+      walkingAnimationGroupName: 'walking',
+      jumpingAnimationGroupName: 'jump',
+      runningAnimationGroupName: 'running',
+    },
   });
 
   useKeyboardManager({

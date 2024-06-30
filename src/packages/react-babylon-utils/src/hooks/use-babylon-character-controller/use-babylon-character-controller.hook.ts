@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
 import { AbstractMesh, AnimationGroup, AnimationPropertiesOverride, ArcRotateCamera, ISceneLoaderAsyncResult, Matrix, Mesh, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeCylinder, Quaternion, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
@@ -6,7 +6,10 @@ import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-ani
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
   const {
     debugOptions,
+    animationGroupNames,
+    onLoaded,
   } = props;
+
   const [inited, setInited] = useState(false);
 
   const cameraRef = useRef<ArcRotateCamera>();
@@ -17,11 +20,14 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
   const characterAnimationGroupsRef = useRef<Map<string, AnimationGroup>>(new Map());
   const characterBoxRef = useRef<Mesh>();
   const characterBoxPhysicsBodyRef = useRef<PhysicsBody>();
+
   const directionRef = useRef<IUseBabylonCharacterController.CharacterGoDirection>();
   const jumpingDelay = useRef(500);
   const jumpingDuration = useRef(850);
   const isJumpingRef = useRef(false);
   const isRunningRef = useRef(false);
+
+  const jumpingInterval = useRef<NodeJS.Timeout>();
 
   function init(params: IUseBabylonCharacterController.InitRequireInfo) {
     const {
@@ -181,10 +187,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       const angle90 = angle180 / 2;
       const angle135 = angle45 + angle90;
 
-      const walkingAnim = characterAnimationGroupsRef.current.get('walking');
-      const idleAnim = characterAnimationGroupsRef.current.get('idle');
-      const jumpAnim = characterAnimationGroupsRef.current.get('jump');
-      const runningAnim = characterAnimationGroupsRef.current.get('running');
+      const walkingAnim = characterAnimationGroupsRef.current.get(animationGroupNames?.walkingAnimationGroupName ?? '');
+      const idleAnim = characterAnimationGroupsRef.current.get(animationGroupNames?.idleAnimationGroupName ?? '');
+      const jumpAnim = characterAnimationGroupsRef.current.get(animationGroupNames?.jumpingAnimationGroupName ?? '');
+      const runningAnim = characterAnimationGroupsRef.current.get(animationGroupNames?.runningAnimationGroupName ?? '');
 
       // ⬆
       if (directionRef.current === 'Up') {
@@ -267,29 +273,25 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         characterBoxPhysicsBody.setLinearVelocity(new Vector3(0, currentVelocity.y, 0));
       }
       if (isJumpingRef.current) {
-        if (characterBox.state !== 'jumping') {
-          characterBox.state = 'jumping';
+        if (jumpingInterval.current === undefined) {
           // 점프 코드 작성..
           idleAnim?.stop();
           jumpAnim?.start(false);
 
           const currentVelocity = characterBoxPhysicsBody.getLinearVelocity();
-          setTimeout(() => {
-            // console.log('jump start!');
-            // animatingRef.current = false;
+          jumpingInterval.current = setTimeout(() => {
             characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 9, moveDirection.z * 3));
             setTimeout(() => {
-              // console.log('jump end!', { keydown });
-              characterBox.state = '';
               isJumpingRef.current = false;
               jumpAnim?.stop();
               idleAnim?.start(true);
+              clearTimeout(jumpingInterval.current);
+              jumpingInterval.current = undefined;
             }, jumpingDuration.current);
           }, jumpingDelay.current);
         }
       }
-      // console.log('@characterBox.state', characterBox.state);
-      if (characterBox.state !== 'jumping') {
+      if (jumpingInterval.current === undefined) {
         // console.log('keydown', keydown);
         if (keydown) {
           // console.log('keydown...', animating);
@@ -320,6 +322,35 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       }
     },
   });
+
+  useEffect(() => {
+    if (!inited) return;
+
+    const characterLoaderResult = characterLoaderResultRef.current;
+    if (characterLoaderResult === undefined) throw new Error(`캐릭터가 정상적으로 로드되지 않았습니다.`);
+
+    const characterMeshes = characterMeshesRef.current;
+    if (characterMeshes === undefined) throw new Error(`캐릭터 메쉬가 정상적으로 로드되지 않았습니다.`);
+
+    const characterAnimationGroups = characterAnimationGroupsRef.current;
+    if (characterAnimationGroups === undefined) throw new Error(`캐릭터 애니메이션 그룹이 정상적으로 로드되지 않았습니다.`);
+
+    const characterBox = characterBoxRef.current;
+    if (characterBox === undefined) throw new Error(`캐릭터 박스 메쉬가 정상적으로 로드되지 않았습니다.`);
+
+    const characterBoxPhysicsBody = characterBoxPhysicsBodyRef.current;
+    if (characterBoxPhysicsBody === undefined) throw new Error(`캐릭터 물리 가상 박스가 정상적으로 로드되지 않았습니다.`);
+
+    if (typeof onLoaded === 'function') {
+      onLoaded({
+        characterLoaderResult,
+        characterMeshes,
+        characterAnimationGroups,
+        characterBox,
+        characterBoxPhysicsBody,
+      });
+    }
+  }, [inited]);
 
   return {
     init,

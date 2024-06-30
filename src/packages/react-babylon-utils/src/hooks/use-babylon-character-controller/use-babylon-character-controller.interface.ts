@@ -1,4 +1,4 @@
-import { ArcRotateCamera, Scene } from "@babylonjs/core";
+import { AbstractMesh, AnimationGroup, ArcRotateCamera, ISceneLoaderAsyncResult, Mesh, PhysicsBody, Scene } from "@babylonjs/core";
 
 export declare namespace IUseBabylonCharacterController {
   export type CharacterGoDirection = 
@@ -35,7 +35,24 @@ export declare namespace IUseBabylonCharacterController {
     isShowCharacterParentBoxMesh?: boolean;
   }
 
+  export interface AnimationGroupNames {
+    idleAnimationGroupName?: string;
+    walkingAnimationGroupName?: string;
+    runningAnimationGroupName?: string;
+    jumpingAnimationGroupName?: string;
+  }
+
+  export interface OnLoadedInfo {
+    characterLoaderResult: ISceneLoaderAsyncResult;
+    characterMeshes: AbstractMesh[];
+    characterAnimationGroups: Map<string, AnimationGroup>;
+    characterBox: Mesh;
+    characterBoxPhysicsBody: PhysicsBody;
+  }
+
   export interface Props {
+    animationGroupNames?: AnimationGroupNames;
     debugOptions?: DebugOptions;
+    onLoaded?: (info: OnLoadedInfo) => void;
   }
 }
