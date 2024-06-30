@@ -1,4 +1,4 @@
-import { AbstractEngine, Engine, Scene, WebGPUEngine } from "@babylonjs/core";
+import { AbstractEngine, AxesViewer, Engine, Scene, WebGPUEngine } from "@babylonjs/core";
 
 export declare namespace IBabylonCanvas {
   export interface Engines {
@@ -11,10 +11,18 @@ export declare namespace IBabylonCanvas {
     engines: Engines;
     scene: Scene;
     canvas: HTMLCanvasElement;
+    axesViewer?: AxesViewer;
+  }
+
+  export interface ApplyAxesViewer {
+    enable: boolean;
+    scaleSize: number;
+    lineThicknessSize?: number;
   }
 
   export interface Props {
     isDisableWebGPU?: boolean;
+    applyAxesViewer?: ApplyAxesViewer;
     onReady?: (initInfo: InitInfo) => void;
   }
 }

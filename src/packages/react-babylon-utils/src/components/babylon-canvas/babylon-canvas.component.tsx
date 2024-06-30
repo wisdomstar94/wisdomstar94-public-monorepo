@@ -1,10 +1,11 @@
 import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
 import { IBabylonCanvas } from "./babylon-canvas.interface";
 import { useEffect, useRef, useState } from "react";
-import { Engine, Scene, WebGPUEngine } from "@babylonjs/core";
+import { AxesViewer, Engine, Scene, WebGPUEngine } from "@babylonjs/core";
 
 export function BabylonCanvas(props: IBabylonCanvas.Props) {
   const {
+    applyAxesViewer,
     onReady,
   } = props;
   const isDisableWebGPU = props.isDisableWebGPU ?? false;
@@ -21,11 +22,18 @@ export function BabylonCanvas(props: IBabylonCanvas.Props) {
 
     if (typeof onReady === 'function') {
       const scene = new Scene(engines.engine);
+
+      let axesViewer: AxesViewer | undefined;
+      if (applyAxesViewer?.enable === true) {
+        axesViewer = new AxesViewer(scene, applyAxesViewer.scaleSize, undefined, undefined, undefined, undefined, applyAxesViewer.lineThicknessSize ?? 0.1);
+      }
+
       sceneRef.current = scene;
       onReady({
         engines,
         scene,
         canvas: canvasRef.current,
+        axesViewer,
       });
     }
     setIsReadyed(true);

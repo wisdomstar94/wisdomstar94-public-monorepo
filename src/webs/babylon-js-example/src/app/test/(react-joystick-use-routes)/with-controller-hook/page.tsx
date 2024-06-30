@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Scene } from "@babylonjs/core/scene";
 import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { ActionManager, ArcRotateCamera, AxesViewer, GroundMesh, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox } from "@babylonjs/core";
+import { ActionManager, ArcRotateCamera, GroundMesh, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import HavokPhysics from "@babylonjs/havok";
 import { Joystick } from "@wisdomstar94/react-joystick";
@@ -59,8 +59,6 @@ export default function Page() {
 
     sceneRef.current = scene;
     scene.actionManager = new ActionManager(scene);
-
-    new AxesViewer(scene);
 
     const gravityVector = new Vector3(0, -11.81, 0);
     const havokInstance = await HavokPhysics();
@@ -138,7 +136,14 @@ export default function Page() {
   return (
     <>
       <div className="w-full h-full bg-blue-200 fixed top-0 left-0">
-        <BabylonCanvas onReady={onReady} />
+        <BabylonCanvas 
+          applyAxesViewer={{
+            enable: true,
+            scaleSize: 10,
+            lineThicknessSize: 0.2,
+          }}
+          onReady={onReady} 
+          />
       </div>
       <div className="w-[200px] h-[500px] hidden flex-wrap items-start content-start gap-2 fixed top-[100px] right-[20px] bg-slate-700/50">
         <div className="w-full">
