@@ -22,7 +22,7 @@ export default function Page() {
 
   const babylonCharacterController = useBabylonCharacterController({
     debugOptions: {
-      isShowCharacterParentBoxMesh: true,
+      isShowCharacterParentBoxMesh: false,
     }
   });
 
@@ -53,6 +53,7 @@ export default function Page() {
       engines, 
       scene,
       canvas,
+      axesViewer,
     } = initInfo;
 
     const engine = engines.engine;
@@ -110,10 +111,6 @@ export default function Page() {
         baseUrl: '/models/',
         filename: 'untitled.glb',
       },
-    });
-
-    engine.runRenderLoop(() => {
-      scene.render();
     });
   }
 

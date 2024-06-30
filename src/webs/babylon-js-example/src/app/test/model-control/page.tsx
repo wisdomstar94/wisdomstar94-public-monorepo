@@ -287,10 +287,6 @@ export default function Page() {
         }
       });
     });
-
-    engine.runRenderLoop(() => {
-      scene.render();
-    });
   }
 
   return (

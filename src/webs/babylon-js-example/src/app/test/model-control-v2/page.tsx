@@ -316,10 +316,6 @@ export default function Page() {
         characterAnimationGroupsRef.current.set(item.name, item);
       });
     });
-
-    engine.runRenderLoop(() => {
-      scene.render();
-    });
   }
 
   return (

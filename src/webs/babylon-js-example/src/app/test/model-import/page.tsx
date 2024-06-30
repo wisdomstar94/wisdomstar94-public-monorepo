@@ -38,10 +38,6 @@ export default function Page() {
         x.position.z = 0;
       });
     });
-
-    engine.runRenderLoop(() => {
-      scene.render();
-    });
   }
 
   useEffect(() => {

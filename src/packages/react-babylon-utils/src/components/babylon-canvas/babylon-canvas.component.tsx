@@ -39,6 +39,22 @@ export function BabylonCanvas(props: IBabylonCanvas.Props) {
     setIsReadyed(true);
   }
 
+  useEffect(() => {
+    if (isReadyed !== true) return;
+
+    enginesRef.current?.engine.runRenderLoop(() => {
+      if ((sceneRef.current?.cameras.length ?? 0) >= 1) {
+        sceneRef.current?.render();
+      }
+    });
+
+    return () => {
+      console.log('scene, engine disposed! (from. BabylonCanvas Component)');
+      sceneRef.current?.dispose();
+      enginesRef.current?.engine.dispose();
+    };
+  }, [isReadyed]);
+
   useAddEventListener({
     windowEventRequiredInfo: {
       eventName: 'resize',
@@ -84,11 +100,6 @@ export function BabylonCanvas(props: IBabylonCanvas.Props) {
         }
       });
     }
-
-    return () => {
-      sceneRef.current?.dispose();
-      enginesRef.current?.engine.dispose();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
 

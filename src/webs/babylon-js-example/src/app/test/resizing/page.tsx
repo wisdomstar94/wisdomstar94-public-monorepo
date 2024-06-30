@@ -57,10 +57,6 @@ export default function Page() {
         x.rotate(new Vector3(0, 0, 0), 10);
       });
     });
-
-    engine.runRenderLoop(() => {
-      scene.render();
-    });
   }
 
   return (
