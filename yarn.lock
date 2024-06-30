@@ -1292,6 +1292,7 @@ __metadata:
     "@wisdomstar94/react-joystick": "workspace:^"
     "@wisdomstar94/react-keyboard-manager": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
+    "@wisdomstar94/react-touch-container": "workspace:^"
     animejs: "npm:^3.2.2"
     babylonjs-gltf2interface: "npm:^7.13.1"
     eslint: "npm:^8"

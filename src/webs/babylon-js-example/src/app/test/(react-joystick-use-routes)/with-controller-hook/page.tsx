@@ -10,6 +10,7 @@ import HavokPhysics from "@babylonjs/havok";
 import { Joystick } from "@wisdomstar94/react-joystick";
 import { BabylonCanvas, IBabylonCanvas, useBabylonCharacterController } from "@wisdomstar94/react-babylon-utils";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
+import { TouchContainer } from "@wisdomstar94/react-touch-container";
 
 export default function Page() {
   const sceneRef = useRef<Scene>();
@@ -165,11 +166,10 @@ export default function Page() {
           />
       </div>
       <div className="fixed bottom-10 left-10 z-10">
-        <div 
+        <TouchContainer
           className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
-          onClick={() => { babylonCharacterController.setCharacterJumping(500, 850) }}
-          >
-        </div>
+          onTouchStart={() => { babylonCharacterController.setCharacterJumping(500, 850) }}
+          />
       </div>
     </>
   );
