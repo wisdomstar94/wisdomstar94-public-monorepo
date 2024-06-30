@@ -80,6 +80,7 @@ export default function Page() {
     const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, Vector3.Zero(), scene);
     // camera.attachControl(canvas, true);
 
+    // 바닥 셋팅
     babylonMeshPhysicsManager.injectObject({
       manageName: 'ground',
       mesh: (params) => {
@@ -103,6 +104,7 @@ export default function Page() {
       },
     });
 
+    // 가운데 고정 박스 셋팅
     babylonMeshPhysicsManager.injectObject({
       manageName: 'center-box',
       mesh: (params) => {
@@ -127,6 +129,7 @@ export default function Page() {
       },
     });
 
+    // 왼쪽 벽 셋팅
     babylonMeshPhysicsManager.injectObject({
       manageName: 'left-wall',
       mesh: (params) => {
@@ -152,6 +155,7 @@ export default function Page() {
       },
     });
 
+    // 캐릭터 셋팅
     babylonCharacterController.init({
       camera,
       scene,
