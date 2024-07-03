@@ -27,7 +27,9 @@ export default function Page() {
     onAdded(characterItem) {
       console.log('characterItem', characterItem);  
       if (characterItem.characterId === 'other') {
-        babylonCharacterController.setCharacterMoving({ characterId: 'other', direction: 'Up', cameraDirection: { x: 1.7253501797, y: -0.485642946360, z: 0.8741572676 } });
+        setTimeout(() => {
+          babylonCharacterController.setCharacterMoving({ characterId: 'other', direction: 'Up', cameraDirection: { x: 1.7253501797, y: -0.485642946360, z: 0.8741572676 } });
+        }, 3000);          
       }
     },
     animationGroupNames: {

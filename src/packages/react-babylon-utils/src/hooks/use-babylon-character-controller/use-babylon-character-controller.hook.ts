@@ -10,6 +10,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     onAdded,
   } = props;
 
+  const firstQuaternionWithCameraRef = useRef<Quaternion>();
   const charactersRef = useRef<Map<string, IUseBabylonCharacterController.CharacterItem>>(new Map());
 
   function add(params: IUseBabylonCharacterController.InitRequireInfo) {
@@ -96,6 +97,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         const rot = Quaternion.FromLookDirectionLH(forward, Vector3.Up());
         const euler = rot.toEulerAngles();
         quaternion = euler.toQuaternion();
+        firstQuaternionWithCameraRef.current = quaternion;
       }
 
       characterMeshes.forEach(mesh => {
@@ -105,6 +107,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         mesh.scaling.scaleInPlace(0.01);
         if (quaternion !== undefined) {
           mesh.rotationQuaternion = quaternion;
+        } else if (firstQuaternionWithCameraRef.current !== undefined) {
+          mesh.rotationQuaternion = firstQuaternionWithCameraRef.current.clone();
         } else {
           mesh.rotationQuaternion = Quaternion.Identity();
         }
