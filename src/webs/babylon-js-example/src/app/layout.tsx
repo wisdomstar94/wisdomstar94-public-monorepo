@@ -12,17 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const menus: ICommonRootLayout.MenuItem[] = [
-    { name: 'test/basic', href: '/test/basic' },
-    { name: 'test/model-import', href: '/test/model-import' },
-    { name: 'test/webgpu', href: '/test/webgpu' },
-    { name: 'test/resizing', href: '/test/resizing' },
-    { name: 'test/model-control', href: '/test/model-control' },
-    { name: 'test/model-control-v2', href: '/test/model-control-v2' },
-    { name: 'test/model-control-v3', href: '/test/model-control-v3' },
-    { name: 'test/model-control-v4', href: '/test/model-control-v4' },
-    { name: 'test/realtime-mesh-scale-change', href: '/test/realtime-mesh-scale-change' },
-    { name: 'test/with-controller-hook', href: '/test/with-controller-hook' },
-    { name: 'test/shadow-light-test', href: '/test/shadow-light-test' },
+    { name: 'test/other-character-add', href: '/test/other-character-add' },
   ];
 
   return (

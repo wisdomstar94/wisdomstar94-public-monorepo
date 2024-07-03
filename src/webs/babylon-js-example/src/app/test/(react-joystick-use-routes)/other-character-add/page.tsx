@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Scene } from "@babylonjs/core/scene";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
@@ -13,6 +13,7 @@ import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 import { TouchContainer } from "@wisdomstar94/react-touch-container";
 
 export default function Page() {
+  const characterId = useId();
   const sceneRef = useRef<Scene>();
   const [groundWidth, setGroundWidth] = useState(40);
   const [groundHeight, setGroundHeight] = useState(40);
@@ -23,8 +24,11 @@ export default function Page() {
     debugOptions: {
       isShowCharacterParentBoxMesh: false,
     },
-    onLoaded(info) {
-      console.log('info.characterAnimationGroups', info.characterAnimationGroups);
+    onAdded(characterItem) {
+      console.log('characterItem', characterItem);  
+      if (characterItem.characterId === 'other') {
+        babylonCharacterController.setCharacterMoving({ characterId: 'other', direction: 'Up', cameraDirection: { x: 1.7253501797, y: -0.485642946360, z: 0.8741572676 } });
+      }
     },
     animationGroupNames: {
       idleAnimationGroupName: 'idle',
@@ -43,18 +47,47 @@ export default function Page() {
       const isRightPress = keyMap.get('ArrowRight');
       const isShiftPress = keyMap.get('Shift');
       const isJumpPress = keyMap.get(' ');
-      if (isUpPress && !isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving('Up', isShiftPress);
-      if (!isUpPress && isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving('Down', isShiftPress);
-      if (!isUpPress && !isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving('Left', isShiftPress);
-      if (!isUpPress && !isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving('Right', isShiftPress);
-      if (isUpPress && !isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving('Up+Left', isShiftPress);
-      if (isUpPress && !isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving('Up+Right', isShiftPress);
-      if (!isUpPress && isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving('Down+Left', isShiftPress);
-      if (!isUpPress && isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving('Down+Right', isShiftPress);
-      if (!isUpPress && !isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving(undefined);
-      if (isJumpPress) babylonCharacterController.setCharacterJumping(300, 500);
+      if (isUpPress && !isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up', isRunning: isShiftPress });
+      if (!isUpPress && isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down', isRunning: isShiftPress });
+      if (!isUpPress && !isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Left', isRunning: isShiftPress });
+      if (!isUpPress && !isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Right', isRunning: isShiftPress });
+      if (isUpPress && !isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Left', isRunning: isShiftPress });
+      if (isUpPress && !isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Right', isRunning: isShiftPress });
+      if (!isUpPress && isDownPress && isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Left', isRunning: isShiftPress });
+      if (!isUpPress && isDownPress && !isLeftPress && isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Right', isRunning: isShiftPress });
+      if (!isUpPress && !isDownPress && !isLeftPress && !isRightPress) babylonCharacterController.setCharacterMoving({ characterId, direction: undefined });
+      if (isJumpPress) babylonCharacterController.setCharacterJumping(characterId);
     },
   });
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      babylonCharacterController.add({
+        scene: sceneRef.current!,
+        characterInitPosition: { x: 5, y: 1, z: 0 },
+        characterSize: { x: 0.5, y: 1.5, z: 0.5 },
+        characterId: 'other',
+        characterAnimationGroupNames: {
+          idleAnimationGroupName: 'idle',
+          walkingAnimationGroupName: 'walking',
+          jumpingAnimationGroupName: 'jumping',
+          runningAnimationGroupName: 'running',
+        },
+        characterJumpingDelay: 300,
+        characterJumpingDuration: 500,
+        glbFileUrl: {
+          baseUrl: '/models/',
+          filename: 'casual-lowpoly-male.glb',
+        },
+      });
+      
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function onReady(initInfo: IBabylonCanvas.InitInfo) {
     const {
@@ -154,11 +187,20 @@ export default function Page() {
     });
 
     // 캐릭터 셋팅
-    babylonCharacterController.init({
+    babylonCharacterController.add({
       camera,
       scene,
       characterInitPosition: { x: 5, y: 1, z: 0 },
-      characterSize: { x: 0.5, y: 1, z: 0.5 },
+      characterSize: { x: 0.5, y: 1.5, z: 0.5 },
+      characterId,
+      characterAnimationGroupNames: {
+        idleAnimationGroupName: 'idle',
+        walkingAnimationGroupName: 'walking',
+        jumpingAnimationGroupName: 'jumping',
+        runningAnimationGroupName: 'running',
+      },
+      characterJumpingDelay: 300,
+      characterJumpingDuration: 500,
       glbFileUrl: {
         baseUrl: '/models/',
         filename: 'casual-lowpoly-male.glb',
@@ -210,24 +252,24 @@ export default function Page() {
       <div className="fixed bottom-10 right-10 z-10">
         <Joystick
           onPressed={(keys, isStrenth) => {
-            if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving('Up', isStrenth); } // ⬆
-            if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving('Down', isStrenth); } // ⬇
-            if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { babylonCharacterController.setCharacterMoving('Left', isStrenth); } // ⬅
-            if (keys.includes('ArrowRight') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { babylonCharacterController.setCharacterMoving('Right', isStrenth); } // ⮕
-            if (keys.includes('ArrowUp') && keys.includes('ArrowLeft')) { babylonCharacterController.setCharacterMoving('Up+Left', isStrenth); } // ⬅ + ⬆
-            if (keys.includes('ArrowUp') && keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving('Up+Right', isStrenth); } // ⬆ + ⮕
-            if (keys.includes('ArrowDown') && keys.includes('ArrowLeft')) { babylonCharacterController.setCharacterMoving('Down+Left', isStrenth); } // ⬅ + ⬇
-            if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving('Down+Right', isStrenth); } // ⬇ + ⮕
+            if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up', isRunning: isStrenth }); } // ⬆
+            if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down', isRunning: isStrenth }); } // ⬇
+            if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Left', isRunning: isStrenth }); } // ⬅
+            if (keys.includes('ArrowRight') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Right', isRunning: isStrenth }); } // ⮕
+            if (keys.includes('ArrowUp') && keys.includes('ArrowLeft')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Left', isRunning: isStrenth }); } // ⬅ + ⬆
+            if (keys.includes('ArrowUp') && keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Right', isRunning: isStrenth }); } // ⬆ + ⮕
+            if (keys.includes('ArrowDown') && keys.includes('ArrowLeft')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Left', isRunning: isStrenth }); } // ⬅ + ⬇
+            if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Right', isRunning: isStrenth }); } // ⬇ + ⮕
           }}
           onPressOut={() => {
-            babylonCharacterController.setCharacterMoving(undefined);
+            babylonCharacterController.setCharacterMoving({ characterId, direction: undefined });
           }}
           />
       </div>
       <div className="fixed bottom-10 left-10 z-10">
         <TouchContainer
           className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
-          onTouchStart={() => { babylonCharacterController.setCharacterJumping(300, 500) }}
+          onTouchStart={() => { babylonCharacterController.setCharacterJumping(characterId) }}
           />
       </div>
     </>

@@ -17,18 +17,22 @@ export declare namespace IUseBabylonCharacterController {
     filename: string;
   }
 
-  export interface Vector3 {
+  export interface VectorThree {
     x: number;
     y: number;
     z: number;
   }
 
   export interface InitRequireInfo {
-    camera: ArcRotateCamera;
+    camera?: ArcRotateCamera;
+    characterId: string;
     scene: Scene;
     glbFileUrl: GlbFileUrl;
-    characterSize: Vector3;
-    characterInitPosition: Vector3;
+    characterSize: VectorThree;
+    characterInitPosition: VectorThree;
+    characterJumpingDelay: number;
+    characterJumpingDuration: number;
+    characterAnimationGroupNames: AnimationGroupNames;
   }
 
   export interface DebugOptions {
@@ -50,9 +54,35 @@ export declare namespace IUseBabylonCharacterController {
     characterBoxPhysicsBody: PhysicsBody;
   }
 
+  export interface CharacterItem {
+    characterId: string;
+    camera?: ArcRotateCamera;
+    scene: Scene;
+    characterLoaderResult: ISceneLoaderAsyncResult;
+    characterMeshes: AbstractMesh[];
+    characterAnimationGroups: Map<string, AnimationGroup>;
+    characterAnimationGroupNames: AnimationGroupNames;
+    characterBox: Mesh;
+    characterBoxPhysicsBody: PhysicsBody;
+    cameraDirection?: VectorThree;
+    direction: IUseBabylonCharacterController.CharacterGoDirection | undefined;
+    jumpingDelay: number;
+    jumpingDuration: number;
+    isJumping: boolean;
+    isRunning: boolean;
+    jumpingInterval: NodeJS.Timeout | undefined;
+  }
+
+  export interface CharacterMovingOptions {
+    characterId: string;
+    direction: IUseBabylonCharacterController.CharacterGoDirection | undefined; 
+    cameraDirection?: VectorThree;
+    isRunning?: boolean;
+  }
+
   export interface Props {
     animationGroupNames?: AnimationGroupNames;
     debugOptions?: DebugOptions;
-    onLoaded?: (info: OnLoadedInfo) => void;
+    onAdded?: (characterItem: CharacterItem) => void;
   }
 }
