@@ -28,6 +28,11 @@ export default function RootLayout({
     { name: "/test/space-wrap", href: "/test/space-wrap" },
     { name: "/test/space-align", href: "/test/space-align" },
     { name: "/test/space-split", href: "/test/space-split" },
+    { name: "/test/anchor", href: "/test/anchor" },
+    { name: "/test/anchor-horizontal", href: "/test/anchor-horizontal" },
+    { name: "/test/anchor-static", href: "/test/anchor-static" },
+    { name: "/test/anchor-selected-keep", href: "/test/anchor-selected-keep" },
+    
   ];
 
   return (
