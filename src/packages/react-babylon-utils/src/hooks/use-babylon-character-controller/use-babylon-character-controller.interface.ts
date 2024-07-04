@@ -64,6 +64,8 @@ export declare namespace IUseBabylonCharacterController {
     characterAnimationGroupNames: AnimationGroupNames;
     characterBox: Mesh;
     characterBoxPhysicsBody: PhysicsBody;
+    characterSize: VectorThree;
+    glbFileUrl: GlbFileUrl;
     cameraDirection?: VectorThree;
     direction: IUseBabylonCharacterController.CharacterGoDirection | undefined;
     jumpingDelay: number;

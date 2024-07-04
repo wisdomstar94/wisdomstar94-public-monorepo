@@ -1,6 +1,6 @@
 {
-  "name": "@wisdomstar94/react-babylon-utils",
-  "version": "0.0.5",
+  "name": "@wisdomstar94/react-socketio-manager",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",
@@ -8,16 +8,14 @@
     "npm:publish": "npm publish --access=public"
   },
   "peerDependencies": {
-    "@babylonjs/core": "~7.12.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "socket.io-client": "^4.7.5"
   },
   "dependencies": {
-    "@babylonjs/core": "~7.12.0",
-    "@wisdomstar94/react-add-event-listener": "workspace:^",
-    "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@types/node": "^20.14.2",

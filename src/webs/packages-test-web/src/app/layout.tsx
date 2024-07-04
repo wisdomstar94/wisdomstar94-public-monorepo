@@ -20,6 +20,7 @@ export default function RootLayout({
     { name: 'test/react-joystick', href: '/test/react-joystick' },
     { name: 'test/react-keyboard-manager', href: '/test/react-keyboard-manager' },
     { name: 'test/react-touch-container', href: '/test/react-touch-container' },
+    { name: 'test/react-socketio-manager', href: '/test/react-socketio-manager' },
   ];
 
   return (

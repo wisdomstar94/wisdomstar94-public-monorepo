@@ -26,6 +26,12 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       characterAnimationGroupNames,
     } = params;
 
+    const t = charactersRef.current.get(characterId);
+    if (t !== undefined) {
+      console.warn('이미 해당 캐릭터는 존재합니다.');
+      return;
+    }
+
     // 캐릭터와 맵핑할 메쉬
 
     // 캐릭터와 맵핑할 메쉬 :: 눈에 보여지는 부분
@@ -128,6 +134,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         characterAnimationGroupNames,
         characterBox,
         characterBoxPhysicsBody,
+        characterSize,
+        glbFileUrl,
         direction: undefined,
         jumpingDelay: characterJumpingDelay,
         jumpingDuration: characterJumpingDuration,
@@ -154,6 +162,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     targetCharacter.characterBox.position.x = position.x;
     targetCharacter.characterBox.position.y = position.y;
     targetCharacter.characterBox.position.z = position.z;
+
+    targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
   }
 
   function setCharacterMoving(options: IUseBabylonCharacterController.CharacterMovingOptions) {
@@ -192,6 +202,14 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     }
   }
 
+  function getCharactersMap() {
+    return charactersRef.current;
+  }
+
+  function getCharacter(characterId: string) {
+    return charactersRef.current.get(characterId);
+  }
+
   useRequestAnimationFrameManager({
     isAutoStart: true,
     callback(startedTimestamp, currentTimestamp, step) {
@@ -206,7 +224,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           }
         }
 
-        console.log(`[${characterId}] cameraDirection`, cameraDirection);
+        // console.log(`[${characterId}] cameraDirection`, cameraDirection);
         // const { direction } = camera.getForwardRay();
         
         // const forward = camera.getDirection(new Vector3(0, 0, 1)).normalize();
@@ -365,5 +383,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     setCharacterPosition,
     setCharacterMoving,
     setCharacterJumping,
+    getCharactersMap,
+    getCharacter,
   };
 }

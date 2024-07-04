@@ -1,0 +1,12 @@
+{
+  "extends": "@wisdomstar94/tsconfig-lib/src/tsconfig.backend.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "#IUseBabylonCharacterController": ["../../packages/react-babylon-utils/src/hooks/use-babylon-character-controller/use-babylon-character-controller.interface"]
+    },
+    "types": []
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "../../packages/react-babylon-utils/src/hooks/use-babylon-character-controller/use-babylon-character-controller.interface"],
+  "exclude": ["node_modules"]
+}
