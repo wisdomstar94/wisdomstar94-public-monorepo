@@ -21,6 +21,7 @@ export default function RootLayout({
     { name: "/test/grid-pull-push", href: "/test/grid-pull-push" },
     { name: "/test/grid-order", href: "/test/grid-order" },
     { name: "/test/grid-flex", href: "/test/grid-flex" },
+    { name: "/test/grid-fix-and-auto", href: "/test/grid-fix-and-auto" },
   ];
 
   return (
