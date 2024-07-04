@@ -19,6 +19,7 @@ export default function RootLayout({
     { name: "/test/grid-responsive", href: "/test/grid-responsive" },
     { name: "/test/grid-offset", href: "/test/grid-offset" },
     { name: "/test/grid-pull-push", href: "/test/grid-pull-push" },
+    { name: "/test/grid-order", href: "/test/grid-order" },
   ];
 
   return (
