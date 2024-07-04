@@ -174,9 +174,9 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       return;
     }
 
-    targetCharacter.characterBox.position.x = position.x;
-    targetCharacter.characterBox.position.y = position.y;
-    targetCharacter.characterBox.position.z = position.z;
+    // targetCharacter.characterBox.position.x = position.x;
+    // targetCharacter.characterBox.position.y = position.y;
+    // targetCharacter.characterBox.position.z = position.z;
 
     targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
   }

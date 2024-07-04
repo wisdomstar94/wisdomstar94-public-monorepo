@@ -146,7 +146,7 @@ export default function Page() {
           position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
         });
       }
-    }, 500);
+    }, 300);
     
     return () => {
       clearInterval(timer);
