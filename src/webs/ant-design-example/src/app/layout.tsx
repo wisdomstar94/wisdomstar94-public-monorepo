@@ -1,9 +1,10 @@
 import "./globals.css";
 import { CommonRootLayout, ICommonRootLayout } from "#packages-common-lib";
 import { Metadata } from "next";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 export const metadata: Metadata = {
-  title: "babylon-js-example",
+  title: "ant-design-example",
 };
 
 export default function RootLayout({
@@ -15,5 +16,11 @@ export default function RootLayout({
     { name: "test/grid", href: "/test/grid" },
   ];
 
-  return <CommonRootLayout menus={menus}>{children}</CommonRootLayout>;
+  return (
+    <AntdRegistry>
+      <CommonRootLayout menus={menus}>
+        { children }
+      </CommonRootLayout>
+    </AntdRegistry>
+  );
 }
