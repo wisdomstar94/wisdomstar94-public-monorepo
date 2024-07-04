@@ -16,6 +16,7 @@ export default function RootLayout({
 }>) {
   const menus: ICommonRootLayout.MenuItem[] = [
     { name: "/test/grid", href: "/test/grid" },
+    { name: "/test/grid-responsive", href: "/test/grid-responsive" },
   ];
 
   return (
