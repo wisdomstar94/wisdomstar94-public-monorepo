@@ -32,6 +32,7 @@ export default function RootLayout({
     { name: "/test/anchor-horizontal", href: "/test/anchor-horizontal" },
     { name: "/test/anchor-static", href: "/test/anchor-static" },
     { name: "/test/anchor-selected-keep", href: "/test/anchor-selected-keep" },
+    { name: "/test/breadcrumb", href: "/test/breadcrumb" },
     
   ];
 
