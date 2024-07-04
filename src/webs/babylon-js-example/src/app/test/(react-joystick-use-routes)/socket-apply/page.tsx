@@ -43,7 +43,7 @@ export default function Page() {
         socketioManager.emit('meConnect', data);
       }
 
-      console.log('characterItem', characterItem);  
+      // console.log('characterItem', characterItem);  
       // if (characterItem.characterId === 'other') {
       //   setTimeout(() => {
       //     babylonCharacterController.setCharacterMoving({ characterId: 'other', direction: 'Up', cameraDirection: { x: 1.7253501797, y: -0.485642946360, z: 0.8741572676 } });
@@ -66,7 +66,7 @@ export default function Page() {
       {
         eventName: 'otherUserConnect', 
         callback(data: IUseBabylonCharacterController.InitRequireInfo) {
-          console.log('@otherUserConnect', data);
+          // console.log('@otherUserConnect', data);
 
           if (data.characterId === characterId) return;
           // ...
@@ -97,7 +97,7 @@ export default function Page() {
       {
         eventName: 'otherUserConnectPosition',
         callback(data: { characterId: string; position: { x: number; y: number; z: number; } }) {
-          console.log('@otherUserConnectPosition', data);
+          // console.log('@otherUserConnectPosition', data);
           if (data.characterId === characterId) return;
           babylonCharacterController.setCharacterPosition(data.characterId, data.position);
         },
@@ -140,7 +140,7 @@ export default function Page() {
 
   useKeyboardManager({
     onChangeKeyMapStatus(keyMap) {
-      console.log('keyMap', keyMap);
+      // console.log('keyMap', keyMap);
       const isUpPress = keyMap.get('ArrowUp');
       const isDownPress = keyMap.get('ArrowDown');
       const isLeftPress = keyMap.get('ArrowLeft');
