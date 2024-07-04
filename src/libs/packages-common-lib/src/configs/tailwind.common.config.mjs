@@ -1,6 +1,6 @@
 /**
  * 
- * @param {import("tailwindcss").Config | undefined} overrideConfig 
+ * @param {Partial<import("tailwindcss").Config> | undefined} overrideConfig 
  * @returns 
  */
 export function getCommonTailwindConfig(overrideConfig) {
@@ -22,7 +22,8 @@ export function getCommonTailwindConfig(overrideConfig) {
         },
       },
     },
-    plugins: overrideConfig?.plugins ?? [],
+    plugins: overrideConfig?.plugins,
+    corePlugins: overrideConfig?.corePlugins,
   };
   return config;
 }
