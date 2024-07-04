@@ -430,14 +430,6 @@ export default function Page() {
           onReady={onReady} 
           />
       </div>
-      <div className="w-[200px] h-[500px] flex flex-wrap items-start content-start gap-2 fixed top-[100px] right-[20px] bg-slate-700/50">
-        <div className="w-full">
-          ground width : <input type="number" value={groundWidth} onChange={e => setGroundWidth(Number(e.target.value))} />
-        </div>
-        <div className="w-full">
-          ground height : <input type="number" value={groundHeight} onChange={e => setGroundHeight(Number(e.target.value))} />
-        </div>
-      </div>
       <div className="fixed bottom-10 right-10 z-10">
         <Joystick
           onPressed={(keys, isStrenth) => {
