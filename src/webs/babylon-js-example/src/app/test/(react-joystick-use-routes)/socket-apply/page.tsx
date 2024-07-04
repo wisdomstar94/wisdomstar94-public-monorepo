@@ -59,10 +59,16 @@ export default function Page() {
   });
 
   const socketioManager = useSocketioManager({
-    isAutoConnect: true,
+    isAutoConnect: false,
     // socketUrl: 'localhost:3010',
     socketUrl: '192.168.0.4:3010',
     listeners: [
+      {
+        eventName: "connect",
+        callback(data) {
+          
+        },
+      },
       {
         eventName: 'otherUserConnect', 
         callback(data: IUseBabylonCharacterController.InitRequireInfo) {
@@ -88,6 +94,14 @@ export default function Page() {
         },
       },
       {
+        eventName: 'otherUserDisconnect',
+        callback(data) {
+          console.log('@@otherUserDisconnect', data);
+          const { characterId } = data;
+          babylonCharacterController.remove(characterId);
+        },
+      },
+      {
         eventName: 'otherUserCurrent',
         callback(data: IUseBabylonCharacterController.InitRequireInfo) {
           if (data.characterId === characterId) return;
@@ -99,7 +113,9 @@ export default function Page() {
         callback(data: { characterId: string; position: { x: number; y: number; z: number; } }) {
           // console.log('@otherUserConnectPosition', data);
           if (data.characterId === characterId) return;
-          babylonCharacterController.setCharacterPosition(data.characterId, data.position);
+          const c = babylonCharacterController.getCharacter(data.characterId);
+          if (c === undefined) return;
+          babylonCharacterController.setCharacterPosition(data.characterId, { ...data.position, y: c?.characterBox.position.y! });
         },
       },
       {
@@ -285,6 +301,8 @@ export default function Page() {
       canvas,
       axesViewer,
     } = initInfo;
+
+    socketioManager.connect();
 
     sceneRef.current = scene;
     scene.actionManager = new ActionManager(scene);

@@ -13,13 +13,17 @@ export default function(server: http.Server) {
   io.on('connection', socket => {
     console.log('New client connected', socket.id);
 
-    socket.on('disconnect', () => console.log('user disconnect', socket.id));
+    socket.on('disconnect', () => {
+      console.log('user disconnect', socket.id);
+      socket.broadcast.emit("otherUserDisconnect", { characterId: socket.data.characterId });
+    });
 
     socket.on('good', (data: any) => {
       console.log('on.good', data); // 클라이언트 -> 서버
     });
 
     socket.on('meConnect', (data: IUseBabylonCharacterController.InitRequireInfo) => {
+      socket.data = { characterId: data.characterId };
       socket.broadcast.emit('otherUserConnect', data);
     });
     
@@ -28,6 +32,7 @@ export default function(server: http.Server) {
     });
 
     socket.on('meCurrent', (data: IUseBabylonCharacterController.InitRequireInfo) => {
+      socket.data = { characterId: data.characterId };
       socket.broadcast.emit('otherUserCurrent', data);
     });
 

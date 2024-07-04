@@ -152,6 +152,21 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     });
   }
 
+  function remove(characterId: string) {
+    const target = charactersRef.current.get(characterId);
+    if (target === undefined) return;
+
+    target.characterBox.dispose();
+    target.characterBoxPhysicsBody.dispose();
+    target.characterMeshes.forEach(x => x.dispose());
+    target.characterAnimationGroups.forEach(k => k.dispose());
+    target.characterLoaderResult.geometries.forEach(k => k.dispose());
+    target.characterLoaderResult.skeletons.forEach(k => k.dispose());
+    target.characterLoaderResult.transformNodes.forEach(k => k.dispose());
+    target.characterLoaderResult.animationGroups.forEach(k => k.dispose());
+    charactersRef.current.delete(characterId);
+  }
+
   function setCharacterPosition(characterId: string, position: IUseBabylonCharacterController.VectorThree) {
     const targetCharacter = charactersRef.current.get(characterId);
     if (targetCharacter === undefined) {
@@ -380,6 +395,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
   return {
     add,
+    remove,
     setCharacterPosition,
     setCharacterMoving,
     setCharacterJumping,
