@@ -1726,6 +1726,7 @@ __metadata:
   resolution: "@wisdomstar94/public-monorepo@workspace:."
   dependencies:
     concurrently: "npm:^8.2.2"
+    dotenv-mono: "npm:^1.3.14"
     npm-check-updates: "npm:^16.14.20"
   languageName: unknown
   linkType: soft
@@ -3321,6 +3322,34 @@ __metadata:
   dependencies:
     is-obj: "npm:^2.0.0"
   checksum: 10c0/30e51ec6408978a6951b21e7bc4938aad01a86f2fdf779efe52330205c6bb8a8ea12f35925c2029d6dc9d1df22f916f32f828ce1e9b259b1371c580541c22b5a
+  languageName: node
+  linkType: hard
+
+"dotenv-expand@npm:^11.0.6":
+  version: 11.0.6
+  resolution: "dotenv-expand@npm:11.0.6"
+  dependencies:
+    dotenv: "npm:^16.4.4"
+  checksum: 10c0/e22891ec72cb926d46d9a26290ef77f9cc9ddcba92d2f83d5e6f3a803d1590887be68e25b559415d080053000441b6f63f5b36093a565bb8c5c994b992ae49f2
+  languageName: node
+  linkType: hard
+
+"dotenv-mono@npm:^1.3.14":
+  version: 1.3.14
+  resolution: "dotenv-mono@npm:1.3.14"
+  dependencies:
+    dotenv: "npm:^16.4.5"
+    dotenv-expand: "npm:^11.0.6"
+  bin:
+    dotenv: dist/cli.js
+  checksum: 10c0/78a84d003f924a71bd88700ebccbb054fd3921cb3a6cfac1db92043dc1bd911498fcb3641ac3f53cefcbec7728a424929c5f86ff38f336d79be0e6c9510394b7
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.4.4, dotenv@npm:^16.4.5":
+  version: 16.4.5
+  resolution: "dotenv@npm:16.4.5"
+  checksum: 10c0/48d92870076832af0418b13acd6e5a5a3e83bb00df690d9812e94b24aff62b88ade955ac99a05501305b8dc8f1b0ee7638b18493deb6fe93d680e5220936292f
   languageName: node
   linkType: hard
 

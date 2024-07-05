@@ -2,10 +2,12 @@ import http from 'http';
 import { Server } from "socket.io";
 import { IUseBabylonCharacterController } from '#IUseBabylonCharacterController';
 
+const BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN = process.env.BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN ?? '';
+
 export default function(server: http.Server) {
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:3000", "http://192.168.0.4:3000"],
+      origin: BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN.split(',').map(x => x.trim()),
       methods: ["GET", "POST"],
     },
   });

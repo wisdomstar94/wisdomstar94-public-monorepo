@@ -61,7 +61,7 @@ export default function Page() {
   const socketioManager = useSocketioManager({
     isAutoConnect: false,
     // socketUrl: 'localhost:3010',
-    socketUrl: '192.168.0.4:3010',
+    socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL 값이 없습니다.`) })(),
     listeners: [
       {
         eventName: "connect",
