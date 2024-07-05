@@ -1,6 +1,8 @@
 import http from 'http';
 import { Server } from "socket.io";
 import { IUseBabylonCharacterController } from '#IUseBabylonCharacterController';
+import { load } from 'dotenv-mono';
+load();
 
 const BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN = process.env.BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN ?? '';
 
