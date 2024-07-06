@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
 import { AnimationGroup, AnimationPropertiesOverride, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
@@ -7,10 +7,18 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
   const {
     debugOptions,
     onAdded,
+    thisClientCharacterId,
   } = props;
 
   const firstQuaternionWithCameraRef = useRef<Quaternion>();
+  const thisClientCharacterIdRef = useRef(thisClientCharacterId ?? '');
   const charactersRef = useRef<Map<string, IUseBabylonCharacterController.CharacterItem>>(new Map());
+  const [isThisClientCharacterControlling, setIsThisClientCharacterControlling] = useState(false);
+  const [isThisClientCharacterLoaded, setIsThisClientCharacterLoaded] = useState(false);
+
+  function setThisClientCharacterId(characterId: string) {
+    thisClientCharacterIdRef.current = characterId;
+  }
 
   function add(params: IUseBabylonCharacterController.AddRequireInfo) {
     const {
@@ -145,10 +153,17 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         isJumping: false,
         isRunning: false,
         jumpingInterval: undefined,
+        addRequireInfo: params,
       };
       charactersRef.current.set(characterId, characterItem);
       if (typeof onAdded === 'function') {
         onAdded(characterItem);
+      }
+
+      console.log('@thisClientCharacterIdRef.current', thisClientCharacterIdRef.current);
+      console.log('@characterId', characterId);
+      if (thisClientCharacterIdRef.current === characterId) {
+        setIsThisClientCharacterLoaded(true);
       }
     }).catch((error) => {
       console.error('에러 발생', error);
@@ -350,6 +365,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           moveDirection = forward.negate().add(Vector3.Cross(Vector3.Up(), forward)).normalize();
         }
         if (keydown) {
+          setIsThisClientCharacterControlling(prev => true);
           const quaternion = euler.toQuaternion().clone();
           // console.log('@@@ quaternion', JSON.stringify(quaternion));
           if (characterItem.characterBox.rotationQuaternion !== null) {
@@ -371,10 +387,12 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * muliply, currentVelocity.y, moveDirection.z * muliply));
         } else {
           // x축과 z축 속도를 0으로 설정, y축 속도는 유지
+          setIsThisClientCharacterControlling(prev => false);
           const currentVelocity = characterItem.characterBoxPhysicsBody.getLinearVelocity();
           characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(0, currentVelocity.y, 0));
         }
         if (characterItem.isJumping) {
+          setIsThisClientCharacterControlling(prev => true);
           if (characterItem.jumpingInterval === undefined) {
             // 점프 코드 작성..
             idleAnim?.stop();
@@ -387,6 +405,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
                 characterItem.isJumping = false;
                 jumpAnim?.stop();
                 idleAnim?.start(true);
+                setIsThisClientCharacterControlling(prev => false);
                 clearTimeout(characterItem.jumpingInterval);
                 characterItem.jumpingInterval = undefined;
               }, characterItem.jumpingDuration);
@@ -418,6 +437,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
             // }
           }
         } else {
+          setIsThisClientCharacterControlling(prev => true);
           runningAnim?.stop();
           walkingAnim?.stop();
           idleAnim?.stop();
@@ -429,10 +449,13 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
   return {
     add,
     remove,
+    setThisClientCharacterId,
     setCharacterPositionAndRotation,
     setCharacterMoving,
     setCharacterJumping,
     getCharactersMap,
     getCharacter,
+    isThisClientCharacterControlling,
+    isThisClientCharacterLoaded,
   };
 }

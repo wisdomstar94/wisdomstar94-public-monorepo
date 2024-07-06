@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IUseSocketioManager } from "./use-socketio-manager.interface";
 import { Socket, io } from "socket.io-client";
 
@@ -10,6 +10,7 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
   } = props;
 
   const socketRef = useRef<Socket>();
+  const [isConnected, setIsConnected] = useState(false);
 
   function connect() {
     if (socketRef.current?.connected === true) {
@@ -53,6 +54,14 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
         item.callback(data);
       });
     });
+
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
   }
 
   useEffect(() => {
@@ -71,5 +80,6 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     connect,
     disconnect,
     emit,
+    isConnected,
   };
 }

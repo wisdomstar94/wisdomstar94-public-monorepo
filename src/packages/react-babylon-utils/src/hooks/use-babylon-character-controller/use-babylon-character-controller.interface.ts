@@ -86,6 +86,7 @@ export declare namespace IUseBabylonCharacterController {
     isJumping: boolean;
     isRunning: boolean;
     jumpingInterval: NodeJS.Timeout | undefined;
+    addRequireInfo: AddRequireInfo;
   }
 
   export interface CharacterMovingOptions {
@@ -105,5 +106,6 @@ export declare namespace IUseBabylonCharacterController {
   export interface Props {
     debugOptions?: DebugOptions;
     onAdded?: (characterItem: CharacterItem) => void;
+    thisClientCharacterId?: string;
   }
 }

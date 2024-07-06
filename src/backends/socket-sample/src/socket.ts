@@ -28,6 +28,7 @@ export default function(server: http.Server) {
 
     socket.on('meConnect', (data: IUseBabylonCharacterController.AddRequireInfo) => {
       socket.data = { characterId: data.characterId };
+      console.log('@meConnect', socket);
       socket.broadcast.emit('otherUserConnect', data);
     });
     
@@ -35,9 +36,18 @@ export default function(server: http.Server) {
       socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
     });
 
-    socket.on('meCurrent', (data: IUseBabylonCharacterController.AddRequireInfo) => {
-      socket.data = { characterId: data.characterId };
-      socket.broadcast.emit('otherUserCurrent', data);
+    socket.on('meCurrent', (data: { data: IUseBabylonCharacterController.AddRequireInfo; characterId?: string }) => {
+      if (data.characterId === undefined) {
+        socket.broadcast.emit('otherUserCurrent', data.data);
+      } else {
+        console.log('## ## ##');
+        io.fetchSockets().then((list) => {
+          console.log('@@list', list);
+          const targetSocket = list.find(k => k.data.characterId === data.characterId);
+          console.log('targetSocket', targetSocket);
+          targetSocket?.emit('otherUserCurrent', data.data);
+        })
+      }
     });
 
     socket.on('meMoving', (data: IUseBabylonCharacterController.CharacterMovingOptions) => {

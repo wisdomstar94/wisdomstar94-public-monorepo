@@ -10,11 +10,10 @@ export default function Layout(props: { children: ReactNode }) {
     <>
       <div className="w-full flex flex-wrap gap-2 relative">
         <div className="w-full flex flex-wrap gap-2 relative">
-          <h1 className="text-3xl font-extrabold">/test/socket-apply</h1>
+          <h1 className="text-3xl font-extrabold">/test/socket-apply-v2</h1>
         </div>
         <div className="w-full flex flex-wrap gap-2 relative">
-          {/* { props.children } */}
-          폐쇄
+          { props.children }
         </div>
       </div>
     </>
