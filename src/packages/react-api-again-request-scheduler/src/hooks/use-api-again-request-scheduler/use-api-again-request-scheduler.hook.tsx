@@ -15,16 +15,20 @@ export function useApiAgainRequestScheduler(props?: IUseApiAgainRequestScheduler
       
     },
   }); 
+
   const initRetryIntervalInfosInterval = usePromiseInterval({
-    intervalMillsecond: 3000,
-    types: [''],
-    promiseFn: () => {
+    intervalTime: 3000,
+    fn: () => {
       return new Promise<boolean>(function(resolve, reject) {
         _initRetryIntervalInfos();
-        reject(false); // usePromiseInterval 훅은 주어진 promise 가 성공할 때까지만 계속 반복하므로, 평범한 setInterval 처럼 계속 반복하게 하고 싶다면 계속 reject 를 호출하면 됨.
+        resolve(false);
       });
     },
+    isAutoStart: false,
+    isCallWhenStarted: true,
+    isForceCallWhenFnExecuting: true,
   });
+
   const [retrySuccessInfo, setRetrySuccessInfo] = useState<IUseApiAgainRequestScheduler.RetrySuccessInfo>();
 
   function _processing(key: string, data: (IUseApiAgainRequestScheduler.SaveApiItem & {

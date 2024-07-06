@@ -1,115 +1,74 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { IUsePromiseInterval } from "./use-promise-interval.interface";
 
-export function usePromiseInterval<DATA, TYPE extends string>(props: IUsePromiseInterval.Props<DATA, TYPE>) {
+export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
   const {
-    autoStart,
-    promiseFn,
-    intervalMillsecond,
+    intervalTime,
+    isCallWhenStarted,
+    isForceCallWhenFnExecuting,
+    isAutoStart,
+    fn,
   } = props;
-  const promiseFnRef = useRef<() => Promise<DATA | undefined>>(promiseFn);
-  
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const isProcessingRef = useRef<boolean>(false);
-  
-  const [isPromiseExecuting, setIsPromiseExecuting] = useState<boolean>(false);
-  const isPromiseExecutingRef = useRef<boolean>(false);
-  
-  const [isSuccess, setIsSuccess] = useState<boolean | undefined>();
-  const [data, setData] = useState<DATA | undefined>();
-  const [type, setType] = useState<TYPE>();
 
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const fnRef = useRef(fn);
+  fnRef.current = fn;
 
-  function start(options?: IUsePromiseInterval.StartOptions<DATA, TYPE>) {
-    setType(options?.type);
+  const isFnCalling = useRef(false);
+  const interval = useRef<NodeJS.Timeout>();
 
-    if (isProcessingRef.current) {
-      // console.warn(`이미 동작중입니다.`);
+  function start(options?: IUsePromiseInterval.StartOptions) {
+    if (interval.current !== undefined) {
+      console.warn('이미 interval 실행중입니다.');
       return;
     }
 
-    if (promiseFn === undefined) {
-      console.error(`promiseFn 이 할당되지 않았습니다.`);
-      return;
-    }
-
-    isProcessingRef.current = true;
-    setIsProcessing(true);
-    setIsSuccess(undefined);
-
-    const settingTimeout = () => {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        call();
-      }, intervalMillsecond);
-    };
+    const applyIntervalTime = options?.intervalTime ?? intervalTime;
+    const applyIsCallWhenStarted = (options?.isCallWhenStarted ?? isCallWhenStarted) ?? false;
+    const applyIsForceCallWhenFnExecuting = (options?.isForceCallWhenFnExecuting ?? isForceCallWhenFnExecuting) ?? true;
 
     const call = () => {
-      if (isPromiseExecutingRef.current) return;
-      isPromiseExecutingRef.current = true;
-      setIsPromiseExecuting(true);
-      
-      const promise = promiseFnRef.current();
-      promise.then(result => {
-        isProcessingRef.current = false;
-        setIsProcessing(false); 
-        setIsSuccess(true);
-        setData(result);
-        clearTimeout(timeoutRef.current);
-        if (typeof options?.success === 'function') {
-          options?.success(result);
-        }
-      }).catch(error => {
-        if (error === undefined) return;
-        if (isProcessingRef.current === false) {
-          clearTimeout(timeoutRef.current);
-          return;
-        }
-        settingTimeout();
+      if (isFnCalling.current && !applyIsForceCallWhenFnExecuting) {
+        return;
+      }
+
+      isFnCalling.current = true;
+      fnRef.current().then(res => {
+        
+      }).catch((error) => {
+
       }).finally(() => {
-        isPromiseExecutingRef.current = false;
-        setIsPromiseExecuting(false);
+        isFnCalling.current = false;
       });
     };
 
-    if (options?.isNowCall !== false) {
+    if (applyIsCallWhenStarted) {
       call();
-    } else {
-      settingTimeout();
     }
+
+    interval.current = setInterval(() => {
+      call();
+    }, applyIntervalTime);
   }
 
   function stop() {
-    isProcessingRef.current = false;
-    setIsProcessing(false); 
-    clearTimeout(timeoutRef.current);
+    clearInterval(interval.current);
+    interval.current = undefined;
   }
 
   useEffect(() => {
-    if (autoStart?.enable === true) {
-      start({
-        isNowCall: autoStart.isNowCall,
-      });
+    if (isAutoStart === true) {
+      start();
+    } else {
+      stop();
     }
 
     return () => {
       stop();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    promiseFnRef.current = promiseFn;
-  }, [promiseFn]);
+  }, [isAutoStart]);
 
   return {
     start,
     stop,
-    isProcessing,
-    isPromiseExecuting,
-    isSuccess,
-    data,
-    type,
   };
 }
