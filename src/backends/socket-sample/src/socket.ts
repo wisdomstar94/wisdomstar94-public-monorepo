@@ -48,8 +48,8 @@ export default function(server: http.Server) {
       socket.broadcast.emit('otherUserModelJumpingInfo', data);
     });
 
-    setInterval(() => {
-      socket.broadcast.emit('getOtherDatas', { timestemp: Date.now() });
-    }, 1000);
+    // setInterval(() => {
+    //   socket.broadcast.emit('getOtherDatas', { timestemp: Date.now() });
+    // }, 1000);
   });
 }
