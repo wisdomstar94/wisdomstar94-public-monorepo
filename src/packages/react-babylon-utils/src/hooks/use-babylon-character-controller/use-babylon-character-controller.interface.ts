@@ -23,7 +23,19 @@ export declare namespace IUseBabylonCharacterController {
     z: number;
   }
 
-  export interface InitRequireInfo {
+  export interface VectorFour {
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+  }
+
+  export interface ChracterPhysicsBodyOptions {
+    angularDamping?: number;
+    linearDamping?: number;
+  }
+
+  export interface AddRequireInfo {
     camera?: ArcRotateCamera;
     characterId: string;
     scene: Scene;
@@ -33,6 +45,7 @@ export declare namespace IUseBabylonCharacterController {
     characterJumpingDelay: number;
     characterJumpingDuration: number;
     characterAnimationGroupNames: AnimationGroupNames;
+    chracterPhysicsBodyOptions?: ChracterPhysicsBodyOptions;
   }
 
   export interface DebugOptions {
@@ -81,9 +94,15 @@ export declare namespace IUseBabylonCharacterController {
     cameraDirection?: VectorThree;
     isRunning?: boolean;
   }
+  
+  export interface CharacterPositionAndRotationOptions {
+    characterId: string;
+    position: IUseBabylonCharacterController.VectorThree;
+    // rotation?: IUseBabylonCharacterController.VectorFour;
+    // cameraDirection?: IUseBabylonCharacterController.VectorThree;
+  }
 
   export interface Props {
-    animationGroupNames?: AnimationGroupNames;
     debugOptions?: DebugOptions;
     onAdded?: (characterItem: CharacterItem) => void;
   }

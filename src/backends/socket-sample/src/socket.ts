@@ -26,16 +26,16 @@ export default function(server: http.Server) {
       console.log('on.good', data); // 클라이언트 -> 서버
     });
 
-    socket.on('meConnect', (data: IUseBabylonCharacterController.InitRequireInfo) => {
+    socket.on('meConnect', (data: IUseBabylonCharacterController.AddRequireInfo) => {
       socket.data = { characterId: data.characterId };
       socket.broadcast.emit('otherUserConnect', data);
     });
     
-    socket.on('meCurrnetPosition', (data) => {
-      socket.broadcast.emit('otherUserConnectPosition', data);
+    socket.on('meCurrnetPositionAndRotation', (data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) => {
+      socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
     });
 
-    socket.on('meCurrent', (data: IUseBabylonCharacterController.InitRequireInfo) => {
+    socket.on('meCurrent', (data: IUseBabylonCharacterController.AddRequireInfo) => {
       socket.data = { characterId: data.characterId };
       socket.broadcast.emit('otherUserCurrent', data);
     });

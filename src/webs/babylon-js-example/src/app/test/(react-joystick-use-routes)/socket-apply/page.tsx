@@ -27,11 +27,12 @@ export default function Page() {
       isShowCharacterParentBoxMesh: false,
     },
     onAdded(characterItem) {
+      (window as any)[characterItem.characterId] = characterItem;
       if (characterItem.characterId === characterId) {
         const v = characterItem.characterBox.position;
         const characterInitPosition = { x: v.x, y: v.y, z: v.z };
 
-        const data: Omit<IUseBabylonCharacterController.InitRequireInfo, 'scene'> = {
+        const data: Omit<IUseBabylonCharacterController.AddRequireInfo, 'scene'> = {
           characterAnimationGroupNames: characterItem.characterAnimationGroupNames,
           characterId: characterItem.characterId,
           characterInitPosition,
@@ -50,12 +51,6 @@ export default function Page() {
       //   }, 3000);          
       // }
     },
-    animationGroupNames: {
-      idleAnimationGroupName: 'idle',
-      walkingAnimationGroupName: 'walking',
-      jumpingAnimationGroupName: 'jumping',
-      runningAnimationGroupName: 'running',
-    },
   });
 
   const socketioManager = useSocketioManager({
@@ -71,16 +66,23 @@ export default function Page() {
       },
       {
         eventName: 'otherUserConnect', 
-        callback(data: IUseBabylonCharacterController.InitRequireInfo) {
+        callback(data: IUseBabylonCharacterController.AddRequireInfo) {
           // console.log('@otherUserConnect', data);
 
           if (data.characterId === characterId) return;
           // ...
-          babylonCharacterController.add({ ...data, scene: sceneRef.current! });
+          babylonCharacterController.add({ 
+            ...data, 
+            scene: sceneRef.current!, 
+            chracterPhysicsBodyOptions: {
+              angularDamping: 100,
+              linearDamping: 50,
+            },
+          });
 
           const c = babylonCharacterController.getCharacter(characterId);
           if (c !== undefined) {
-            const info: Omit<IUseBabylonCharacterController.InitRequireInfo, 'scene'> = {
+            const info: Omit<IUseBabylonCharacterController.AddRequireInfo, 'scene'> = {
               characterId: c.characterId,
               glbFileUrl: c.glbFileUrl,
               characterSize: c.characterSize,
@@ -103,19 +105,26 @@ export default function Page() {
       },
       {
         eventName: 'otherUserCurrent',
-        callback(data: IUseBabylonCharacterController.InitRequireInfo) {
+        callback(data: IUseBabylonCharacterController.AddRequireInfo) {
           if (data.characterId === characterId) return;
-          babylonCharacterController.add({ ...data, scene: sceneRef.current! });
+          babylonCharacterController.add({ 
+            ...data, 
+            scene: sceneRef.current!, 
+            chracterPhysicsBodyOptions: { 
+              angularDamping: 100,
+              linearDamping: 100,
+            },
+          });
         },
       },
       {
-        eventName: 'otherUserConnectPosition',
-        callback(data: { characterId: string; position: { x: number; y: number; z: number; } }) {
-          // console.log('@otherUserConnectPosition', data);
+        eventName: 'otherUserCurrentPositionAndRotation',
+        callback(data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) {
+          // console.log('@otherUserCurrentPosition', data);
           if (data.characterId === characterId) return;
           const c = babylonCharacterController.getCharacter(data.characterId);
           if (c === undefined) return;
-          babylonCharacterController.setCharacterPosition(data.characterId, { ...data.position, y: c?.characterBox.position.y! });
+          babylonCharacterController.setCharacterPositionAndRotation(data);
         },
       },
       {
@@ -141,10 +150,11 @@ export default function Page() {
     let timer = setInterval(() => {
       const c = babylonCharacterController.getCharacter(characterId);
       if (c !== undefined) {
-        socketioManager.emit("meCurrnetPosition", {
+        const data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions = {
           characterId,
           position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
-        });
+        };
+        socketioManager.emit("meCurrnetPositionAndRotation", data);
       }
     }, 300);
     
@@ -411,6 +421,10 @@ export default function Page() {
       glbFileUrl: {
         baseUrl: '/models/',
         filename: 'casual-lowpoly-male.glb',
+      },
+      chracterPhysicsBodyOptions: {
+        angularDamping: 100,
+        linearDamping: 10,
       },
     });
   }

@@ -6,14 +6,13 @@ import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-ani
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
   const {
     debugOptions,
-    // animationGroupNames,
     onAdded,
   } = props;
 
   const firstQuaternionWithCameraRef = useRef<Quaternion>();
   const charactersRef = useRef<Map<string, IUseBabylonCharacterController.CharacterItem>>(new Map());
 
-  function add(params: IUseBabylonCharacterController.InitRequireInfo) {
+  function add(params: IUseBabylonCharacterController.AddRequireInfo) {
     const {
       camera,
       characterId,
@@ -24,7 +23,11 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       characterJumpingDelay,
       characterJumpingDuration,
       characterAnimationGroupNames,
+      chracterPhysicsBodyOptions,
     } = params;
+
+    const angularDamping = chracterPhysicsBodyOptions?.angularDamping ?? 100;
+    const linearDamping = chracterPhysicsBodyOptions?.linearDamping ?? 10;
 
     const t = charactersRef.current.get(characterId);
     if (t !== undefined) {
@@ -67,8 +70,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       mass: 1, 
       inertia: new Vector3(0, 0, 0), 
     });
-    characterBoxPhysicsBody.setAngularDamping(100);
-    characterBoxPhysicsBody.setLinearDamping(10);
+    characterBoxPhysicsBody.setAngularDamping(angularDamping);
+    characterBoxPhysicsBody.setLinearDamping(linearDamping);
 
     // 카메라 설정
     if (camera !== undefined) {
@@ -167,18 +170,28 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     charactersRef.current.delete(characterId);
   }
 
-  function setCharacterPosition(characterId: string, position: IUseBabylonCharacterController.VectorThree) {
+  function setCharacterPositionAndRotation(options: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) {
+    const {
+      characterId,
+      position,
+      // rotation,
+      // cameraDirection,
+    } = options;
     const targetCharacter = charactersRef.current.get(characterId);
     if (targetCharacter === undefined) {
       console.error('해당 id 로 등록된 캐릭터가 없습니다.');
       return;
     }
 
-    // targetCharacter.characterBox.position.x = position.x;
-    // targetCharacter.characterBox.position.y = position.y;
-    // targetCharacter.characterBox.position.z = position.z;
-
+    // targetCharacter.characterBoxPhysicsBody.setLinearDamping(1000);
+    // const ori = targetCharacter.characterBoxPhysicsBody.getLinearVelocity();
+    // targetCharacter.characterBoxPhysicsBody.setLinearVelocity(new Vector3(0, 0, 0));
     targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
+    // targetCharacter.characterBoxPhysicsBody.setLinearDamping(20);
+    // targetCharacter.characterBoxPhysicsBody.setLinearDamping(10);
+    // if (rotation !== undefined && cameraDirection !== undefined) {
+      
+    // }
   }
 
   function setCharacterMoving(options: IUseBabylonCharacterController.CharacterMovingOptions) {
@@ -319,6 +332,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         }
         if (keydown) {
           const quaternion = euler.toQuaternion().clone();
+          // console.log('@@@ quaternion', JSON.stringify(quaternion));
           if (characterItem.characterBox.rotationQuaternion !== null) {
             characterItem.characterMeshes.forEach(o => {
               Quaternion.SlerpToRef(
@@ -396,7 +410,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
   return {
     add,
     remove,
-    setCharacterPosition,
+    setCharacterPositionAndRotation,
     setCharacterMoving,
     setCharacterJumping,
     getCharactersMap,
