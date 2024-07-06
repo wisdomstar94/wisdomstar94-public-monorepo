@@ -31,7 +31,7 @@ export default function(server: http.Server) {
       socket.broadcast.emit('otherUserConnect', data);
     });
     
-    socket.on('meCurrnetPositionAndRotation', (data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) => {
+    socket.on('meCurrentPositionAndRotation', (data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) => {
       socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
     });
 

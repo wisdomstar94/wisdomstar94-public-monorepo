@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Scene } from "@babylonjs/core/scene";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { ActionManager, ArcRotateCamera, GroundMesh, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox } from "@babylonjs/core";
+import { AbstractMesh, ActionManager, ArcRotateCamera, GroundMesh, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import HavokPhysics from "@babylonjs/havok";
 import { Joystick } from "@wisdomstar94/react-joystick";
@@ -150,11 +150,14 @@ export default function Page() {
     let timer = setInterval(() => {
       const c = babylonCharacterController.getCharacter(characterId);
       if (c !== undefined) {
+        const firstMesh: AbstractMesh | undefined = c.characterMeshes[0];
+        const ro = firstMesh?.rotationQuaternion;
         const data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions = {
           characterId,
           position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
+          rotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
         };
-        socketioManager.emit("meCurrnetPositionAndRotation", data);
+        socketioManager.emit("meCurrentPositionAndRotation", data);
       }
     }, 300);
     

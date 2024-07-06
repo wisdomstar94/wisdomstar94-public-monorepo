@@ -98,7 +98,7 @@ export declare namespace IUseBabylonCharacterController {
   export interface CharacterPositionAndRotationOptions {
     characterId: string;
     position: IUseBabylonCharacterController.VectorThree;
-    // rotation?: IUseBabylonCharacterController.VectorFour;
+    rotation?: IUseBabylonCharacterController.VectorFour;
     // cameraDirection?: IUseBabylonCharacterController.VectorThree;
   }
 

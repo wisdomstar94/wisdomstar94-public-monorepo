@@ -174,7 +174,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     const {
       characterId,
       position,
-      // rotation,
+      rotation,
       // cameraDirection,
     } = options;
     const targetCharacter = charactersRef.current.get(characterId);
@@ -192,6 +192,25 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     // if (rotation !== undefined && cameraDirection !== undefined) {
       
     // }
+    if (rotation !== undefined) {
+      targetCharacter.characterMeshes.forEach((mesh) => {
+        // mesh.rotationQuaternion = Quaternion.FromEulerVector(new Vector3(rotation.x, rotation.y, rotation.z));
+        if (mesh.rotationQuaternion !== null) {
+          let newQ = mesh.rotationQuaternion.clone();
+          newQ.x = rotation.x;
+          newQ.y = rotation.y;
+          newQ.z = rotation.z;
+          newQ.w = rotation.w;
+          mesh.rotationQuaternion = newQ;
+          // Quaternion.SlerpToRef(
+          //   mesh.rotationQuaternion,
+          //   newQ,
+          //   0.4,
+          //   mesh.rotationQuaternion
+          // );
+        }
+      });  
+    }
   }
 
   function setCharacterMoving(options: IUseBabylonCharacterController.CharacterMovingOptions) {
