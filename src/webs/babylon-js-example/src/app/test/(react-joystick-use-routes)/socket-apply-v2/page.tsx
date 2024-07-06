@@ -431,6 +431,13 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketioManager.isConnected]);
 
+  useEffect(() => {
+    console.log('@babylonCharacterController.isThisClientCharacterControlling', babylonCharacterController.isThisClientCharacterControlling);
+    if (babylonCharacterController.isThisClientCharacterControlling) {
+
+    }
+  }, [babylonCharacterController.isThisClientCharacterControlling])
+
   return (
     <>
       <div className="w-full h-full bg-blue-200 fixed top-0 left-0">

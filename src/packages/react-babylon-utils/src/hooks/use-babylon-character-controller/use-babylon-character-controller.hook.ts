@@ -272,6 +272,11 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     return charactersRef.current.get(characterId);
   }
 
+  function setIsThisClientCharacterControllingWrapper(v: boolean, characterId: string) {
+    if (characterId !== thisClientCharacterId) return;
+    setIsThisClientCharacterControlling(prev => v);
+  }
+
   useRequestAnimationFrameManager({
     isAutoStart: true,
     callback(startedTimestamp, currentTimestamp, step) {
@@ -365,7 +370,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           moveDirection = forward.negate().add(Vector3.Cross(Vector3.Up(), forward)).normalize();
         }
         if (keydown) {
-          setIsThisClientCharacterControlling(prev => true);
           const quaternion = euler.toQuaternion().clone();
           // console.log('@@@ quaternion', JSON.stringify(quaternion));
           if (characterItem.characterBox.rotationQuaternion !== null) {
@@ -387,12 +391,12 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * muliply, currentVelocity.y, moveDirection.z * muliply));
         } else {
           // x축과 z축 속도를 0으로 설정, y축 속도는 유지
-          setIsThisClientCharacterControlling(prev => false);
           const currentVelocity = characterItem.characterBoxPhysicsBody.getLinearVelocity();
           characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(0, currentVelocity.y, 0));
         }
+        setIsThisClientCharacterControllingWrapper(characterItem.direction !== undefined, characterId);
         if (characterItem.isJumping) {
-          setIsThisClientCharacterControlling(prev => true);
+          setIsThisClientCharacterControllingWrapper(true, characterId);
           if (characterItem.jumpingInterval === undefined) {
             // 점프 코드 작성..
             idleAnim?.stop();
@@ -405,7 +409,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
                 characterItem.isJumping = false;
                 jumpAnim?.stop();
                 idleAnim?.start(true);
-                setIsThisClientCharacterControlling(prev => false);
+                setIsThisClientCharacterControllingWrapper(false, characterId);
                 clearTimeout(characterItem.jumpingInterval);
                 characterItem.jumpingInterval = undefined;
               }, characterItem.jumpingDuration);
@@ -437,7 +441,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
             // }
           }
         } else {
-          setIsThisClientCharacterControlling(prev => true);
+          setIsThisClientCharacterControllingWrapper(true, characterId);
           runningAnim?.stop();
           walkingAnim?.stop();
           idleAnim?.stop();
