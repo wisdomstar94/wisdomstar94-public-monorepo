@@ -8,3 +8,4 @@ export * from "./hooks/use-babylon-mesh-physics-manager/use-babylon-mesh-physics
 export * from "./hooks/use-babylon-mesh-physics-manager/use-babylon-mesh-physics-manager.interface";
 
 export * from "./libs/version";
+export * from "./libs/utils";

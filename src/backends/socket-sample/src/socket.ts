@@ -6,6 +6,11 @@ load();
 
 const BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN = process.env.BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN ?? '';
 
+interface Info {
+  isExistNearUser: boolean;
+}
+const tempMemoryDB = new Map<string, Info>();
+
 export default function(server: http.Server) {
   const io = new Server(server, {
     cors: {
@@ -38,16 +43,17 @@ export default function(server: http.Server) {
       socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
     });
 
-    socket.on('meCurrent', (data: { data: IUseBabylonCharacterController.AddRequireInfo; characterId?: string }) => {
-      if (data.characterId === undefined) {
-        socket.broadcast.emit('otherUserCurrent', data.data);
+    socket.on('meCurrent', (params: { data: IUseBabylonCharacterController.AddRequireInfo; characterId?: string }) => {
+      console.log('@meCurrent', params.data.characterId);
+      if (params.characterId === undefined) {
+        socket.broadcast.emit('otherUserCurrent', params.data);
       } else {
         console.log('## ## ##');
         io.fetchSockets().then((list) => {
           // console.log('@@list', list);
-          const targetSocket = list.find(k => k.data.characterId === data.characterId);
+          const targetSocket = list.find(k => k.data.characterId === params.characterId);
           // console.log('targetSocket', targetSocket);
-          targetSocket?.emit('otherUserCurrent', data.data);
+          targetSocket?.emit('otherUserCurrent', params.data);
         })
       }
     });

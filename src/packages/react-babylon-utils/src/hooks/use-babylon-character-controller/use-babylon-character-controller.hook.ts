@@ -2,19 +2,21 @@ import { useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
 import { AnimationGroup, AnimationPropertiesOverride, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
+import { calculateDistance3D } from "@/libs/utils";
 
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
   const {
     debugOptions,
     onAdded,
-    thisClientCharacterId,
+    thisClientCharacterOptions,
   } = props;
 
   const firstQuaternionWithCameraRef = useRef<Quaternion>();
-  const thisClientCharacterIdRef = useRef(thisClientCharacterId ?? '');
+  const thisClientCharacterIdRef = useRef(thisClientCharacterOptions?.characterId ?? '');
   const charactersRef = useRef<Map<string, IUseBabylonCharacterController.CharacterItem>>(new Map());
   const [isThisClientCharacterControlling, setIsThisClientCharacterControlling] = useState(false);
   const [isThisClientCharacterLoaded, setIsThisClientCharacterLoaded] = useState(false);
+  const [isExistThisClientCharacterNearOtherCharacters, setIsExistThisClientCharacterNearOtherCharacters] = useState(false);
 
   function setThisClientCharacterId(characterId: string) {
     thisClientCharacterIdRef.current = characterId;
@@ -165,6 +167,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       if (thisClientCharacterIdRef.current === characterId) {
         setIsThisClientCharacterLoaded(true);
       }
+
+      checkNearUser();
     }).catch((error) => {
       console.error('에러 발생', error);
     });
@@ -273,8 +277,36 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
   }
 
   function setIsThisClientCharacterControllingWrapper(v: boolean, characterId: string) {
-    if (characterId !== thisClientCharacterId) return;
+    if (characterId !== thisClientCharacterIdRef.current) return;
     setIsThisClientCharacterControlling(prev => v);
+  }
+
+  function checkNearUser() {
+    const meCharacter = getCharacter(thisClientCharacterIdRef.current);
+    if (meCharacter === undefined) return;
+
+    const arr = Array.from(getCharactersMap());
+    const target = arr.find(([characterId, characterItem]) => {
+      if (characterId === meCharacter.characterId) return false; 
+
+      const mePoint = (() => {
+        const { x, y, z } = meCharacter.characterBox.position;
+        return { x, y, z };
+      })();
+      const otherPoint = (() => {
+        const { x, y, z } = characterItem.characterBox.position;
+        return { x, y, z };
+      })();
+
+      const distance = calculateDistance3D(mePoint, otherPoint);
+      if (distance < (thisClientCharacterOptions?.nearDistance ?? 2) && (characterItem.direction !== undefined || characterItem.jumpingInterval !== undefined)) {
+        return true;
+      } 
+
+      return false;
+    });
+    const isExist = target !== undefined;
+    setIsExistThisClientCharacterNearOtherCharacters(isExist);
   }
 
   useRequestAnimationFrameManager({
@@ -404,7 +436,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
             const currentVelocity = characterItem.characterBoxPhysicsBody.getLinearVelocity();
             characterItem.jumpingInterval = setTimeout(() => {
-              characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 9, moveDirection.z * 3));
+              characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 14, moveDirection.z * 3));
               setTimeout(() => {
                 characterItem.isJumping = false;
                 jumpAnim?.stop();
@@ -447,6 +479,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           idleAnim?.stop();
         }
       });
+      checkNearUser();
     },
   });
 
@@ -461,5 +494,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     getCharacter,
     isThisClientCharacterControlling,
     isThisClientCharacterLoaded,
+    isExistThisClientCharacterNearOtherCharacters,
   };
 }

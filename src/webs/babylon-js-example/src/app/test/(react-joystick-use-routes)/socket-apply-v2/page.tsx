@@ -8,7 +8,7 @@ import { AbstractMesh, ActionManager, ArcRotateCamera, HavokPlugin, MeshBuilder,
 import "@babylonjs/loaders/glTF";
 import HavokPhysics from "@babylonjs/havok";
 import { Joystick } from "@wisdomstar94/react-joystick";
-import { BabylonCanvas, IBabylonCanvas, useBabylonCharacterController, useBabylonMeshPhysicsManager, IUseBabylonCharacterController } from "@wisdomstar94/react-babylon-utils";
+import { BabylonCanvas, IBabylonCanvas, useBabylonCharacterController, useBabylonMeshPhysicsManager, IUseBabylonCharacterController, calculateDistance3D } from "@wisdomstar94/react-babylon-utils";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 import { TouchContainer } from "@wisdomstar94/react-touch-container";
 import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
@@ -26,12 +26,18 @@ export default function Page() {
   const babylonMeshPhysicsManager = useBabylonMeshPhysicsManager();
 
   const babylonCharacterController = useBabylonCharacterController({
-    thisClientCharacterId: characterId,
+    thisClientCharacterOptions: {
+      characterId,
+      nearDistance: 2,
+    },
     debugOptions: {
       isShowCharacterParentBoxMesh: false,
     },
     onAdded(characterItem) {
-      (window as any)[characterItem.characterId] = characterItem;
+      if ((window as any).character === undefined) {
+        (window as any).character = {};
+      }
+      (window as any).character[characterItem.characterId] = characterItem;
       // console.log('characterItem', characterItem);  
       // if (characterItem.characterId === 'other') {
       //   setTimeout(() => {
@@ -459,7 +465,7 @@ export default function Page() {
         jumpingAnimationGroupName: 'jumping',
         runningAnimationGroupName: 'running',
       },
-      characterJumpingDelay: 300,
+      characterJumpingDelay: 450,
       characterJumpingDuration: 500,
       glbFileUrl: {
         baseUrl: '/models/',
@@ -471,6 +477,10 @@ export default function Page() {
       },
     });
   }
+
+  useEffect(() => {
+    (window as any).calculateDistance3D = calculateDistance3D;
+  }, []);
 
   useEffect(() => {
     if (socketioManager.isConnected !== true) {
@@ -511,15 +521,19 @@ export default function Page() {
   }, [socketioManager.isConnected]);
 
   useEffect(() => {
+    console.log('');
     console.log('@babylonCharacterController.isThisClientCharacterControlling', babylonCharacterController.isThisClientCharacterControlling);
-    if (babylonCharacterController.isThisClientCharacterControlling) {
+    console.log('@babylonCharacterController.isExistThisClientCharacterNearOtherCharacters', babylonCharacterController.isExistThisClientCharacterNearOtherCharacters);
+    console.log('');
+
+    if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
       emitMeCurrentPositionAndRotationInterval.start();
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
       emitMeCurrentPositionAndRotationInterval.fnCall();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [babylonCharacterController.isThisClientCharacterControlling])
+  }, [babylonCharacterController.isThisClientCharacterControlling, babylonCharacterController.isExistThisClientCharacterNearOtherCharacters])
 
   useEffect(() => {
     body.denyScroll();
@@ -720,6 +734,9 @@ export default function Page() {
             babylonCharacterController.setCharacterJumping(characterId);
           }}
           />
+      </div>
+      <div className="fixed top-2 left-2 bg-black/80 px-3 py-1.5 text-xs text-white">
+        {/* { characterId } */}
       </div>
     </>
   );

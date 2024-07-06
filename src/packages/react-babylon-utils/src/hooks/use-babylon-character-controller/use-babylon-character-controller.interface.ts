@@ -103,9 +103,14 @@ export declare namespace IUseBabylonCharacterController {
     // cameraDirection?: IUseBabylonCharacterController.VectorThree;
   }
 
+  export interface ThisClientCharacterOptions {
+    characterId: string;
+    nearDistance: number;
+  }
+
   export interface Props {
     debugOptions?: DebugOptions;
     onAdded?: (characterItem: CharacterItem) => void;
-    thisClientCharacterId?: string;
+    thisClientCharacterOptions?: ThisClientCharacterOptions;
   }
 }
