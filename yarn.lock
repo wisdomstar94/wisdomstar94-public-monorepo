@@ -22,7 +22,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ant-design/colors@npm:^7.0.0, @ant-design/colors@npm:^7.0.2":
+"@ant-design/colors@npm:^7.0.0, @ant-design/colors@npm:^7.1.0":
   version: 7.1.0
   resolution: "@ant-design/colors@npm:7.1.0"
   dependencies:
@@ -367,14 +367,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babylonjs/core@npm:~7.12.0":
-  version: 7.12.0
-  resolution: "@babylonjs/core@npm:7.12.0"
-  checksum: 10c0/a42c786f152275f8ab15eaa1c333f55c803f2077653b5d0459a807094f50e71ad0a3a6106340cb94dacf8fe5facc8e57edbd39bcdeafb62e466da12deb7dbb64
+"@babylonjs/core@npm:^7.14.0":
+  version: 7.14.0
+  resolution: "@babylonjs/core@npm:7.14.0"
+  checksum: 10c0/f14f465e5701960dde5b7a5c24fc926fddb7f4e65d397ccb63859dda11fd6279c60b8479db78fec64b771d2d641b0691e94f20178c489c0933010700a8d56481
   languageName: node
   linkType: hard
 
-"@babylonjs/havok@npm:^1.3.5":
+"@babylonjs/havok@npm:^1.3.7":
   version: 1.3.7
   resolution: "@babylonjs/havok@npm:1.3.7"
   dependencies:
@@ -383,13 +383,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babylonjs/loaders@npm:^7.12.0":
-  version: 7.13.1
-  resolution: "@babylonjs/loaders@npm:7.13.1"
+"@babylonjs/loaders@npm:^7.14.0":
+  version: 7.14.0
+  resolution: "@babylonjs/loaders@npm:7.14.0"
   peerDependencies:
     "@babylonjs/core": ^7.0.0
     babylonjs-gltf2interface: ^7.0.0
-  checksum: 10c0/eac7f48433d542713004fef6d8a859bec559d7145fc96f7276009d7003d681b842efbf68a327c7fca984c503c202cbee29892295728f5bb7c620f767d37fabb5
+  checksum: 10c0/fe158f1b310d78e57a3e553424fe8b1491bb1addb0870b96b9e22ff3586ac91c37962db73a75a23aae3089bbcd3633055ac1507798138269f6835979368e98b9
   languageName: node
   linkType: hard
 
@@ -1449,11 +1449,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20, @types/node@npm:^20.14.2":
-  version: 20.14.9
-  resolution: "@types/node@npm:20.14.9"
+  version: 20.14.10
+  resolution: "@types/node@npm:20.14.10"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/911ffa444dc032897f4a23ed580c67903bd38ea1c5ec99b1d00fa10b83537a3adddef8e1f29710cbdd8e556a61407ed008e06537d834e48caf449ce59f87d387
+  checksum: 10c0/0b06cff14365c2d0085dc16cc8cbea5c40ec09cfc1fea966be9eeecf35562760bfde8f88e86de6edfaf394501236e229d9c1084fad04fb4dec472ae245d8ae69
   languageName: node
   linkType: hard
 
@@ -1637,9 +1637,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/babylon-js-example@workspace:src/webs/babylon-js-example"
   dependencies:
-    "@babylonjs/core": "npm:~7.12.0"
-    "@babylonjs/havok": "npm:^1.3.5"
-    "@babylonjs/loaders": "npm:^7.12.0"
+    "@babylonjs/core": "npm:^7.14.0"
+    "@babylonjs/havok": "npm:^1.3.7"
+    "@babylonjs/loaders": "npm:^7.14.0"
     "@types/animejs": "npm:^3"
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
@@ -1652,14 +1652,14 @@ __metadata:
     "@wisdomstar94/react-socketio-manager": "workspace:^"
     "@wisdomstar94/react-touch-container": "workspace:^"
     animejs: "npm:^3.2.2"
-    babylonjs-gltf2interface: "npm:^7.13.1"
+    babylonjs-gltf2interface: "npm:^7.14.0"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.4"
     next: "npm:14.2.4"
     postcss: "npm:^8"
     react: "npm:^18"
     react-dom: "npm:^18"
-    tailwindcss: "npm:^3.4.1"
+    tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5"
   languageName: unknown
   linkType: soft
@@ -1799,7 +1799,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/react-babylon-utils@workspace:src/packages/react-babylon-utils"
   dependencies:
-    "@babylonjs/core": "npm:~7.12.0"
+    "@babylonjs/core": "npm:^7.14.0"
     "@types/node": "npm:^20.14.2"
     "@types/react": "npm:^18.3.3"
     "@types/react-dom": "npm:^18.3.0"
@@ -1812,7 +1812,7 @@ __metadata:
     typescript: "npm:^5.4.5"
     vite: "npm:^5.3.1"
   peerDependencies:
-    "@babylonjs/core": ~7.12.0
+    "@babylonjs/core": ^7.14.0
     react: ^18.3.1
     react-dom: ^18.3.1
   languageName: unknown
@@ -2069,11 +2069,11 @@ __metadata:
   linkType: hard
 
 "acorn@npm:^8.9.0":
-  version: 8.12.0
-  resolution: "acorn@npm:8.12.0"
+  version: 8.12.1
+  resolution: "acorn@npm:8.12.1"
   bin:
     acorn: bin/acorn
-  checksum: 10c0/a19f9dead009d3b430fa3c253710b47778cdaace15b316de6de93a68c355507bc1072a9956372b6c990cbeeb167d4a929249d0faeb8ae4bb6911d68d53299549
+  checksum: 10c0/51fb26cd678f914e13287e886da2d7021f8c2bc0ccc95e03d3e0447ee278dd3b40b9c57dc222acd5881adcf26f3edc40901a4953403232129e3876793cd17386
   languageName: node
   linkType: hard
 
@@ -2182,10 +2182,10 @@ __metadata:
   linkType: hard
 
 "antd@npm:^5.19.0":
-  version: 5.19.0
-  resolution: "antd@npm:5.19.0"
+  version: 5.19.1
+  resolution: "antd@npm:5.19.1"
   dependencies:
-    "@ant-design/colors": "npm:^7.0.2"
+    "@ant-design/colors": "npm:^7.1.0"
     "@ant-design/cssinjs": "npm:^1.21.0"
     "@ant-design/icons": "npm:^5.3.7"
     "@ant-design/react-slick": "npm:~1.1.2"
@@ -2214,7 +2214,7 @@ __metadata:
     rc-motion: "npm:^2.9.2"
     rc-notification: "npm:~5.6.0"
     rc-pagination: "npm:~4.2.0"
-    rc-picker: "npm:~4.6.6"
+    rc-picker: "npm:~4.6.7"
     rc-progress: "npm:~4.0.0"
     rc-rate: "npm:~2.13.0"
     rc-resize-observer: "npm:^1.4.0"
@@ -2236,7 +2236,7 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 10c0/5ce89371554a11156f0388bea9e95a19f618d247c14d55262e6848c6ac4540e4f97e22a9208882efd012de3c4b9cc3e7e0025b2112851656e84d2275e4b671d0
+  checksum: 10c0/bdb608306551bd9cfdb28cd01b00ec5dcef1f7b0b05f776e824bf35ce7203c2006d56ced9783808101f7db6853ba293b53325626fe6b0026e17e72412ec669a3
   languageName: node
   linkType: hard
 
@@ -2485,10 +2485,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babylonjs-gltf2interface@npm:^7.13.1":
-  version: 7.13.1
-  resolution: "babylonjs-gltf2interface@npm:7.13.1"
-  checksum: 10c0/064b7fae3526c373f0ba16fe7960cb686c150aa47df45077582fd8e57e1b8e457e447a24cea63385693a19b65261cc56bb4546d797c7a1e80adae413dac5a76f
+"babylonjs-gltf2interface@npm:^7.14.0":
+  version: 7.14.0
+  resolution: "babylonjs-gltf2interface@npm:7.14.0"
+  checksum: 10c0/7f60059f95b28e1347e479916b96ba35e8c41899bd7b838c833e31e4545cac2fa68b5b2e2558a12eef53a0873f4d751c7819859f0eda67e1d26667ecc0b6ab7b
   languageName: node
   linkType: hard
 
@@ -2737,9 +2737,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001629":
-  version: 1.0.30001638
-  resolution: "caniuse-lite@npm:1.0.30001638"
-  checksum: 10c0/33019e0c53ed73f1e728b6f313efed2d7a25710dfa2ad3924d2be9939df10d0991556ac87523d3177d472c246654c9216f03e5532717ed97df58014728c3e798
+  version: 1.0.30001640
+  resolution: "caniuse-lite@npm:1.0.30001640"
+  checksum: 10c0/d87fce999e52c354029893a23887d2e48ac297e3af55bd14161fcafdd711f97bdb2649c79d2d3049e628603cb59bc4257ca2961644b0b8d206e7b7dd126d37ea
   languageName: node
   linkType: hard
 
@@ -3368,9 +3368,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.796":
-  version: 1.4.815
-  resolution: "electron-to-chromium@npm:1.4.815"
-  checksum: 10c0/239f949e59375dbd6f13abd3bfc46463a72f77decb196b3c88d1ee9cd64ce04be4366d25d45a639f59141d63c1905fdb28d672830d68282af24abbe0620b02b4
+  version: 1.4.818
+  resolution: "electron-to-chromium@npm:1.4.818"
+  checksum: 10c0/1838794032cd13994349bc7a6d16decdddd3d6e36c80cd09385c8d33fccc66f198dac168a9bc3fbde42af5b94008e1766ead6e64a70749116640a20e9859e4eb
   languageName: node
   linkType: hard
 
@@ -4405,8 +4405,8 @@ __metadata:
   linkType: hard
 
 "glob@npm:^10.2.2, glob@npm:^10.3.10, glob@npm:^10.3.7":
-  version: 10.4.2
-  resolution: "glob@npm:10.4.2"
+  version: 10.4.3
+  resolution: "glob@npm:10.4.3"
   dependencies:
     foreground-child: "npm:^3.1.0"
     jackspeak: "npm:^3.1.2"
@@ -4416,7 +4416,7 @@ __metadata:
     path-scurry: "npm:^1.11.1"
   bin:
     glob: dist/esm/bin.mjs
-  checksum: 10c0/2c7296695fa75a935f3ad17dc62e4e170a8bb8752cf64d328be8992dd6ad40777939003754e10e9741ff8fbe43aa52fba32d6930d0ffa0e3b74bc3fb5eebaa2f
+  checksum: 10c0/bea148e5dae96c17e2764f4764c72376a6ab7072b27a21e861ae4af6f97f3e810d79d67f64de52f63ce1d7fdb73b7306f61c65b48d0f61ca7c8647ce8acaf9a7
   languageName: node
   linkType: hard
 
@@ -5209,15 +5209,15 @@ __metadata:
   linkType: hard
 
 "jackspeak@npm:^3.1.2":
-  version: 3.4.0
-  resolution: "jackspeak@npm:3.4.0"
+  version: 3.4.1
+  resolution: "jackspeak@npm:3.4.1"
   dependencies:
     "@isaacs/cliui": "npm:^8.0.2"
     "@pkgjs/parseargs": "npm:^0.11.0"
   dependenciesMeta:
     "@pkgjs/parseargs":
       optional: true
-  checksum: 10c0/7e42d1ea411b4d57d43ea8a6afbca9224382804359cb72626d0fc45bb8db1de5ad0248283c3db45fe73e77210750d4fcc7c2b4fe5d24fda94aaa24d658295c5f
+  checksum: 10c0/4cba6fc728c5460328c9fcf42f1fa780c204f8456f123b04f4b4c996e1e2af2b28ff25876bcdc19b7639dd6eb6ff6dc4a613d27f67e62cd92c4dfe2123fdaa35
   languageName: node
   linkType: hard
 
@@ -5477,9 +5477,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^10.0.1, lru-cache@npm:^10.2.0":
-  version: 10.3.0
-  resolution: "lru-cache@npm:10.3.0"
-  checksum: 10c0/02d57024d90672774d66e0b76328a8975483b782c68118078363be17b8e0efb4f2bee89d98ce87e72f42d68fe7cb4ad14b1205d43e4f9954f5c91e3be4eaceb8
+  version: 10.3.1
+  resolution: "lru-cache@npm:10.3.1"
+  checksum: 10c0/3cb426a063bf182892ac614c24b9b971fcfe948e2ffe05316f046a6de32bbcedda956e995c0d845971f38894eb861de9b943ce3163549f1202983a9e771555d2
   languageName: node
   linkType: hard
 
@@ -6988,7 +6988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-picker@npm:~4.6.6":
+"rc-picker@npm:~4.6.7":
   version: 4.6.7
   resolution: "rc-picker@npm:4.6.7"
   dependencies:
@@ -8605,22 +8605,22 @@ __metadata:
   linkType: hard
 
 "typescript@npm:^5, typescript@npm:^5.4.5":
-  version: 5.5.2
-  resolution: "typescript@npm:5.5.2"
+  version: 5.5.3
+  resolution: "typescript@npm:5.5.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/8ca39b27b5f9bd7f32db795045933ab5247897660627251e8254180b792a395bf061ea7231947d5d7ffa5cb4cc771970fd4ef543275f9b559f08c9325cccfce3
+  checksum: 10c0/f52c71ccbc7080b034b9d3b72051d563601a4815bf3e39ded188e6ce60813f75dbedf11ad15dd4d32a12996a9ed8c7155b46c93a9b9c9bad1049766fe614bbdd
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>":
-  version: 5.5.2
-  resolution: "typescript@patch:typescript@npm%3A5.5.2#optional!builtin<compat/typescript>::version=5.5.2&hash=379a07"
+  version: 5.5.3
+  resolution: "typescript@patch:typescript@npm%3A5.5.3#optional!builtin<compat/typescript>::version=5.5.3&hash=379a07"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/a7b7ede75dc7fc32a76d0d0af6b91f5fbd8620890d84c906f663d8783bf3de6d7bd50f0430b8bb55eac88a38934af847ff709e7156e5138b95ae94cbd5f73e5b
+  checksum: 10c0/911c7811d61f57f07df79c4a35f56a0f426a65426a020e5fcd792f66559f399017205f5f10255329ab5a3d8c2d1f1d19530aeceffda70758a521fae1d469432e
   languageName: node
   linkType: hard
 
@@ -8703,8 +8703,8 @@ __metadata:
   linkType: hard
 
 "update-browserslist-db@npm:^1.0.16":
-  version: 1.0.16
-  resolution: "update-browserslist-db@npm:1.0.16"
+  version: 1.1.0
+  resolution: "update-browserslist-db@npm:1.1.0"
   dependencies:
     escalade: "npm:^3.1.2"
     picocolors: "npm:^1.0.1"
@@ -8712,7 +8712,7 @@ __metadata:
     browserslist: ">= 4.21.0"
   bin:
     update-browserslist-db: cli.js
-  checksum: 10c0/5995399fc202adbb51567e4810e146cdf7af630a92cc969365a099150cb00597e425cc14987ca7080b09a4d0cfd2a3de53fbe72eebff171aed7f9bb81f9bf405
+  checksum: 10c0/a7452de47785842736fb71547651c5bbe5b4dc1e3722ccf48a704b7b34e4dcf633991eaa8e4a6a517ffb738b3252eede3773bef673ef9021baa26b056d63a5b9
   languageName: node
   linkType: hard
 
@@ -8785,47 +8785,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.3.1":
-  version: 5.3.2
-  resolution: "vite@npm:5.3.2"
-  dependencies:
-    esbuild: "npm:^0.21.3"
-    fsevents: "npm:~2.3.3"
-    postcss: "npm:^8.4.38"
-    rollup: "npm:^4.13.0"
-  peerDependencies:
-    "@types/node": ^18.0.0 || >=20.0.0
-    less: "*"
-    lightningcss: ^1.21.0
-    sass: "*"
-    stylus: "*"
-    sugarss: "*"
-    terser: ^5.4.0
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  peerDependenciesMeta:
-    "@types/node":
-      optional: true
-    less:
-      optional: true
-    lightningcss:
-      optional: true
-    sass:
-      optional: true
-    stylus:
-      optional: true
-    sugarss:
-      optional: true
-    terser:
-      optional: true
-  bin:
-    vite: bin/vite.js
-  checksum: 10c0/3ed576d18c6c008ae92be68f9c79bf7556dae10978a3e8b4c4b42199424755e5c99836e6d4f81fb8b533b957d7f4e351abc60b8a93f4c4b5eb9890b5b6450926
-  languageName: node
-  linkType: hard
-
-"vite@npm:^5.3.3":
+"vite@npm:^5.3.1, vite@npm:^5.3.3":
   version: 5.3.3
   resolution: "vite@npm:5.3.3"
   dependencies:
