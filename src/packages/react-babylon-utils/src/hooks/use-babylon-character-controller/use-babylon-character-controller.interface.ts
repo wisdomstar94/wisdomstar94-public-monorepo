@@ -35,6 +35,12 @@ export declare namespace IUseBabylonCharacterController {
     linearDamping?: number;
   }
 
+  export interface CharacterJumpingOptions {
+    jumpingAnimationStartDelay: number;
+    jumpingAnimationDuration: number;
+    jumpingTotalDuration: number;
+  }
+
   export interface AddRequireInfo {
     camera?: ArcRotateCamera;
     characterId: string;
@@ -42,8 +48,7 @@ export declare namespace IUseBabylonCharacterController {
     glbFileUrl: GlbFileUrl;
     characterSize: VectorThree;
     characterInitPosition: VectorThree;
-    characterJumpingDelay: number;
-    characterJumpingDuration: number;
+    characterJumpingOptions: CharacterJumpingOptions;
     characterAnimationGroupNames: AnimationGroupNames;
     chracterPhysicsBodyOptions?: ChracterPhysicsBodyOptions;
   }
@@ -81,9 +86,10 @@ export declare namespace IUseBabylonCharacterController {
     glbFileUrl: GlbFileUrl;
     cameraDirection?: VectorThree;
     direction: IUseBabylonCharacterController.CharacterGoDirection | undefined;
-    jumpingDelay: number;
-    jumpingDuration: number;
+    jumpingOptions: CharacterJumpingOptions;
+    saveJumpingOptions: CharacterJumpingOptions;
     isJumping: boolean;
+    isJumpPossible?: boolean;
     isRunning: boolean;
     jumpingInterval: NodeJS.Timeout | undefined;
     addRequireInfo: AddRequireInfo;

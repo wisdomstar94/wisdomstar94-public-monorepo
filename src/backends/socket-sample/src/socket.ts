@@ -63,7 +63,7 @@ export default function(server: http.Server) {
       socket.broadcast.emit('otherUserModelMovingInfo', data);
     });
 
-    socket.on('meJumping', (data: { characterId: string, delay: number, duration: number }) => {
+    socket.on('meJumping', (data: { characterId: string, jumpingOptions: IUseBabylonCharacterController.CharacterJumpingOptions }) => {
       console.log('@meJumping', data.characterId);
       socket.broadcast.emit('otherUserModelJumpingInfo', data);
     });

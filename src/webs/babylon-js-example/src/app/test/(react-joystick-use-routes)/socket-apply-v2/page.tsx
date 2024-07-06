@@ -73,8 +73,7 @@ export default function Page() {
               characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
               characterId: meCharacter.characterId,
               characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
-              characterJumpingDelay: meCharacter.jumpingDelay,
-              characterJumpingDuration: meCharacter.jumpingDuration,
+              characterJumpingOptions: meCharacter.jumpingOptions,
               characterSize: meCharacter.characterSize,
               glbFileUrl: meCharacter.glbFileUrl,
             };
@@ -113,8 +112,7 @@ export default function Page() {
               characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
               characterId: meCharacter.characterId,
               characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
-              characterJumpingDelay: meCharacter.jumpingDelay,
-              characterJumpingDuration: meCharacter.jumpingDuration,
+              characterJumpingOptions: meCharacter.jumpingOptions,
               characterSize: meCharacter.characterSize,
               glbFileUrl: meCharacter.glbFileUrl,
             };
@@ -145,10 +143,10 @@ export default function Page() {
       },
       {
         eventName: 'otherUserModelJumpingInfo', 
-        callback(data: { characterId: string; delay: number; duration: number; }) {
+        callback(data: { characterId: string; jumpingOptions: IUseBabylonCharacterController.CharacterJumpingOptions }) {
           if (data.characterId === characterId) return;
           // ...
-          babylonCharacterController.setCharacterJumping(data.characterId, data.delay, data.duration);
+          babylonCharacterController.setCharacterJumping(data.characterId, data.jumpingOptions);
         },
       },
     ],
@@ -347,7 +345,7 @@ export default function Page() {
         if (c !== undefined) {
           socketioManager.emit({
             eventName: 'meJumping', 
-            data: { characterId, delay: c.jumpingDelay, duration: c.jumpingDuration },
+            data: { characterId, jumpingOptions: c.jumpingOptions },
           });
         }
         babylonCharacterController.setCharacterJumping(characterId);
@@ -366,7 +364,7 @@ export default function Page() {
     sceneRef.current = scene;
     scene.actionManager = new ActionManager(scene);
 
-    const gravityVector = new Vector3(0, -11.81, 0);
+    const gravityVector = new Vector3(0, -19.81, 0);
     const havokInstance = await HavokPhysics();
     const physicsPlugin = new HavokPlugin(undefined, havokInstance);
     scene.enablePhysics(gravityVector, physicsPlugin);
@@ -465,8 +463,11 @@ export default function Page() {
         jumpingAnimationGroupName: 'jumping',
         runningAnimationGroupName: 'running',
       },
-      characterJumpingDelay: 450,
-      characterJumpingDuration: 500,
+      characterJumpingOptions: {
+        jumpingAnimationStartDelay: 450,
+        jumpingAnimationDuration: 400,
+        jumpingTotalDuration: 1400,
+      },
       glbFileUrl: {
         baseUrl: '/models/',
         filename: 'casual-lowpoly-male.glb',
@@ -507,8 +508,7 @@ export default function Page() {
         characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
         characterId: meCharacter.characterId,
         characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
-        characterJumpingDelay: meCharacter.jumpingDelay,
-        characterJumpingDuration: meCharacter.jumpingDuration,
+        characterJumpingOptions: meCharacter.jumpingOptions,
         characterSize: meCharacter.characterSize,
         glbFileUrl: meCharacter.glbFileUrl,
       };
@@ -728,7 +728,7 @@ export default function Page() {
             if (c !== undefined) {
               socketioManager.emit({
                 eventName: 'meJumping', 
-                data: { characterId, delay: c.jumpingDelay, duration: c.jumpingDuration },
+                data: { characterId, jumpingOptions: c.jumpingOptions },
               });
             }
             babylonCharacterController.setCharacterJumping(characterId);

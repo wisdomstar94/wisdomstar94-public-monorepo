@@ -30,8 +30,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       glbFileUrl,
       characterSize,
       characterInitPosition,
-      characterJumpingDelay,
-      characterJumpingDuration,
+      characterJumpingOptions,
       characterAnimationGroupNames,
       chracterPhysicsBodyOptions,
     } = params;
@@ -150,8 +149,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         characterSize,
         glbFileUrl,
         direction: undefined,
-        jumpingDelay: characterJumpingDelay,
-        jumpingDuration: characterJumpingDuration,
+        jumpingOptions: characterJumpingOptions,
+        saveJumpingOptions: characterJumpingOptions,
         isJumping: false,
         isRunning: false,
         jumpingInterval: undefined,
@@ -251,7 +250,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     targetCharacter.isRunning = isRunning ?? false;
   }
 
-  function setCharacterJumping(characterId: string, delay?: number, duration?: number) {
+  function setCharacterJumping(characterId: string, jumpingOptions?: IUseBabylonCharacterController.CharacterJumpingOptions) {
     const targetCharacter = charactersRef.current.get(characterId);
     if (targetCharacter === undefined) {
       console.error('해당 id 로 등록된 캐릭터가 없습니다.');
@@ -260,11 +259,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
     if (targetCharacter.isJumping) return;
     targetCharacter.isJumping = true;
-    if (delay !== undefined) {
-      targetCharacter.jumpingDelay = delay;
-    }
-    if (duration !== undefined) {
-      targetCharacter.jumpingDuration = duration;
+    if (jumpingOptions !== undefined) {
+      targetCharacter.jumpingOptions = jumpingOptions;
+    } else {
+      targetCharacter.jumpingOptions = targetCharacter.saveJumpingOptions;
     }
   }
 
@@ -429,23 +427,28 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         setIsThisClientCharacterControllingWrapper(characterItem.direction !== undefined, characterId);
         if (characterItem.isJumping) {
           setIsThisClientCharacterControllingWrapper(true, characterId);
-          if (characterItem.jumpingInterval === undefined) {
+          if (characterItem.isJumpPossible !== false) {
             // 점프 코드 작성..
             idleAnim?.stop();
             jumpAnim?.start(false);
+            characterItem.isJumpPossible = false;
 
             const currentVelocity = characterItem.characterBoxPhysicsBody.getLinearVelocity();
             characterItem.jumpingInterval = setTimeout(() => {
               characterItem.characterBoxPhysicsBody.setLinearVelocity(new Vector3(moveDirection.x * 3, currentVelocity.y + 14, moveDirection.z * 3));
               setTimeout(() => {
                 characterItem.isJumping = false;
-                jumpAnim?.stop();
-                idleAnim?.start(true);
                 setIsThisClientCharacterControllingWrapper(false, characterId);
                 clearTimeout(characterItem.jumpingInterval);
                 characterItem.jumpingInterval = undefined;
-              }, characterItem.jumpingDuration);
-            }, characterItem.jumpingDelay);
+                jumpAnim?.stop();
+                idleAnim?.start(true);
+              }, characterItem.jumpingOptions.jumpingAnimationDuration);
+            }, characterItem.jumpingOptions.jumpingAnimationStartDelay);
+
+            setTimeout(() => {
+              characterItem.isJumpPossible = true;
+            }, characterItem.jumpingOptions.jumpingTotalDuration);
           }
         }
         if (characterItem.jumpingInterval === undefined) {
@@ -476,7 +479,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           setIsThisClientCharacterControllingWrapper(true, characterId);
           runningAnim?.stop();
           walkingAnim?.stop();
-          idleAnim?.stop();
+          // idleAnim?.stop();
         }
       });
       checkNearUser();
