@@ -4,6 +4,12 @@ export declare namespace IUseSocketioManager {
     callback: (data: any) => void;
   }
 
+  export interface EmitOptions<T> {
+    eventName: string; 
+    data: T;
+    prevent?: (prevData: T | undefined) => boolean;
+  }
+
   export interface Props {
     socketUrl: string;
     isAutoConnect: boolean;

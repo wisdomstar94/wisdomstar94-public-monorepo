@@ -11,6 +11,7 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
 
   const socketRef = useRef<Socket>();
   const [isConnected, setIsConnected] = useState(false);
+  const prevEmitInfo = useRef<Map<string, any>>(new Map());
 
   function connect() {
     if (socketRef.current?.connected === true) {
@@ -34,12 +35,27 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     socketRef.current?.disconnect();
   }
 
-  function emit<T>(eventName: string, data: T) {
+  function emit<T>(options: IUseSocketioManager.EmitOptions<T>) {
+    const {
+      eventName,
+      data,
+      prevent,
+    } = options;
+
     if (socketRef.current?.connected !== true) {
       console.error(`socket 이 연결된 상태가 아닙니다..!`);
       return;
     }
+
+    if (typeof prevent === 'function') {
+      if (prevent(prevEmitInfo.current.get(eventName))) {
+        console.warn('prevent 조건에 의해 emit 이 발생하지 않았습니다.');
+        return;
+      }
+    }
+
     socketRef.current.emit(eventName, data);
+    prevEmitInfo.current.set(eventName, data);
   }
 
   function setListners() {

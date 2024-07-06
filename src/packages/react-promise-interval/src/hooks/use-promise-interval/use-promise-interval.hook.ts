@@ -55,6 +55,10 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
     interval.current = undefined;
   }
 
+  function fnCall() {
+    return fnRef.current();
+  }
+
   useEffect(() => {
     if (isAutoStart === true) {
       start();
@@ -70,5 +74,6 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
   return {
     start,
     stop,
+    fnCall,
   };
 }

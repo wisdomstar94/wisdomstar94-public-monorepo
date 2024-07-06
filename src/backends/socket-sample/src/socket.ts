@@ -27,12 +27,14 @@ export default function(server: http.Server) {
     });
 
     socket.on('meConnect', (data: IUseBabylonCharacterController.AddRequireInfo) => {
+      console.log('@meConnect', data.characterId);
       socket.data = { characterId: data.characterId };
-      console.log('@meConnect', socket);
+      // console.log('@meConnect', socket);
       socket.broadcast.emit('otherUserConnect', data);
     });
     
     socket.on('meCurrentPositionAndRotation', (data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) => {
+      console.log('@meCurrentPositionAndRotation', data.characterId);
       socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
     });
 
@@ -42,19 +44,21 @@ export default function(server: http.Server) {
       } else {
         console.log('## ## ##');
         io.fetchSockets().then((list) => {
-          console.log('@@list', list);
+          // console.log('@@list', list);
           const targetSocket = list.find(k => k.data.characterId === data.characterId);
-          console.log('targetSocket', targetSocket);
+          // console.log('targetSocket', targetSocket);
           targetSocket?.emit('otherUserCurrent', data.data);
         })
       }
     });
 
     socket.on('meMoving', (data: IUseBabylonCharacterController.CharacterMovingOptions) => {
+      console.log('@meMoving', data.characterId);
       socket.broadcast.emit('otherUserModelMovingInfo', data);
     });
 
     socket.on('meJumping', (data: { characterId: string, delay: number, duration: number }) => {
+      console.log('@meJumping', data.characterId);
       socket.broadcast.emit('otherUserModelJumpingInfo', data);
     });
 
