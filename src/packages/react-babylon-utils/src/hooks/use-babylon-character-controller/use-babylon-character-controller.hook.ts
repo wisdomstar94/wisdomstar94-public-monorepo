@@ -23,7 +23,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     thisClientCharacterIdRef.current = characterId;
   }
 
-  function add(params: IUseBabylonCharacterController.AddRequireInfo) {
+  function add(params: IUseBabylonCharacterController.AddRequireInfo): Promise<undefined | IUseBabylonCharacterController.CharacterItem> {
     const {
       camera,
       characterId,
@@ -43,7 +43,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     const t = charactersRef.current.get(characterId);
     if (t !== undefined) {
       console.warn('이미 해당 캐릭터는 존재합니다.');
-      return;
+      return Promise.resolve(undefined);
     }
 
     // 캐릭터와 맵핑할 메쉬
@@ -96,7 +96,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     }
 
     // model import!!!
-    SceneLoader.ImportMeshAsync(undefined, glbFileUrl.baseUrl, glbFileUrl.filename, scene).then((result) => {
+    const result = SceneLoader.ImportMeshAsync(undefined, glbFileUrl.baseUrl, glbFileUrl.filename, scene).then((result) => {
       // console.log('@result', result);
       const characterLoaderResult = result;
       const characterMeshes = characterLoaderResult.meshes;
@@ -171,9 +171,13 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       }
 
       checkNearUser();
+
+      return characterItem;
     }).catch((error) => {
       console.error('에러 발생', error);
+      return undefined;
     });
+    return result;
   }
 
   function remove(characterId: string) {

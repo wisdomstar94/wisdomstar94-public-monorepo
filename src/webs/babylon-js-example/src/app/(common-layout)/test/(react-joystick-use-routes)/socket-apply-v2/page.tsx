@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Scene } from "@babylonjs/core/scene";
-import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
+import { Color3, Quaternion, Vector3 } from "@babylonjs/core/Maths/math";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { AbstractMesh, ActionManager, ArcRotateCamera, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox } from "@babylonjs/core";
+import { AbstractMesh, ActionManager, ArcRotateCamera, DirectionalLight, HavokPlugin, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, PhysicsShapeCylinder, ReflectiveShadowMap, ShadowGenerator, SpotLight, StandardMaterial } from "@babylonjs/core";
 import "@babylonjs/loaders/glTF";
 import HavokPhysics from "@babylonjs/havok";
 import { Joystick } from "@wisdomstar94/react-joystick";
@@ -286,6 +286,8 @@ export default function Page() {
       axesViewer,
     } = initInfo;
 
+    canvas.focus();
+
     sceneRef.current = scene;
     scene.actionManager = new ActionManager(scene);
 
@@ -293,21 +295,77 @@ export default function Page() {
     const havokInstance = await HavokPhysics();
     const physicsPlugin = new HavokPlugin(undefined, havokInstance);
     scene.enablePhysics(gravityVector, physicsPlugin);
+    scene.shadowsEnabled = true;
 
-    const light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
+    const light2 = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
+    light2.intensity = 0.2;
+
+    // const light = new SpotLight("spot-light", new Vector3(30, 40, -30), new Vector3(-10, -10, 10), -Math.PI * 0.1, 1, scene);
+    // light.intensity = 0.7;
+    // light.diffuse = new Color3(1, 1, 1);
+    // light.shadowEnabled = true;
+    // light.shadowMinZ = 15;
+    // light.shadowMaxZ = 40; 
+
+    const light = new DirectionalLight("dirLight", new Vector3(0, -1, 1), scene);
+    light.position.z = -22;
+    light.position.x = 22;
+    light.position.y = 20;
+    // light.radius = 10;
+    // light.range = 1;
     light.intensity = 0.7;
+    // light.autoUpdateExtends = false;
+    light.shadowMinZ = 10;
+    light.shadowMaxZ = 450;
+    light.setDirectionToTarget(new Vector3(-1, 0, 1));
+    // light.setDirectionToTarget(new Vector3(-10, 0, -10));
+    
+    // light.orthoLeft = -0.15;
+    // light.orthoRight = 0.20;
+    // light.orthoBottom = -0.15;
+    // light.orthoTop = 0.40;
+
+    // const rsm = new ReflectiveShadowMap(scene, light, { width: 512, height: 512 });
 
     const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, Vector3.Zero(), scene);
     // camera.attachControl(canvas, true);
+
+    const shadowGenerator = new ShadowGenerator(4096, light, undefined, camera);
+    shadowGenerator.bias = 0.0003;
+    // shadowGenerator.useKernelBlur = true;
+    // shadowGenerator.useContactHardeningShadow = true;
+    // shadowGenerator.usePoissonSampling = true;
+    // shadowGenerator.useExponentialShadowMap = true;
+    // shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_MEDIUM;
+    // shadowGenerator.useContactHardeningShadow = true;
+    // shadowGenerator.contactHardeningLightSizeUVRatio = 0.015;
+
+    const settingShadow = (mesh: AbstractMesh, receiveShadows: boolean) => {
+      mesh.receiveShadows = receiveShadows;
+      const shadowMap = shadowGenerator.getShadowMap();
+      // console.log('@@shadowMap', shadowMap);
+      shadowMap?.renderList?.push(mesh);
+      // shadowGenerator.addShadowCaster(mesh, true);
+      // rsm.addMesh(mesh);
+    };
 
     // 바닥 셋팅
     babylonMeshPhysicsManager.injectObject({
       manageName: 'ground',
       mesh: (params) => {
         const { manageName } = params;
-        const mesh = MeshBuilder.CreateGround(manageName, { width: groundWidth, height: groundHeight });
+        // const mesh = MeshBuilder.CreateGround(manageName, { width: groundWidth, height: groundHeight }, scene);
+        const mesh = MeshBuilder.CreateBox(manageName, { width: groundWidth, height: 0.1, depth: groundHeight }, scene);
         mesh.position.y = 0;
-        mesh.receiveShadows = true;
+
+        const groundMaterial = new StandardMaterial("ground", scene);
+        // groundMaterial.ambientColor = new Color3(1, 1, 1);
+        groundMaterial.specularColor = new Color3(0, 0, 0);
+        groundMaterial.emissiveColor = new Color3(0.2, 0.2, 0.2);
+        groundMaterial.useLightmapAsShadowmap = true;
+        mesh.material = groundMaterial;
+
+        settingShadow(mesh, true);
         return mesh;
       },
       physicsBody: (params) => {
@@ -330,9 +388,10 @@ export default function Page() {
       mesh: (params) => {
         const { manageName } = params;
         const mesh = MeshBuilder.CreateBox(manageName, { width: 2, height: 2, depth: 2 }, scene); // width == x, height == y, depth == z 
-        mesh.position.y = 2.2;
+        mesh.position.y = 1.2;
         mesh.position.x = 0;
         mesh.position.z = 0;
+        settingShadow(mesh, true);
         return mesh;
       },
       physicsBody: (params) => {
@@ -349,6 +408,61 @@ export default function Page() {
       },
     });
 
+    // 가운데 고정 박스 셋팅
+    babylonMeshPhysicsManager.injectObject({
+      manageName: 'center-box2',
+      mesh: (params) => {
+        const { manageName } = params;
+        const mesh = MeshBuilder.CreateBox(manageName, { width: 1.5, height: 1.5, depth: 1.5 }, scene); // width == x, height == y, depth == z 
+        mesh.position.y = 1.2;
+        mesh.position.x = 2;
+        mesh.position.z = -2;
+        settingShadow(mesh, true);
+        return mesh;
+      },
+      physicsBody: (params) => {
+        const { mesh } = params;
+        const body = new PhysicsBody(mesh, PhysicsMotionType.STATIC, false, scene);
+        body.shape = new PhysicsShapeBox(
+          new Vector3(0, 0, 0),
+          Quaternion.Identity(),
+          new Vector3(2, 2, 2),
+          scene,
+        );
+        body.setMassProperties({ mass: 0 });
+        return body;
+      },
+    });
+
+    // 원뿔 고정 박스 셋팅
+    // babylonMeshPhysicsManager.injectObject({
+    //   manageName: 'cone-box',
+    //   mesh: (params) => {
+    //     const { manageName } = params;
+    //     const mesh = MeshBuilder.CreateCylinder(manageName, {
+    //       diameterTop: 0,
+    //       diameter: 5,
+    //     }, scene); // width == x, height == y, depth == z 
+    //     mesh.position.y = 2.2;
+    //     mesh.position.x = 0;
+    //     mesh.position.z = 0;
+    //     return mesh;
+    //   },
+    //   physicsBody: (params) => {
+    //     const { mesh } = params;
+    //     const body = new PhysicsBody(mesh, PhysicsMotionType.STATIC, false, scene);
+    //     body.shape = new PhysicsShapeBox(
+    //       new Vector3(0, 0, 0),
+    //       Quaternion.Identity(),
+    //       new Vector3(2, 2, 2),
+    //       scene,
+    //     );
+    //     body.shape = new PhysicsShapeCylinder()
+    //     body.setMassProperties({ mass: 0 });
+    //     return body;
+    //   },
+    // });
+
     // 왼쪽 벽 셋팅
     babylonMeshPhysicsManager.injectObject({
       manageName: 'left-wall',
@@ -359,6 +473,7 @@ export default function Page() {
         mesh.position.x = -20;
         mesh.position.z = 0;
         mesh.visibility = 1;
+        settingShadow(mesh, true);
         return mesh;
       },
       physicsBody: (params) => {
@@ -402,6 +517,11 @@ export default function Page() {
         angularDamping: 100,
         linearDamping: 10,
       },
+    }).then((c) => {
+      c?.characterMeshes.forEach((mesh, index) => {
+        settingShadow(mesh, true);  
+      });
+
     });
   }
 
