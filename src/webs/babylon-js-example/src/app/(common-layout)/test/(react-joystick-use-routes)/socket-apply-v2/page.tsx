@@ -19,6 +19,8 @@ import { useAuthCheck } from "@/hooks/use-auth-check/use-auth-check.hook";
 
 export default function Page() {
   const sceneRef = useRef<Scene>();
+  const shadowGeneratorRef = useRef<ShadowGenerator>();
+
   const [groundWidth, setGroundWidth] = useState(40);
   const [groundHeight, setGroundHeight] = useState(40);
   const body = useBody();
@@ -62,7 +64,13 @@ export default function Page() {
                 angularDamping: 100,
                 linearDamping: 10,
               },
-            });
+            }).then((c) => {
+              c?.characterMeshes.forEach((k) => {
+                k.receiveShadows = true;
+                const shadowMap = shadowGeneratorRef.current?.getShadowMap();
+                shadowMap?.renderList?.push(k);
+              });
+            });;
           }
 
           const meCharacter = babylonCharacterController.getCharacter(characterId);
@@ -103,6 +111,12 @@ export default function Page() {
               angularDamping: 100,
               linearDamping: 10,
             },
+          }).then((c) => {
+            c?.characterMeshes.forEach((k) => {
+              k.receiveShadows = true;
+              const shadowMap = shadowGeneratorRef.current?.getShadowMap();
+              shadowMap?.renderList?.push(k);
+            });
           });
           
           const meCharacter = babylonCharacterController.getCharacter(characterId);
@@ -331,6 +345,7 @@ export default function Page() {
     // camera.attachControl(canvas, true);
 
     const shadowGenerator = new ShadowGenerator(4096, light, undefined, camera);
+    shadowGeneratorRef.current = shadowGenerator;
     shadowGenerator.bias = 0.0003;
     // shadowGenerator.useKernelBlur = true;
     // shadowGenerator.useContactHardeningShadow = true;
@@ -340,8 +355,8 @@ export default function Page() {
     // shadowGenerator.useContactHardeningShadow = true;
     // shadowGenerator.contactHardeningLightSizeUVRatio = 0.015;
 
-    const settingShadow = (mesh: AbstractMesh, receiveShadows: boolean) => {
-      mesh.receiveShadows = receiveShadows;
+    const settingShadow = (mesh: AbstractMesh) => {
+      mesh.receiveShadows = true;
       const shadowMap = shadowGenerator.getShadowMap();
       // console.log('@@shadowMap', shadowMap);
       shadowMap?.renderList?.push(mesh);
@@ -365,7 +380,7 @@ export default function Page() {
         groundMaterial.useLightmapAsShadowmap = true;
         mesh.material = groundMaterial;
 
-        settingShadow(mesh, true);
+        settingShadow(mesh);
         return mesh;
       },
       physicsBody: (params) => {
@@ -391,7 +406,7 @@ export default function Page() {
         mesh.position.y = 1.2;
         mesh.position.x = 0;
         mesh.position.z = 0;
-        settingShadow(mesh, true);
+        settingShadow(mesh);
         return mesh;
       },
       physicsBody: (params) => {
@@ -417,7 +432,7 @@ export default function Page() {
         mesh.position.y = 1.2;
         mesh.position.x = 2;
         mesh.position.z = -2;
-        settingShadow(mesh, true);
+        settingShadow(mesh);
         return mesh;
       },
       physicsBody: (params) => {
@@ -473,7 +488,7 @@ export default function Page() {
         mesh.position.x = -20;
         mesh.position.z = 0;
         mesh.visibility = 1;
-        settingShadow(mesh, true);
+        settingShadow(mesh);
         return mesh;
       },
       physicsBody: (params) => {
@@ -519,7 +534,7 @@ export default function Page() {
       },
     }).then((c) => {
       c?.characterMeshes.forEach((mesh, index) => {
-        settingShadow(mesh, true);  
+        settingShadow(mesh);  
       });
 
     });
