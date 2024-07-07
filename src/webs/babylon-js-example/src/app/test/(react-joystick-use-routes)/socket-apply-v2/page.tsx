@@ -127,10 +127,10 @@ export default function Page() {
           if (c === undefined) return;
           babylonCharacterController.setCharacterPositionAndRotation({
             ...data,
-            notApplyPositionWhenNotBigDiffrenceOptions: data.notApplyPositionWhenNotBigDiffrenceOptions ?? {
-              isNotApplyPositionWhenNotBigDiffrence: true,
-              bigDifferenceDistance: 1,
-            },
+            // notApplyPositionWhenNotBigDiffrenceOptions: data.notApplyPositionWhenNotBigDiffrenceOptions ?? {
+            //   isNotApplyPositionWhenNotBigDiffrence: true,
+            //   bigDifferenceDistance: 0,
+            // },
           });
         },
       },
@@ -164,6 +164,18 @@ export default function Page() {
     isForceCallWhenFnExecuting: true,
   });
 
+  const emitInitMeCurrentPositionAndRotationInterval = usePromiseInterval({
+    fn: async() => {
+      emitMeCurrentPositionAndRotation();
+      return;
+    },
+    intervalTime: 500,
+    callMaxCount: 4,
+    isAutoStart: false,
+    isCallWhenStarted: true,
+    isForceCallWhenFnExecuting: true,
+  });
+
   const emitMeCurrentPositionAndRotationTimeout = usePromiseTimeout({
     fn: async() => {
       emitMeCurrentPositionAndRotation({ isForce: true });
@@ -185,14 +197,15 @@ export default function Page() {
         characterId,
         position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
         rotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
-        notApplyPositionWhenNotBigDiffrenceOptions: isForce === true ? {
-          isNotApplyPositionWhenNotBigDiffrence: false,
-        } : undefined,
-        animateOptions: isForce === true ? {
-          isAnimate: true,
-          duration: 500,
-        } : undefined,
+        // notApplyPositionWhenNotBigDiffrenceOptions: isForce === true ? {
+        //   isNotApplyPositionWhenNotBigDiffrence: false,
+        // } : undefined,
+        // animateOptions: isForce === true ? {
+        //   isAnimate: true,
+        //   duration: 500,
+        // } : undefined,
       };
+      console.log('@meCurrentPositionAndRotation');
       socketioManager.emit({
         eventName: "meCurrentPositionAndRotation", 
         data,
@@ -217,7 +230,7 @@ export default function Page() {
     const cDirection = c?.camera?.getForwardRay().direction;
     const movingInfo: IUseBabylonCharacterController.CharacterMovingOptions = { characterId, direction, isRunning: isRunning, cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined };
     socketioManager.emit({ eventName: 'meMoving', data: movingInfo, prevent(prevData) {
-        if (prevData?.direction === direction) return true;
+        if (prevData?.direction === direction && prevData?.isRunning === movingInfo.isRunning) return true;
         return false;
       },
     });
@@ -426,13 +439,14 @@ export default function Page() {
       });
     }
 
-    emitMeCurrentPositionAndRotationTimeout.start();
+    emitInitMeCurrentPositionAndRotationInterval.start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketioManager.isConnected]);
 
   useEffect(() => {
     if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
-      emitMeCurrentPositionAndRotationInterval.start();
+      emitMeCurrentPositionAndRotationInterval.stop();
+      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 250 : 1000 });
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
       emitMeCurrentPositionAndRotationTimeout.start();
@@ -485,7 +499,7 @@ export default function Page() {
           />
       </div>
       <div className="fixed top-2 left-2 bg-black/80 px-3 py-1.5 text-xs text-white">
-        {/* { characterId } */}
+        { characterId } { emitInitMeCurrentPositionAndRotationInterval.isIntervalExecuting ? 'true' : 'false' }
       </div>
     </>
   );

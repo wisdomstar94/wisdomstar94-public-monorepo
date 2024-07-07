@@ -7,14 +7,20 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
     isCallWhenStarted,
     isForceCallWhenFnExecuting,
     isAutoStart,
+    callMaxCount,
     fn,
   } = props;
 
   const [isFnCalling, setIsFnCalling] = useState(false);
   const isFnCallingRef = useRef(false);
 
+  const [isIntervalExecuting, setIsIntervalExecuting] = useState(false);
+
   const fnRef = useRef(fn);
   fnRef.current = fn;
+
+  const calledCountRef = useRef(0);
+  const callMaxCountRef = useRef<number>();
 
   const interval = useRef<NodeJS.Timeout>();
 
@@ -29,9 +35,14 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
       return;
     }
 
+    setIsIntervalExecuting(true);
+
     const applyIntervalTime = options?.intervalTime ?? intervalTime;
     const applyIsCallWhenStarted = (options?.isCallWhenStarted ?? isCallWhenStarted) ?? false;
     const applyIsForceCallWhenFnExecuting = (options?.isForceCallWhenFnExecuting ?? isForceCallWhenFnExecuting) ?? true;
+    const applyCallMaxCount = options?.callMaxCount ?? callMaxCount;
+    callMaxCountRef.current = applyCallMaxCount;
+    calledCountRef.current = 0;
 
     const call = () => {
       if (isFnCallingRef.current && !applyIsForceCallWhenFnExecuting) {
@@ -39,12 +50,17 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
       }
 
       setIsFnCallingWrapper(true);
+      calledCountRef.current++;
       fnRef.current().then(res => {
         
       }).catch((error) => {
 
       }).finally(() => {
         setIsFnCallingWrapper(false);
+        if (callMaxCountRef.current === undefined) return;
+        if (calledCountRef.current >= callMaxCountRef.current) {
+          stop();
+        }
       });
     };
 
@@ -59,6 +75,7 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
 
   function stop() {
     clearInterval(interval.current);
+    setIsIntervalExecuting(false);
     interval.current = undefined;
   }
 
@@ -83,5 +100,6 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
     stop,
     fnCall,
     isFnCalling,
+    isIntervalExecuting,
   };
 }

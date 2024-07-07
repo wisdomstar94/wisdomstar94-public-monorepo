@@ -194,8 +194,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       characterId,
       position,
       rotation,
-      notApplyPositionWhenNotBigDiffrenceOptions,
-      animateOptions,
+      // notApplyPositionWhenNotBigDiffrenceOptions,
+      // animateOptions,
     } = options;
 
     const targetCharacter = charactersRef.current.get(characterId);
@@ -204,57 +204,67 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       return;
     }
 
-    const isAnimate = animateOptions?.isAnimate ?? false;
-    const animateDuration = animateOptions?.duration ?? 300;
-    const isNotApplyPositionWhenNotBigDiffrence = notApplyPositionWhenNotBigDiffrenceOptions?.isNotApplyPositionWhenNotBigDiffrence ?? false;
-    const bigDifferenceDistance = notApplyPositionWhenNotBigDiffrenceOptions?.bigDifferenceDistance ?? 2;
-    const distance = calculateDistance3D({ x: position.x, y: position.y, z: position.z }, { x: targetCharacter.characterBox.position.x, y: targetCharacter.characterBox.position.y, z: targetCharacter.characterBox.position.z });
+    // const isAnimate = animateOptions?.isAnimate ?? false;
+    // const animateDuration = animateOptions?.duration ?? 300;
+    // const isNotApplyPositionWhenNotBigDiffrence = notApplyPositionWhenNotBigDiffrenceOptions?.isNotApplyPositionWhenNotBigDiffrence ?? false;
+    // const bigDifferenceDistance = notApplyPositionWhenNotBigDiffrenceOptions?.bigDifferenceDistance ?? 2;
+    // const distance = calculateDistance3D({ x: position.x, y: position.y, z: position.z }, { x: targetCharacter.characterBox.position.x, y: targetCharacter.characterBox.position.y, z: targetCharacter.characterBox.position.z });
 
-    let isChangePosition = false;
+    // let isChangePosition = false;
 
-    const changePosition = () => {
-      isChangePosition = true;
-      targetCharacter.characterBoxPhysicsBody.setPrestepType(PhysicsPrestepType.TELEPORT);
-      if (targetCharacter.isJumpPossible !== false) {
-        if (isAnimate) {
-          anime({
-            targets: [targetCharacter.characterBox.position],
-            x: position.x,
-            y: position.y,
-            z: position.z,
-            duration: animateDuration,
-          });
-        } else {
-          targetCharacter.characterBox.position.x = position.x;
-          targetCharacter.characterBox.position.y = position.y;
-          targetCharacter.characterBox.position.z = position.z;
-        }
-      } else {
-        if (isAnimate) {
-          anime({
-            targets: [targetCharacter.characterBox.position],
-            x: position.x,
-            z: position.z,
-            duration: animateDuration,
-          });
-        } else {
-          targetCharacter.characterBox.position.x = position.x;
-          targetCharacter.characterBox.position.z = position.z;
-        }
-      }
-    };
+    // const changePosition = () => {
+    //   isChangePosition = true;
+    //   targetCharacter.characterBoxPhysicsBody.setPrestepType(PhysicsPrestepType.TELEPORT);
+    //   if (targetCharacter.isJumpPossible !== false) {
+    //     if (isAnimate) {
+    //       anime({
+    //         targets: [targetCharacter.characterBox.position],
+    //         x: position.x,
+    //         y: position.y,
+    //         z: position.z,
+    //         duration: animateDuration,
+    //       });
+    //     } else {
+    //       targetCharacter.characterBox.position.x = position.x;
+    //       targetCharacter.characterBox.position.y = position.y;
+    //       targetCharacter.characterBox.position.z = position.z;
+    //     }
+    //   } else {
+    //     if (isAnimate) {
+    //       anime({
+    //         targets: [targetCharacter.characterBox.position],
+    //         x: position.x,
+    //         z: position.z,
+    //         duration: animateDuration,
+    //       });
+    //     } else {
+    //       targetCharacter.characterBox.position.x = position.x;
+    //       targetCharacter.characterBox.position.z = position.z;
+    //     }
+    //   }
+    // };
 
-    if (isNotApplyPositionWhenNotBigDiffrence === true) {
-      if (distance >= bigDifferenceDistance) {
-        changePosition();
-      } 
-    } else {
-      changePosition();
-    }
+    // if (isNotApplyPositionWhenNotBigDiffrence === true) {
+    //   if (distance >= bigDifferenceDistance) {
+    //     changePosition();
+    //   } 
+    // } else {
+    //   changePosition();
+    // }
 
     // targetCharacter.characterBoxPhysicsBody.setMotionType(PhysicsMotionType.DYNAMIC);
     // targetCharacter.characterBoxPhysicsBody.setPrestepType(PhysicsPrestepType.ACTION);
-    // targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
+    
+    targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
+
+    // if (isNotApplyPositionWhenNotBigDiffrence === true) {
+    //   if (distance >= bigDifferenceDistance) {
+    //     targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
+    //   } 
+    // } else {
+    //   targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
+    // }
+
     // const physicsEngine = targetCharacter.scene.getPhysicsEngine();
     // const plugIn = physicsEngine?.getPhysicsPlugin();
     // const hknp = (plugIn as any)['_hknp'];
@@ -276,16 +286,16 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       });  
     }
 
-    if (!isChangePosition) {
-      return;
-    } else {
-      return await new Promise(function(resolve, reject) {
-        setTimeout(() => {
-          targetCharacter.characterBoxPhysicsBody.disablePreStep = true;
-          resolve(undefined);
-        }, 100);
-      });
-    }
+    // if (!isChangePosition) {
+    //   return;
+    // } else {
+    //   return await new Promise(function(resolve, reject) {
+    //     setTimeout(() => {
+    //       targetCharacter.characterBoxPhysicsBody.disablePreStep = true;
+    //       resolve(undefined);
+    //     }, 100);
+    //   });
+    // }
   }
 
   function setCharacterMoving(options: IUseBabylonCharacterController.CharacterMovingOptions) {

@@ -120,8 +120,8 @@ export declare namespace IUseBabylonCharacterController {
     characterId: string;
     position: IUseBabylonCharacterController.VectorThree;
     rotation?: IUseBabylonCharacterController.VectorFour;
-    notApplyPositionWhenNotBigDiffrenceOptions?: CharacterPositionAndRotationOptionsNotApplyPositionOptions;
-    animateOptions?: CharacterPositionAndRotationOptionsAnimateOptions;
+    // notApplyPositionWhenNotBigDiffrenceOptions?: CharacterPositionAndRotationOptionsNotApplyPositionOptions;
+    // animateOptions?: CharacterPositionAndRotationOptionsAnimateOptions;
   }
 
   export interface ThisClientCharacterOptions {
