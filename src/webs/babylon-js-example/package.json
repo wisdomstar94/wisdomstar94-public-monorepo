@@ -24,15 +24,19 @@
     "@wisdomstar94/react-socketio-manager": "workspace:^",
     "@wisdomstar94/react-touch-container": "workspace:^",
     "animejs": "^3.2.2",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.2.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/animejs": "^3",
+    "@types/jsonwebtoken": "^9",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10",
     "babylonjs-gltf2interface": "^7.14.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",

@@ -27,6 +27,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     const {
       camera,
       characterId,
+      characterNickName,
       scene,
       glbFileUrl,
       characterSize,
@@ -139,6 +140,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
       const characterItem: IUseBabylonCharacterController.CharacterItem = {
         characterId,
+        characterNickName,
         camera,
         scene,
         characterLoaderResult,

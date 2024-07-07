@@ -9,19 +9,14 @@ export function CommonRootLayout(props: ICommonRootLayout.Props) {
 
   return (
     <>
-      <html lang="ko">
-        <body>
-          <main className="w-full relative p-4 box-border flex flex-wrap gap-2">
-            <div className="w-full">
-              <CommonRootLayoutClient menus={menus}></CommonRootLayoutClient>
-            </div>
-            <div className="w-full flex flex-wrap gap-2 relative">
-              { children }
-            </div>
-          </main>
-        </body>
-      </html>
-      
+      <main className="w-full relative p-4 box-border flex flex-wrap gap-2">
+        <div className="w-full">
+          <CommonRootLayoutClient menus={menus}></CommonRootLayoutClient>
+        </div>
+        <div className="w-full flex flex-wrap gap-2 relative">
+          { children }
+        </div>
+      </main>
     </>
   );
 }

@@ -1,15 +1,16 @@
 import http from 'http';
 import { Server } from "socket.io";
 import { IUseBabylonCharacterController } from '#IUseBabylonCharacterController';
+import jwt from 'jsonwebtoken';
 import { load } from 'dotenv-mono';
 load();
 
 const BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN = process.env.BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN ?? '';
 
-interface Info {
-  isExistNearUser: boolean;
-}
-const tempMemoryDB = new Map<string, Info>();
+// interface Info {
+//   isExistNearUser: boolean;
+// }
+// const tempMemoryDB = new Map<string, Info>();
 
 export default function(server: http.Server) {
   const io = new Server(server, {
@@ -17,6 +18,28 @@ export default function(server: http.Server) {
       origin: BACKENDS_SOCKET_SAMPLE_CORS_ORIGIN.split(',').map(x => x.trim()),
       methods: ["GET", "POST"],
     },
+  });
+
+  io.use(async (socket, next) => {
+    try {
+      const token = socket.handshake.auth.token;
+
+      const jwtSecretKey = process.env.JWT_SECRET_KEY;
+      if (typeof jwtSecretKey !== 'string') {
+        next(new Error('Authentication error..!'));
+        return;
+      }
+
+      // Verify and decode the JWT
+      const decoded = jwt.verify(token, jwtSecretKey);
+
+      // Attach the user object to the socket
+      socket.data.jwtPayload = decoded;
+      next();
+    } catch (error) {
+      console.error('Authentication error', error);
+      next(new Error('Authentication error'));
+    }
   });
 
   io.on('connection', socket => {

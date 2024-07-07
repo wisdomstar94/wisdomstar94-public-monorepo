@@ -13,7 +13,7 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
   const [isConnected, setIsConnected] = useState(false);
   const prevEmitInfo = useRef<Map<string, any>>(new Map());
 
-  function connect() {
+  function connect(options?: IUseSocketioManager.ConnectOptions) {
     if (socketRef.current?.connected === true) {
       return;
     }
@@ -21,7 +21,7 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     const socket = io(`ws://${socketUrl.replace('http://', '').replace('https://', '').replace('ws://', '')}`, {
       reconnectionDelayMax: 1000 * 5,
       auth: {
-        token: "123"
+        token: options?.authToken,
       },
       query: {
         "my-key": "my-value"

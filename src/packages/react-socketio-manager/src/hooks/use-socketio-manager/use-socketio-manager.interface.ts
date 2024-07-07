@@ -10,6 +10,10 @@ export declare namespace IUseSocketioManager {
     prevent?: (prevData: T | undefined) => boolean;
   }
 
+  export interface ConnectOptions {
+    authToken?: string;
+  }
+
   export interface Props {
     socketUrl: string;
     isAutoConnect: boolean;

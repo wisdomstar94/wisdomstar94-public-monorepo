@@ -15,14 +15,15 @@ import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
 import { useBody } from "@wisdomstar94/react-body";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
 import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
+import { useAuthCheck } from "@/hooks/use-auth-check/use-auth-check.hook";
 
 export default function Page() {
-  const characterIdRef = useRef(Date.now() + 'id');
-  const characterId = characterIdRef.current;
   const sceneRef = useRef<Scene>();
   const [groundWidth, setGroundWidth] = useState(40);
   const [groundHeight, setGroundHeight] = useState(40);
   const body = useBody();
+  const authCheck = useAuthCheck();
+  const characterId = authCheck.payload?.characterId ?? '';
 
   const babylonMeshPhysicsManager = useBabylonMeshPhysicsManager();
 
@@ -39,8 +40,10 @@ export default function Page() {
         (window as any).character = {};
       }
       (window as any).character[characterItem.characterId] = characterItem;
+      (window as any).babylonCharacterController = babylonCharacterController;
     },
   });
+  babylonCharacterController.setThisClientCharacterId(characterId);
 
   const socketioManager = useSocketioManager({
     isAutoConnect: false,
@@ -67,6 +70,7 @@ export default function Page() {
             const d: Omit<IUseBabylonCharacterController.AddRequireInfo, 'scene'> = {
               characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
               characterId: meCharacter.characterId,
+              characterNickName: authCheck.payload?.characterNickName,
               characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
               characterJumpingOptions: meCharacter.jumpingOptions,
               characterSize: meCharacter.characterSize,
@@ -378,6 +382,7 @@ export default function Page() {
       characterInitPosition: { x: 5, y: 1, z: 0 },
       characterSize: { x: 0.5, y: 1.5, z: 0.5 },
       characterId,
+      characterNickName: authCheck.payload?.characterNickName,
       characterAnimationGroupNames: {
         idleAnimationGroupName: 'idle',
         walkingAnimationGroupName: 'walking',
@@ -405,16 +410,9 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (socketioManager.isConnected !== true) {
-
-      return;
-    }
-  }, [socketioManager.isConnected]);
-
-  useEffect(() => {
     if (!babylonCharacterController.isThisClientCharacterLoaded) return;
     console.log('@tt');
-    socketioManager.connect();
+    socketioManager.connect({ authToken: authCheck.accessToken ?? '' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [babylonCharacterController.isThisClientCharacterLoaded]);
 
@@ -428,6 +426,7 @@ export default function Page() {
       const data: Omit<IUseBabylonCharacterController.AddRequireInfo, 'scene'> = {
         characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
         characterId: meCharacter.characterId,
+        characterNickName: authCheck.payload?.characterNickName,
         characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
         characterJumpingOptions: meCharacter.jumpingOptions,
         characterSize: meCharacter.characterSize,
@@ -460,6 +459,14 @@ export default function Page() {
     body.denyTextDrag();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (authCheck.accessToken === undefined) {
+    return <>Loading..</>;
+  }
+
+  if (authCheck.accessToken === null) {
+    return <>Require Login..</>;
+  }
 
   return (
     <>

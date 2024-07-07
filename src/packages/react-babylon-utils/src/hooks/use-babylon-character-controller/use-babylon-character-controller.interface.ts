@@ -44,6 +44,7 @@ export declare namespace IUseBabylonCharacterController {
   export interface AddRequireInfo {
     camera?: ArcRotateCamera;
     characterId: string;
+    characterNickName?: string;
     scene: Scene;
     glbFileUrl: GlbFileUrl;
     characterSize: VectorThree;
@@ -74,6 +75,7 @@ export declare namespace IUseBabylonCharacterController {
 
   export interface CharacterItem {
     characterId: string;
+    characterNickName?: string;
     camera?: ArcRotateCamera;
     scene: Scene;
     characterLoaderResult: ISceneLoaderAsyncResult;
