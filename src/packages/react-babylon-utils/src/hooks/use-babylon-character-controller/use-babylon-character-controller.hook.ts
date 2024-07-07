@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
-import { AnimationGroup, AnimationPropertiesOverride, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, AnimationPropertiesOverride, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsPrestepType, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
 import { calculateDistance3D } from "@/libs/utils";
+import anime from "animejs";
 
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
   const {
@@ -188,31 +189,82 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     charactersRef.current.delete(characterId);
   }
 
-  function setCharacterPositionAndRotation(options: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) {
+  async function setCharacterPositionAndRotation(options: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) {
     const {
       characterId,
       position,
       rotation,
-      // cameraDirection,
+      notApplyPositionWhenNotBigDiffrenceOptions,
+      animateOptions,
     } = options;
+
     const targetCharacter = charactersRef.current.get(characterId);
     if (targetCharacter === undefined) {
       console.error('해당 id 로 등록된 캐릭터가 없습니다.');
       return;
     }
 
-    // targetCharacter.characterBoxPhysicsBody.setLinearDamping(1000);
-    // const ori = targetCharacter.characterBoxPhysicsBody.getLinearVelocity();
-    // targetCharacter.characterBoxPhysicsBody.setLinearVelocity(new Vector3(0, 0, 0));
-    targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
-    // targetCharacter.characterBoxPhysicsBody.setLinearDamping(20);
-    // targetCharacter.characterBoxPhysicsBody.setLinearDamping(10);
-    // if (rotation !== undefined && cameraDirection !== undefined) {
-      
+    const isAnimate = animateOptions?.isAnimate ?? false;
+    const animateDuration = animateOptions?.duration ?? 300;
+    const isNotApplyPositionWhenNotBigDiffrence = notApplyPositionWhenNotBigDiffrenceOptions?.isNotApplyPositionWhenNotBigDiffrence ?? false;
+    const bigDifferenceDistance = notApplyPositionWhenNotBigDiffrenceOptions?.bigDifferenceDistance ?? 2;
+    const distance = calculateDistance3D({ x: position.x, y: position.y, z: position.z }, { x: targetCharacter.characterBox.position.x, y: targetCharacter.characterBox.position.y, z: targetCharacter.characterBox.position.z });
+
+    let isChangePosition = false;
+
+    const changePosition = () => {
+      isChangePosition = true;
+      targetCharacter.characterBoxPhysicsBody.setPrestepType(PhysicsPrestepType.TELEPORT);
+      if (targetCharacter.isJumpPossible !== false) {
+        if (isAnimate) {
+          anime({
+            targets: [targetCharacter.characterBox.position],
+            x: position.x,
+            y: position.y,
+            z: position.z,
+            duration: animateDuration,
+          });
+        } else {
+          targetCharacter.characterBox.position.x = position.x;
+          targetCharacter.characterBox.position.y = position.y;
+          targetCharacter.characterBox.position.z = position.z;
+        }
+      } else {
+        if (isAnimate) {
+          anime({
+            targets: [targetCharacter.characterBox.position],
+            x: position.x,
+            z: position.z,
+            duration: animateDuration,
+          });
+        } else {
+          targetCharacter.characterBox.position.x = position.x;
+          targetCharacter.characterBox.position.z = position.z;
+        }
+      }
+    };
+
+    if (isNotApplyPositionWhenNotBigDiffrence === true) {
+      if (distance >= bigDifferenceDistance) {
+        changePosition();
+      } 
+    } else {
+      changePosition();
+    }
+
+    // targetCharacter.characterBoxPhysicsBody.setMotionType(PhysicsMotionType.DYNAMIC);
+    // targetCharacter.characterBoxPhysicsBody.setPrestepType(PhysicsPrestepType.ACTION);
+    // targetCharacter.characterBoxPhysicsBody.setTargetTransform(new Vector3(position.x, position.y, position.z), Quaternion.Identity());
+    // const physicsEngine = targetCharacter.scene.getPhysicsEngine();
+    // const plugIn = physicsEngine?.getPhysicsPlugin();
+    // const hknp = (plugIn as any)['_hknp'];
+    // if (typeof hknp.HP_Body_SetPosition === 'function') {
+    //   const y = targetCharacter.isJumping ? targetCharacter.characterBox.position.y : position.y;
+    //   hknp.HP_Body_SetPosition(targetCharacter.characterBoxPhysicsBody._pluginData.hpBodyId, [position.x, y, position.z]);
     // }
+
     if (rotation !== undefined) {
       targetCharacter.characterMeshes.forEach((mesh) => {
-        // mesh.rotationQuaternion = Quaternion.FromEulerVector(new Vector3(rotation.x, rotation.y, rotation.z));
         if (mesh.rotationQuaternion !== null) {
           let newQ = mesh.rotationQuaternion.clone();
           newQ.x = rotation.x;
@@ -220,14 +272,19 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           newQ.z = rotation.z;
           newQ.w = rotation.w;
           mesh.rotationQuaternion = newQ;
-          // Quaternion.SlerpToRef(
-          //   mesh.rotationQuaternion,
-          //   newQ,
-          //   0.4,
-          //   mesh.rotationQuaternion
-          // );
         }
       });  
+    }
+
+    if (!isChangePosition) {
+      return;
+    } else {
+      return await new Promise(function(resolve, reject) {
+        setTimeout(() => {
+          targetCharacter.characterBoxPhysicsBody.disablePreStep = true;
+          resolve(undefined);
+        }, 100);
+      });
     }
   }
 

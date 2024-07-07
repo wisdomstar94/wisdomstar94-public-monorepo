@@ -101,12 +101,27 @@ export declare namespace IUseBabylonCharacterController {
     cameraDirection?: VectorThree;
     isRunning?: boolean;
   }
+
+  export interface CharacterPositionAndRotationOptionsNotApplyPositionOptions {
+    /** 적용하고자 하는 position 과 캐릭터의 현재 position 에 큰 차이가 없는 경우 적용하지 않을 것인지에 대한 여부 (기본값: false) */
+    isNotApplyPositionWhenNotBigDiffrence?: boolean;
+    /** 얼마까지를 큰 차이라고 볼 것인가에 대한 값 (기본 값: 2) */
+    bigDifferenceDistance?: number;
+  }
+
+  export interface CharacterPositionAndRotationOptionsAnimateOptions {
+    /** 기본값: false */
+    isAnimate?: boolean;
+    /** 기본값: 300 (ms) */
+    duration: number;
+  }
   
   export interface CharacterPositionAndRotationOptions {
     characterId: string;
     position: IUseBabylonCharacterController.VectorThree;
     rotation?: IUseBabylonCharacterController.VectorFour;
-    // cameraDirection?: IUseBabylonCharacterController.VectorThree;
+    notApplyPositionWhenNotBigDiffrenceOptions?: CharacterPositionAndRotationOptionsNotApplyPositionOptions;
+    animateOptions?: CharacterPositionAndRotationOptionsAnimateOptions;
   }
 
   export interface ThisClientCharacterOptions {

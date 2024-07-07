@@ -1,6 +1,6 @@
 {
-  "name": "@wisdomstar94/react-promise-interval",
-  "version": "0.0.7",
+  "name": "@wisdomstar94/react-promise-timeout",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",

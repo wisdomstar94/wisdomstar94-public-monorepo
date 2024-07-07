@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { IUsePromiseInterval } from "./use-promise-interval.interface";
+import { IUsePromiseTimeout } from "./use-promise-timeout.interface";
 
-export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
+export function usePromiseTimeout<T>(props: IUsePromiseTimeout.Props<T>) {
   const {
-    intervalTime,
+    timeoutTime,
     isCallWhenStarted,
     isForceCallWhenFnExecuting,
     isAutoStart,
@@ -16,20 +16,20 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
   const fnRef = useRef(fn);
   fnRef.current = fn;
 
-  const interval = useRef<NodeJS.Timeout>();
+  const timeout = useRef<NodeJS.Timeout>();
 
   function setIsFnCallingWrapper(v: boolean) {
     isFnCallingRef.current = v;
     setIsFnCalling(v);
   }
 
-  function start(options?: IUsePromiseInterval.StartOptions) {
-    if (interval.current !== undefined) {
-      console.warn('이미 interval 실행중입니다.');
+  function start(options?: IUsePromiseTimeout.StartOptions) {
+    if (timeout.current !== undefined) {
+      console.warn('이미 timeout 실행중입니다.');
       return;
     }
 
-    const applyIntervalTime = options?.intervalTime ?? intervalTime;
+    const applyTimeoutTime = options?.timeoutTime ?? timeoutTime;
     const applyIsCallWhenStarted = (options?.isCallWhenStarted ?? isCallWhenStarted) ?? false;
     const applyIsForceCallWhenFnExecuting = (options?.isForceCallWhenFnExecuting ?? isForceCallWhenFnExecuting) ?? true;
 
@@ -52,14 +52,15 @@ export function usePromiseInterval<T>(props: IUsePromiseInterval.Props<T>) {
       call();
     }
 
-    interval.current = setInterval(() => {
+    timeout.current = setTimeout(() => {
       call();
-    }, applyIntervalTime);
+      stop();
+    }, applyTimeoutTime);
   }
 
   function stop() {
-    clearInterval(interval.current);
-    interval.current = undefined;
+    clearTimeout(timeout.current);
+    timeout.current = undefined;
   }
 
   function fnCall() {

@@ -1292,7 +1292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/animejs@npm:^3":
+"@types/animejs@npm:^3, @types/animejs@npm:^3.1.12":
   version: 3.1.12
   resolution: "@types/animejs@npm:3.1.12"
   checksum: 10c0/21d10ed4fbaa99572e252b4d6e666b62a19089f63b13b0e9f8edf5fb0b708afc2b38c3055c52f6a4771bc71793d7a7aec83754c16d0e5606a0ad92b34778ba61
@@ -1650,6 +1650,7 @@ __metadata:
     "@wisdomstar94/react-joystick": "workspace:^"
     "@wisdomstar94/react-keyboard-manager": "workspace:^"
     "@wisdomstar94/react-promise-interval": "workspace:^"
+    "@wisdomstar94/react-promise-timeout": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     "@wisdomstar94/react-socketio-manager": "workspace:^"
     "@wisdomstar94/react-touch-container": "workspace:^"
@@ -1802,6 +1803,7 @@ __metadata:
   resolution: "@wisdomstar94/react-babylon-utils@workspace:src/packages/react-babylon-utils"
   dependencies:
     "@babylonjs/core": "npm:^7.14.0"
+    "@types/animejs": "npm:^3.1.12"
     "@types/node": "npm:^20.14.2"
     "@types/react": "npm:^18.3.3"
     "@types/react-dom": "npm:^18.3.0"
@@ -1809,12 +1811,14 @@ __metadata:
     "@wisdomstar94/react-add-event-listener": "workspace:^"
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     "@wisdomstar94/tsconfig-lib": "workspace:^"
+    animejs: "npm:^3.2.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     typescript: "npm:^5.4.5"
     vite: "npm:^5.3.1"
   peerDependencies:
     "@babylonjs/core": ^7.14.0
+    animejs: ^3.2.2
     react: ^18.3.1
     react-dom: ^18.3.1
   languageName: unknown
@@ -1944,6 +1948,25 @@ __metadata:
 "@wisdomstar94/react-promise-interval@workspace:^, @wisdomstar94/react-promise-interval@workspace:src/packages/react-promise-interval":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/react-promise-interval@workspace:src/packages/react-promise-interval"
+  dependencies:
+    "@types/node": "npm:^20.14.2"
+    "@types/react": "npm:^18.3.3"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    typescript: "npm:^5.4.5"
+    vite: "npm:^5.3.1"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  languageName: unknown
+  linkType: soft
+
+"@wisdomstar94/react-promise-timeout@workspace:^, @wisdomstar94/react-promise-timeout@workspace:src/packages/react-promise-timeout":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/react-promise-timeout@workspace:src/packages/react-promise-timeout"
   dependencies:
     "@types/node": "npm:^20.14.2"
     "@types/react": "npm:^18.3.3"

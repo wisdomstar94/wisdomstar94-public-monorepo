@@ -9,6 +9,7 @@
   },
   "peerDependencies": {
     "@babylonjs/core": "^7.14.0",
+    "animejs": "^3.2.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -16,10 +17,12 @@
     "@babylonjs/core": "^7.14.0",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
+    "animejs": "^3.2.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/animejs": "^3.1.12",
     "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

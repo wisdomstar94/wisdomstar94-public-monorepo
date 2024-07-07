@@ -14,6 +14,7 @@ import { TouchContainer } from "@wisdomstar94/react-touch-container";
 import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
 import { useBody } from "@wisdomstar94/react-body";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
+import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
 
 export default function Page() {
   const characterIdRef = useRef(Date.now() + 'id');
@@ -28,7 +29,7 @@ export default function Page() {
   const babylonCharacterController = useBabylonCharacterController({
     thisClientCharacterOptions: {
       characterId,
-      nearDistance: 2,
+      nearDistance: 1.4,
     },
     debugOptions: {
       isShowCharacterParentBoxMesh: false,
@@ -38,12 +39,6 @@ export default function Page() {
         (window as any).character = {};
       }
       (window as any).character[characterItem.characterId] = characterItem;
-      // console.log('characterItem', characterItem);  
-      // if (characterItem.characterId === 'other') {
-      //   setTimeout(() => {
-      //     babylonCharacterController.setCharacterMoving({ characterId: 'other', direction: 'Up', cameraDirection: { x: 1.7253501797, y: -0.485642946360, z: 0.8741572676 } });
-      //   }, 3000);          
-      // }
     },
   });
 
@@ -62,7 +57,7 @@ export default function Page() {
               scene: sceneRef.current!, 
               chracterPhysicsBodyOptions: {
                 angularDamping: 100,
-                linearDamping: 50,
+                linearDamping: 10,
               },
             });
           }
@@ -102,7 +97,7 @@ export default function Page() {
             scene: sceneRef.current!, 
             chracterPhysicsBodyOptions: { 
               angularDamping: 100,
-              linearDamping: 100,
+              linearDamping: 10,
             },
           });
           
@@ -130,7 +125,13 @@ export default function Page() {
           if (data.characterId === characterId) return;
           const c = babylonCharacterController.getCharacter(data.characterId);
           if (c === undefined) return;
-          babylonCharacterController.setCharacterPositionAndRotation(data);
+          babylonCharacterController.setCharacterPositionAndRotation({
+            ...data,
+            notApplyPositionWhenNotBigDiffrenceOptions: data.notApplyPositionWhenNotBigDiffrenceOptions ?? {
+              isNotApplyPositionWhenNotBigDiffrence: true,
+              bigDifferenceDistance: 1,
+            },
+          });
         },
       },
       {
@@ -154,20 +155,7 @@ export default function Page() {
 
   const emitMeCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
-      const c = babylonCharacterController.getCharacter(characterId);
-      if (c !== undefined) {
-        const firstMesh: AbstractMesh | undefined = c.characterMeshes[0];
-        const ro = firstMesh?.rotationQuaternion;
-        const data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions = {
-          characterId,
-          position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
-          rotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
-        };
-        socketioManager.emit({
-          eventName: "meCurrentPositionAndRotation", 
-          data,
-        });
-      }
+      emitMeCurrentPositionAndRotation();
       return;
     },
     intervalTime: 1000,
@@ -176,180 +164,100 @@ export default function Page() {
     isForceCallWhenFnExecuting: true,
   });
 
+  const emitMeCurrentPositionAndRotationTimeout = usePromiseTimeout({
+    fn: async() => {
+      emitMeCurrentPositionAndRotation({ isForce: true });
+    },
+    timeoutTime: 500,
+    isAutoStart: false,
+    isCallWhenStarted: false,
+    isForceCallWhenFnExecuting: true,
+  });
+
+  function emitMeCurrentPositionAndRotation(params?: { isForce?: boolean; }) {
+    const { isForce } = params ?? {};
+
+    const c = babylonCharacterController.getCharacter(characterId);
+    if (c !== undefined) {
+      const firstMesh: AbstractMesh | undefined = c.characterMeshes[0];
+      const ro = firstMesh?.rotationQuaternion;
+      const data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions = {
+        characterId,
+        position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
+        rotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
+        notApplyPositionWhenNotBigDiffrenceOptions: isForce === true ? {
+          isNotApplyPositionWhenNotBigDiffrence: false,
+        } : undefined,
+        animateOptions: isForce === true ? {
+          isAnimate: true,
+          duration: 500,
+        } : undefined,
+      };
+      socketioManager.emit({
+        eventName: "meCurrentPositionAndRotation", 
+        data,
+      });
+    }
+  }
+
+  function disposeMoving(params: { 
+    direction: IUseBabylonCharacterController.CharacterGoDirection | undefined;
+    isRunning: boolean;
+    // cameraDirection?: Vector3;
+  }) {
+    const {
+      direction,
+      isRunning,
+      // cameraDirection,
+    } = params;
+
+    const c = babylonCharacterController.getCharacter(characterId);
+    if (c === undefined) return;
+
+    const cDirection = c?.camera?.getForwardRay().direction;
+    const movingInfo: IUseBabylonCharacterController.CharacterMovingOptions = { characterId, direction, isRunning: isRunning, cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined };
+    socketioManager.emit({ eventName: 'meMoving', data: movingInfo, prevent(prevData) {
+        if (prevData?.direction === direction) return true;
+        return false;
+      },
+    });
+    babylonCharacterController.setCharacterMoving({ characterId, direction, isRunning });
+  }
+
+  function disposeJumping() {
+    const c = babylonCharacterController.getCharacter(characterId);
+    if (c === undefined) return;
+
+    if (c !== undefined && c.isJumpPossible !== false) {
+      socketioManager.emit({
+        eventName: 'meJumping', 
+        data: { characterId, jumpingOptions: c.jumpingOptions },
+        prevent() {
+          return c.isJumpPossible === false;
+        },
+      });
+      babylonCharacterController.setCharacterJumping(characterId);
+    }
+  }
+
   useKeyboardManager({
     onChangeKeyMapStatus(keyMap) {
-      // console.log('keyMap', keyMap);
       const isUpPress = keyMap.get('ArrowUp');
       const isDownPress = keyMap.get('ArrowDown');
       const isLeftPress = keyMap.get('ArrowLeft');
       const isRightPress = keyMap.get('ArrowRight');
       const isShiftPress = keyMap.get('Shift');
       const isJumpPress = keyMap.get(' ');
-      const c = babylonCharacterController.getCharacter(characterId);
-      const cDirection = c?.camera?.getForwardRay().direction;
-      let movingInfo: IUseBabylonCharacterController.CharacterMovingOptions | undefined;
-      if (isUpPress && !isDownPress && !isLeftPress && !isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Up',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Up') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up', isRunning: isShiftPress });
-      }
-      if (!isUpPress && isDownPress && !isLeftPress && !isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Down',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Down') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down', isRunning: isShiftPress });
-      }
-      if (!isUpPress && !isDownPress && isLeftPress && !isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Left',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Left') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Left', isRunning: isShiftPress });
-      }
-      if (!isUpPress && !isDownPress && !isLeftPress && isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Right',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Right') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Right', isRunning: isShiftPress });
-      }
-      if (isUpPress && !isDownPress && isLeftPress && !isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Up+Left',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Up+Left') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Left', isRunning: isShiftPress });
-      }
-      if (isUpPress && !isDownPress && !isLeftPress && isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Up+Right',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Up+Right') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Right', isRunning: isShiftPress });
-      }
-      if (!isUpPress && isDownPress && isLeftPress && !isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Down+Left',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Down+Left') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Left', isRunning: isShiftPress });
-      }
-      if (!isUpPress && isDownPress && !isLeftPress && isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: 'Down+Right',
-          isRunning: isShiftPress,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === 'Down+Right') return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Right', isRunning: isShiftPress });
-      }
-      if (!isUpPress && !isDownPress && !isLeftPress && !isRightPress) { 
-        movingInfo = {
-          characterId,
-          direction: undefined,
-          isRunning: false,
-          cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-        };
-        socketioManager.emit({
-          eventName: 'meMoving', 
-          data: movingInfo,
-          prevent(prevData) {
-            if (prevData?.direction === undefined) return true;
-            return false;
-          },
-        });
-        babylonCharacterController.setCharacterMoving({ characterId, direction: undefined });
-      }
-      if (isJumpPress) {
-        if (c !== undefined) {
-          socketioManager.emit({
-            eventName: 'meJumping', 
-            data: { characterId, jumpingOptions: c.jumpingOptions },
-          });
-        }
-        babylonCharacterController.setCharacterJumping(characterId);
-      }
+      if (isUpPress && !isDownPress && !isLeftPress && !isRightPress) { disposeMoving({ direction: 'Up', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && isDownPress && !isLeftPress && !isRightPress) { disposeMoving({ direction: 'Down', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && !isDownPress && isLeftPress && !isRightPress) { disposeMoving({ direction: 'Left', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && !isDownPress && !isLeftPress && isRightPress) { disposeMoving({ direction: 'Right', isRunning: isShiftPress ?? false }); }
+      if (isUpPress && !isDownPress && isLeftPress && !isRightPress) { disposeMoving({ direction: 'Up+Left', isRunning: isShiftPress ?? false }); }
+      if (isUpPress && !isDownPress && !isLeftPress && isRightPress) { disposeMoving({ direction: 'Up+Right', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && isDownPress && isLeftPress && !isRightPress) { disposeMoving({ direction: 'Down+Left', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && isDownPress && !isLeftPress && isRightPress) { disposeMoving({ direction: 'Down+Right', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && !isDownPress && !isLeftPress && !isRightPress) { disposeMoving({ direction: undefined, isRunning: isShiftPress ?? false }); }
+      if (isJumpPress) { disposeJumping(); }
     },
   });
 
@@ -517,19 +425,17 @@ export default function Page() {
         data,
       });
     }
+
+    emitMeCurrentPositionAndRotationTimeout.start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketioManager.isConnected]);
 
   useEffect(() => {
-    console.log('');
-    console.log('@babylonCharacterController.isThisClientCharacterControlling', babylonCharacterController.isThisClientCharacterControlling);
-    console.log('@babylonCharacterController.isExistThisClientCharacterNearOtherCharacters', babylonCharacterController.isExistThisClientCharacterNearOtherCharacters);
-    console.log('');
-
     if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
       emitMeCurrentPositionAndRotationInterval.start();
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
+      emitMeCurrentPositionAndRotationTimeout.start();
       emitMeCurrentPositionAndRotationInterval.fnCall();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -556,167 +462,17 @@ export default function Page() {
       <div className="fixed bottom-10 right-10 z-10">
         <Joystick
           onPressed={(keys, isStrenth) => {
-            const c = babylonCharacterController.getCharacter(characterId);
-            const cDirection = c?.camera?.getForwardRay().direction;
-            let movingInfo: IUseBabylonCharacterController.CharacterMovingOptions | undefined;
-
-            if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Up',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Up') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up', isRunning: isStrenth }); 
-            } // ⬆
-            if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Down',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Down') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down', isRunning: isStrenth }); 
-            } // ⬇
-            if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Left',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Left') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Left', isRunning: isStrenth }); 
-            } // ⬅
-            if (keys.includes('ArrowRight') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Right',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Right') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Right', isRunning: isStrenth }); 
-            } // ⮕
-            if (keys.includes('ArrowUp') && keys.includes('ArrowLeft')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Up+Left',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Up+Left') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Left', isRunning: isStrenth }); 
-            } // ⬅ + ⬆
-            if (keys.includes('ArrowUp') && keys.includes('ArrowRight')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Up+Right',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Up+Right') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Up+Right', isRunning: isStrenth }); 
-            } // ⬆ + ⮕
-            if (keys.includes('ArrowDown') && keys.includes('ArrowLeft')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Down+Left',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Down+Left') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Left', isRunning: isStrenth }); 
-            } // ⬅ + ⬇
-            if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { 
-              movingInfo = {
-                characterId,
-                direction: 'Down+Right',
-                isRunning: isStrenth,
-                cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-              };
-              socketioManager.emit({
-                eventName: 'meMoving', 
-                data: movingInfo,
-                prevent(prevData) {
-                  if (prevData?.direction === 'Down+Right') return true;
-                  return false;
-                },
-              });
-              babylonCharacterController.setCharacterMoving({ characterId, direction: 'Down+Right', isRunning: isStrenth }); 
-            } // ⬇ + ⮕
+            if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Up', isRunning: isStrenth }); } // ⬆
+            if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down', isRunning: isStrenth }); } // ⬇
+            if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { disposeMoving({ direction: 'Left', isRunning: isStrenth }); } // ⬅
+            if (keys.includes('ArrowRight') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { disposeMoving({ direction: 'Right', isRunning: isStrenth }); } // ⮕
+            if (keys.includes('ArrowUp') && keys.includes('ArrowLeft')) { disposeMoving({ direction: 'Up+Left', isRunning: isStrenth }); } // ⬅ + ⬆
+            if (keys.includes('ArrowUp') && keys.includes('ArrowRight')) { disposeMoving({ direction: 'Up+Right', isRunning: isStrenth }); } // ⬆ + ⮕
+            if (keys.includes('ArrowDown') && keys.includes('ArrowLeft')) { disposeMoving({ direction: 'Down+Left', isRunning: isStrenth }); } // ⬅ + ⬇
+            if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down+Right', isRunning: isStrenth }); } // ⬇ + ⮕
           }}
           onPressOut={() => {
-            const c = babylonCharacterController.getCharacter(characterId);
-            const cDirection = c?.camera?.getForwardRay().direction;
-            let movingInfo: IUseBabylonCharacterController.CharacterMovingOptions | undefined;
-            movingInfo = {
-              characterId,
-              direction: undefined,
-              isRunning: false,
-              cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined,
-            };
-            socketioManager.emit({
-              eventName: 'meMoving', 
-              data: movingInfo,
-              prevent(prevData) {
-                if (prevData?.direction === undefined) return true;
-                return false;
-              },
-            });
-
-            babylonCharacterController.setCharacterMoving({ characterId, direction: undefined });
+            disposeMoving({ direction: undefined, isRunning: false });
           }}
           />
       </div>
@@ -724,14 +480,7 @@ export default function Page() {
         <TouchContainer
           className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
           onTouchStart={() => { 
-            const c = babylonCharacterController.getCharacter(characterId);
-            if (c !== undefined) {
-              socketioManager.emit({
-                eventName: 'meJumping', 
-                data: { characterId, jumpingOptions: c.jumpingOptions },
-              });
-            }
-            babylonCharacterController.setCharacterJumping(characterId);
+            disposeJumping();
           }}
           />
       </div>

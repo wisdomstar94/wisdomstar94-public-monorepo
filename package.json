@@ -8,6 +8,7 @@
     "@wisdomstar94/react-multiple-api-manager": "yarn workspace @wisdomstar94/react-multiple-api-manager",
     "@wisdomstar94/react-api": "yarn workspace @wisdomstar94/react-api",
     "@wisdomstar94/react-promise-interval": "yarn workspace @wisdomstar94/react-promise-interval",
+    "@wisdomstar94/react-promise-timeout": "yarn workspace @wisdomstar94/react-promise-timeout",
     "@wisdomstar94/react-body": "yarn workspace @wisdomstar94/react-body",
     "@wisdomstar94/react-api-again-request-scheduler": "yarn workspace @wisdomstar94/react-api-again-request-scheduler",
     "@wisdomstar94/react-request-animation-frame-manager": "yarn workspace @wisdomstar94/react-request-animation-frame-manager",
@@ -21,7 +22,7 @@
     "@wisdomstar94/babylon-js-example": "yarn workspace @wisdomstar94/babylon-js-example",
     "@wisdomstar94/ant-design-example": "yarn workspace @wisdomstar94/ant-design-example",
     "@wisdomstar94/socket-sample": "yarn workspace @wisdomstar94/socket-sample",
-    "pack:build:step1": "concurrently \"yarn @wisdomstar94/react-add-event-listener pack:build\" \"yarn @wisdomstar94/react-indexeddb-manager pack:build\" \"yarn @wisdomstar94/react-multiple-api-manager pack:build\" \"yarn @wisdomstar94/react-api pack:build\" \"yarn @wisdomstar94/react-promise-interval pack:build\" \"yarn @wisdomstar94/react-body pack:build\" \"yarn @wisdomstar94/react-api-again-request-scheduler pack:build\" \"yarn @wisdomstar94/react-request-animation-frame-manager pack:build\"",
+    "pack:build:step1": "concurrently \"yarn @wisdomstar94/react-add-event-listener pack:build\" \"yarn @wisdomstar94/react-indexeddb-manager pack:build\" \"yarn @wisdomstar94/react-multiple-api-manager pack:build\" \"yarn @wisdomstar94/react-api pack:build\" \"yarn @wisdomstar94/react-promise-interval pack:build\" \"yarn @wisdomstar94/react-promise-timeout pack:build\" \"yarn @wisdomstar94/react-body pack:build\" \"yarn @wisdomstar94/react-api-again-request-scheduler pack:build\" \"yarn @wisdomstar94/react-request-animation-frame-manager pack:build\"",
     "pack:build:step2": "concurrently \"yarn @wisdomstar94/react-joystick pack:build\" \"yarn @wisdomstar94/react-babylon-utils pack:build\" \"yarn @wisdomstar94/react-keyboard-manager pack:build\" \"yarn @wisdomstar94/react-touch-container pack:build\" \"yarn @wisdomstar94/react-socketio-manager pack:build\"",
     "pack:build:all": "yarn pack:build:step1 && yarn pack:build:step2"
   },
