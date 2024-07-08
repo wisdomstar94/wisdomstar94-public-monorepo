@@ -11,6 +11,7 @@ export default function Layout({
     { name: 'test/use-transition/no', href: '/test/use-transition/no' },
     { name: 'test/use-transition/with-suspense', href: '/test/use-transition/with-suspense' },
     { name: 'test/use-layout-effect', href: '/test/use-layout-effect' },
+    { name: 'test/use-sync-external-store', href: '/test/use-sync-external-store' },
   ];
 
   return (
