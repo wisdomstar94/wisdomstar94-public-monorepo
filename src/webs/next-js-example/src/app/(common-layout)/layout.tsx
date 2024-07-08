@@ -7,7 +7,8 @@ export default function Layout({
 }>) {
   const menus: ICommonRootLayout.MenuItem[] = [
     { name: 'test/use-id', href: '/test/use-id' },
-    { name: 'test/use-id2', href: '/test/use-id2' },
+    { name: 'test/use-transition/yes', href: '/test/use-transition/yes' },
+    { name: 'test/use-transition/no', href: '/test/use-transition/no' },
   ];
 
   return (
