@@ -22,6 +22,7 @@
 | [@wisdomstar94/react-touch-container](https://www.npmjs.com/package/@wisdomstar94/react-touch-container) | src/packages/react-touch-container | touch 또는 mousedown 이벤트를 이용하여 사용자가 터치 했는지 아닌지 여부를 알 수 있도록 해주는 기능을 제공하는 리액트용 `component` 를 제공합니다. <br /><br /> 해당 컴포넌트는 PC와 Mobile 환경에서 모두 사용가능하며 Mobile 환경인 경우에는 멀티 터치 상황에서도 동작하도록 설계되었습니다. | 
 | [@wisdomstar94/react-socketio-manager](https://www.npmjs.com/package/@wisdomstar94/react-socketio-manager) | src/packages/react-socketio-manager | socket.io 클라이언트 패키지를 react 에서 사용하기 편한 `hook` 을 제공합니다. | 
 | [@wisdomstar94/react-promise-timeout](https://www.npmjs.com/package/@wisdomstar94/react-promise-timeout) | src/packages/react-promise-timeout | setTimeout 을 react 용으로 랩핑한 `hook` 을 제공합니다. | 
+| [@wisdomstar94/react-web-rtc-manager](https://www.npmjs.com/package/@wisdomstar94/react-web-rtc-manager) | src/packages/react-web-rtc-manager | web rtc 이용에 있어서 편의를 위한 리액트 `hook` 을 제공합니다. | 
 
 <br />
 
