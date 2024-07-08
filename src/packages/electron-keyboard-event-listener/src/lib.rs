@@ -1,4 +1,4 @@
-use gtk4::{self, gdk, gio::ActionEntry, glib, prelude::{ActionMapExt, ActionMapExtManual, ApplicationExt, ApplicationExtManual, GtkWindowExt, WidgetExt}, Application, ApplicationWindow};
+use gtk4::{self, gdk, gio::ActionEntry, glib, prelude::{ActionMapExtManual, ApplicationExt, ApplicationExtManual, GtkWindowExt, WidgetExt}, Application, ApplicationWindow};
 
 fn build_ui(app: &Application) {
     // Create a window and set the title
