@@ -1818,6 +1818,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/next-js-example@workspace:src/webs/next-js-example":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/next-js-example@workspace:src/webs/next-js-example"
+  dependencies:
+    "@types/node": "npm:^20"
+    "@types/react": "npm:^18"
+    "@types/react-dom": "npm:^18"
+    eslint: "npm:^8"
+    eslint-config-next: "npm:14.2.4"
+    next: "npm:14.2.4"
+    postcss: "npm:^8"
+    react: "npm:^18"
+    react-dom: "npm:^18"
+    tailwindcss: "npm:^3.4.1"
+    typescript: "npm:^5"
+  languageName: unknown
+  linkType: soft
+
 "@wisdomstar94/packages-common-lib@workspace:src/libs/packages-common-lib":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/packages-common-lib@workspace:src/libs/packages-common-lib"
