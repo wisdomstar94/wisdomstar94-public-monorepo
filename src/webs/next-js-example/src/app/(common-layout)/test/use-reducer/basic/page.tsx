@@ -48,12 +48,18 @@ const initData: Data = {
   age: 42,
   name: '홍길동',
 };
+
+function createInitialState(state: Data) {
+  console.log('@createInitialState', state);
+  // state.age = 0;
+  return state;
+}
 ////////////////////////////////////////
 /// reducer setting end
 ////////////////////////////////////////
 
 export default function Page() {
-  const [state, dispatch] = useReducer(reducer, initData);
+  const [state, dispatch] = useReducer(reducer, initData, createInitialState);
   const [inputedText, setInputedText] = useState('');
 
   return (
