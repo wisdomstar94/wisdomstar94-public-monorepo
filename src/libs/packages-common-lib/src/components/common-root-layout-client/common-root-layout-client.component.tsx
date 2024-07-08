@@ -11,7 +11,7 @@ export function CommonRootLayoutClient(props: ICommonRootLayoutClient.Props) {
   const pathname = usePathname();
 
   useEffect(() => {
-    console.log('@pathname', pathname);
+    // console.log('@pathname', pathname);
   }, [pathname]);
 
   return (

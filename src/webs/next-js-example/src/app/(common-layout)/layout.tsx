@@ -10,6 +10,7 @@ export default function Layout({
     { name: 'test/use-transition/yes', href: '/test/use-transition/yes' },
     { name: 'test/use-transition/no', href: '/test/use-transition/no' },
     { name: 'test/use-transition/with-suspense', href: '/test/use-transition/with-suspense' },
+    { name: 'test/use-layout-effect', href: '/test/use-layout-effect' },
   ];
 
   return (
