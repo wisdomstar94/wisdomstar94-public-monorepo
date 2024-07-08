@@ -9,6 +9,7 @@ export default function Layout({
     { name: 'test/use-id', href: '/test/use-id' },
     { name: 'test/use-transition/yes', href: '/test/use-transition/yes' },
     { name: 'test/use-transition/no', href: '/test/use-transition/no' },
+    { name: 'test/use-transition/with-suspense', href: '/test/use-transition/with-suspense' },
   ];
 
   return (
