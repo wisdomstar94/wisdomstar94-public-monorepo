@@ -4,56 +4,59 @@
 import { useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
 import { useEffect } from "react";
 
+type MetaData = {
+  nickname: string;
+};
+
 export default function Page() {
-  const webRtcManager = useWebRtcManager({
-    autoStart: true,
-    defaultCreateConnectionOptions: {
-      rtcConfiguration: {
-        
-      },
+  const webRtcManager = useWebRtcManager<MetaData>({
+    defaultRtcConfiguration: {
+      // ...
     },
-    onIceCandidate(event) {
+    onCreatedPeerConnectionInfo(socketId, peerConnectionInfo) {
+      console.log('@onCreatedPeerConnection', { socketId, peerConnectionInfo });  
+    },
+    onIceCandidate(socketId, event) {
       console.log('@onIceCandidate.event', event);
     },
-    onIceCandidateError(event) {
+    onIceCandidateError(socketId, event) {
       console.log('@onIceCandidateError.event', event);
     },
-    onIceConnectionStateChange(event) {
+    onIceConnectionStateChange(socketId, event) {
       console.log('@onIceConnectionStateChange', event);
     },
-    onIceGatheringStateChange(event) {
+    onIceGatheringStateChange(socketId, event) {
       console.log('@onIceGatheringStateChange', event);
     },
-    onNegotiationNeeded(event) {
+    onNegotiationNeeded(socketId, event) {
       console.log('@onNegotiationNeeded', event);
     },
-    onSignalingStateChange(event) {
+    onSignalingStateChange(socketId, event) {
       console.log('@onSignalingStateChange', event);
     },
-    onDataChannel(event) {
+    onDataChannel(socketId, event) {
       console.log('@onDataChannel', event);
     },
-    onConnectionStateChange(event) {
+    onConnectionStateChange(socketId, event) {
       console.log('@onConnectionStateChange', event);
+    },
+    onClosedPeerConnectionInfo(socketId, peerConnectionInfo) {
+      console.log('@onClosedPeerConnectionInfo', { socketId, peerConnectionInfo });    
     },
   });
 
   useEffect(() => {
-    if (!webRtcManager.isRtcPeerConnectionCreated) return;
-
-    const rtcPeerConnection = webRtcManager.rtcPeerConnection;
-    if (rtcPeerConnection === undefined) return;
-
-    rtcPeerConnection.createOffer().then((res) => {
-      console.log('@createOffer.res', res);
-      return rtcPeerConnection.setLocalDescription(new RTCSessionDescription(res));
+    webRtcManager.createPeerConnection({
+      socketId: 1,
+      meta: {
+        nickname: 'zzz'
+      },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webRtcManager.isRtcPeerConnectionCreated]);
+  }, []);
 
   return (
     <>
-      isRtcPeerConnectionCreated: { webRtcManager.isRtcPeerConnectionCreated ? 'true' : 'false' }
+      
     </>
   );
 }

@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { IUseWebRtcManager } from "./use-web-rtc-manager.interface";
 
-export function useWebRtcManager(props: IUseWebRtcManager.Props) {
-  const autoStart = props.autoStart ?? false;
-  const defaultCreateConnectionOptions = props.defaultCreateConnectionOptions;
+export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>) {
+  const defaultRtcConfiguration = props.defaultRtcConfiguration;
+
+  const onCreatedPeerConnectionInfo = props.onCreatedPeerConnectionInfo;
+  const onClosedPeerConnectionInfo = props.onClosedPeerConnectionInfo;
 
   const onIceCandidateRef = useRef(props.onIceCandidate);
   onIceCandidateRef.current = props.onIceCandidate;
@@ -29,18 +31,32 @@ export function useWebRtcManager(props: IUseWebRtcManager.Props) {
   const onSignalingStateChangeRef = useRef(props.onSignalingStateChange);
   onSignalingStateChangeRef.current = props.onSignalingStateChange;
 
-  const rtcPeerConnectionRef = useRef<RTCPeerConnection>();
+  const rtcPeerConnectionInfoMapRef = useRef<Map<number, IUseWebRtcManager.RTCPeerConnectionInfo<T>>>(new Map());
 
-  const [isRtcPeerConnectionCreated, setIsRtcPeerConnectionCreated] = useState(false);
+  function getPeerConnectionInfo(socketId: number) {
+    return rtcPeerConnectionInfoMapRef.current.get(socketId);
+  }
 
-  function createConnection(options: IUseWebRtcManager.CreateConnectionOptions) {
-    if (rtcPeerConnectionRef.current !== undefined) {
-      throw new Error(`이미 RTCPeerConnection 이 생성되었습니다.`);
+  function getPeerConnectionInfoMap() {
+    return rtcPeerConnectionInfoMapRef.current;
+  }
+
+  function createPeerConnection(options: IUseWebRtcManager.CreateConnectionOptionnOptionalRtcConfiguration<T>) {
+    const {
+      socketId,
+      meta,
+    } = options;
+
+    const targetPeerConnectionInfo = getPeerConnectionInfo(socketId);
+    if (targetPeerConnectionInfo !== undefined) {
+      console.warn(`이미 해당 peer connection 이 존재합니다.`, options.socketId);
+      return;
     }
 
-    const {
-      rtcConfiguration,
-    } = options;
+    const rtcConfiguration = options.rtcConfiguration ?? defaultRtcConfiguration;
+    if (rtcConfiguration === undefined) {
+      throw new Error(`defaultRtcConfiguration 을 명시하거나, rtcConfiguration 을 명시하세요.`);
+    }
 
     const isApplyDefaultTurnServer = options.isApplyDefaultTurnServer ?? true;
 
@@ -57,7 +73,7 @@ export function useWebRtcManager(props: IUseWebRtcManager.Props) {
       { urls: "stun:stun4.l.google.com:5349" }
     ];
 
-    let applyIceServers: RTCIceServer[] | undefined = options.rtcConfiguration.iceServers;
+    let applyIceServers: RTCIceServer[] | undefined = rtcConfiguration.iceServers;
     if (isApplyDefaultTurnServer) {
       applyIceServers = (applyIceServers ?? []).concat(defaultIceServers);
     }
@@ -69,81 +85,95 @@ export function useWebRtcManager(props: IUseWebRtcManager.Props) {
 
     // console.log('@configuration', configuration);
 
-    rtcPeerConnectionRef.current = new RTCPeerConnection(configuration);
-    setIsRtcPeerConnectionCreated(true);
+    const peerConnection = new RTCPeerConnection(configuration);
 
-    rtcPeerConnectionRef.current.onicecandidate = (event) => {
+    peerConnection.onicecandidate = (event) => {
       if (typeof onIceCandidateRef.current === 'function') {
-        onIceCandidateRef.current(event);
+        onIceCandidateRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.onicecandidateerror = (event) => {
+    peerConnection.onicecandidateerror = (event) => {
       if (typeof onIceCandidateErrorRef.current === 'function') {
-        onIceCandidateErrorRef.current(event);
+        onIceCandidateErrorRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.oniceconnectionstatechange = (event) => {
+    peerConnection.oniceconnectionstatechange = (event) => {
       if (typeof onIceConnectionStateChangeRef.current === 'function') {
-        onIceConnectionStateChangeRef.current(event);
+        onIceConnectionStateChangeRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.onicegatheringstatechange = (event) => {
+    peerConnection.onicegatheringstatechange = (event) => {
       if (typeof onIceGatheringStateChangeRef.current === 'function') {
-        onIceGatheringStateChangeRef.current(event);
+        onIceGatheringStateChangeRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.onconnectionstatechange = (event) => {
+    peerConnection.onconnectionstatechange = (event) => {
       if (typeof onConnectionStateChangeRef.current === 'function') {
-        onConnectionStateChangeRef.current(event);
+        onConnectionStateChangeRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.ondatachannel = (event) => {
+    peerConnection.ondatachannel = (event) => {
       if (typeof onDataChannelRef.current === 'function') {
-        onDataChannelRef.current(event);
+        onDataChannelRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.onnegotiationneeded = (event) => {
+    peerConnection.onnegotiationneeded = (event) => {
       if (typeof onNegotiationNeededRef.current === 'function') {
-        onNegotiationNeededRef.current(event);
+        onNegotiationNeededRef.current(socketId, event);
       }
     };
 
-    rtcPeerConnectionRef.current.onsignalingstatechange = (event) => {
+    peerConnection.onsignalingstatechange = (event) => {
       if (typeof onSignalingStateChangeRef.current === 'function') {
-        onSignalingStateChangeRef.current(event);
+        onSignalingStateChangeRef.current(socketId, event);
       }
     };
+
+    const peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T> = {
+      rtcPeerConnection: peerConnection, 
+      meta,
+    };
+
+    if (typeof onCreatedPeerConnectionInfo === 'function') {
+      onCreatedPeerConnectionInfo(socketId, peerConnectionInfo);
+    }
+
+    rtcPeerConnectionInfoMapRef.current.set(socketId, peerConnectionInfo);
   }
 
-  function closeConnection() {
-    rtcPeerConnectionRef.current?.close();
-    rtcPeerConnectionRef.current = undefined;
-    setIsRtcPeerConnectionCreated(false);
+  function closePeerConnection(socketId: number) {
+    const targetPeerConnectionInfo = getPeerConnectionInfo(socketId);
+    if (targetPeerConnectionInfo === undefined) {
+      console.warn('이미 존재하지 않는 peerConnection 입니다.');
+      return;
+    }
+
+    targetPeerConnectionInfo.rtcPeerConnection.close();
+    rtcPeerConnectionInfoMapRef.current.delete(socketId);
+    if (typeof onClosedPeerConnectionInfo === 'function') {
+      onClosedPeerConnectionInfo(socketId, targetPeerConnectionInfo);
+    }
   }
 
   useEffect(() => {
-    if (autoStart) {
-      if (defaultCreateConnectionOptions === undefined) throw new Error(`autoStart 가 true 일 경우에는, hook props 중에 defaultCreateConnectionOptions 값이 필수입니다.`);
-      createConnection(defaultCreateConnectionOptions);
-    } else {
-      closeConnection();
-    }
-
     return () => {
-      closeConnection();
+      const map = getPeerConnectionInfoMap();
+      for (const [socketId, peerConnectionInfo] of Array.from(map)) {
+        peerConnectionInfo.rtcPeerConnection.close();
+      }
     };
-  }, [autoStart]);
+  }, []);
 
   return {
-    isRtcPeerConnectionCreated,
-    createConnection,
-    closeConnection,
-    rtcPeerConnection: rtcPeerConnectionRef.current,
+    getPeerConnectionInfo,
+    getPeerConnectionInfoMap,
+    closePeerConnection,
+    createPeerConnection,
   };
 }
