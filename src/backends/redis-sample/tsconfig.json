@@ -1,0 +1,11 @@
+{
+  "extends": "@wisdomstar94/tsconfig-lib/src/tsconfig.backend.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "types": []
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

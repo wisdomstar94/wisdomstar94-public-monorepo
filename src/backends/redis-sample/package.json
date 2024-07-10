@@ -1,0 +1,15 @@
+{
+  "name": "@wisdomstar94/redis-sample",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "vite build",
+    "start": "node dist/index.mjs",
+    "dev": "yarn build && yarn start"
+  },
+  "dependencies": {
+    "redis": "^4.6.15"
+  },
+  "devDependencies": {
+    "vite": "^5.3.3"
+  }
+}

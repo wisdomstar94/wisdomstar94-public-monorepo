@@ -1,0 +1,8 @@
+{
+  "name": "@wisdomstar94/redis",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "start": "docker run -d --name redis-stack-container -p 6379:6379 -p 8001:8001 -e REDIS_ARGS=\"--requirepass 112233aB@\" redis/redis-stack:latest"
+  }
+}
