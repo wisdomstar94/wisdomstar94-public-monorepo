@@ -20,27 +20,27 @@ export default function(server: http.Server) {
     },
   });
 
-  io.use(async (socket, next) => {
-    try {
-      const token = socket.handshake.auth.token;
+  // io.use(async (socket, next) => {
+  //   try {
+  //     const token = socket.handshake.auth.token;
 
-      const jwtSecretKey = process.env.JWT_SECRET_KEY;
-      if (typeof jwtSecretKey !== 'string') {
-        next(new Error('Authentication error..!'));
-        return;
-      }
+  //     const jwtSecretKey = process.env.JWT_SECRET_KEY;
+  //     if (typeof jwtSecretKey !== 'string') {
+  //       next(new Error('Authentication error..!'));
+  //       return;
+  //     }
 
-      // Verify and decode the JWT
-      const decoded = jwt.verify(token, jwtSecretKey);
+  //     // Verify and decode the JWT
+  //     const decoded = jwt.verify(token, jwtSecretKey);
 
-      // Attach the user object to the socket
-      socket.data.jwtPayload = decoded;
-      next();
-    } catch (error) {
-      console.error('Authentication error', error);
-      next(new Error('Authentication error'));
-    }
-  });
+  //     // Attach the user object to the socket
+  //     socket.data.jwtPayload = decoded;
+  //     next();
+  //   } catch (error) {
+  //     console.error('Authentication error', error);
+  //     next(new Error('Authentication error'));
+  //   }
+  // });
 
   io.on('connection', socket => {
     console.log('New client connected', socket.id);
@@ -94,5 +94,31 @@ export default function(server: http.Server) {
     // setInterval(() => {
     //   socket.broadcast.emit('getOtherDatas', { timestemp: Date.now() });
     // }, 1000);
+
+    // web rtc 관련
+    io.fetchSockets().then((res) => {
+      socket.broadcast.emit('allUsers', res.map(x => x.id));
+    });
+    
+    socket.on('sendOffer', (data: { sdp: any, clientId: string, receiveId: string }) => {
+      io.fetchSockets().then((sockets) => {
+        const receiveSocket = sockets.find(k => k.id === data.receiveId);
+        receiveSocket?.emit('getOffer', data);
+      });
+    });
+
+    socket.on('sendAnswer', (data: { sdp: any, clientId: string, receiveId: string }) => {
+      io.fetchSockets().then((sockets) => {
+        const receiveSocket = sockets.find(k => k.id === data.receiveId);
+        receiveSocket?.emit('getAnswer', data);
+      });
+    });
+
+    socket.on('sendCandidate', (data: { candidate: any, clientId: string, receiveId: string }) => {
+      io.fetchSockets().then((sockets) => {
+        const receiveSocket = sockets.find(k => k.id === data.receiveId);
+        receiveSocket?.emit('getCandidate', data);
+      });
+    });
   });
 }

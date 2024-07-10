@@ -80,6 +80,17 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     });
   }
 
+  function getSocketId() {
+    const socket = socketRef.current;
+    if (socket === undefined) {
+      throw new Error(`socket 이 연결되지 않았습니다.`);
+    }
+    if (socket.id === undefined) {
+      throw new Error(`socket 이 연결되지 않았습니다..`);
+    }
+    return socket.id;
+  }
+
   useEffect(() => {
     if (isAutoConnect) {
       connect();
@@ -96,6 +107,7 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     connect,
     disconnect,
     emit,
+    getSocketId,
     isConnected,
   };
 }
