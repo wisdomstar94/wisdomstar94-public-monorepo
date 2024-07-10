@@ -14,6 +14,8 @@ export default function Layout({
     { name: 'test/use-sync-external-store', href: '/test/use-sync-external-store' },
     { name: 'test/use-reducer/basic', href: '/test/use-reducer/basic' },
     { name: 'test/use-optimistic', href: '/test/use-optimistic' },
+    { name: 'test/server-action/basic', href: '/test/server-action/basic' },
+    { name: 'test/api-call/basic', href: '/test/api-call/basic' },
   ];
 
   return (
