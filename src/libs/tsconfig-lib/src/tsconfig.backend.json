@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "incremental": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["${configDir}/src/*"]
     }
   },
   "include": ["**/*.ts"],
