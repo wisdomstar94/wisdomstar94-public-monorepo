@@ -22,7 +22,9 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    "@wisdomstar94/tsconfig-lib": "workspace:^",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3"
   },
   "types": "./dist/react-api-again-request-scheduler/src/index.d.ts",
   "main": "./dist/index.cjs",
