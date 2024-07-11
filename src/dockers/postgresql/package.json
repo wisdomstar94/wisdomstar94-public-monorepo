@@ -1,0 +1,9 @@
+{
+  "name": "@wisdomstar94/postgresql",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "docker build --no-cache -t postgres-kr:16.3 ./src",
+    "start": "docker run -d --name postgresql-container -e POSTGRES_PASSWORD=112233aB@ -e TZ=Asia/Seoul -p 5432:5432 postgres-kr:16.3"
+  }
+}

@@ -1527,7 +1527,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20, @types/node@npm:^20.14.2":
+"@types/node@npm:*, @types/node@npm:>=10.0.0, @types/node@npm:^20, @types/node@npm:^20.14.10, @types/node@npm:^20.14.2":
   version: 20.14.10
   resolution: "@types/node@npm:20.14.10"
   dependencies:
@@ -1952,6 +1952,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/postgresql@workspace:src/dockers/postgresql":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/postgresql@workspace:src/dockers/postgresql"
+  languageName: unknown
+  linkType: soft
+
 "@wisdomstar94/public-monorepo@workspace:.":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/public-monorepo@workspace:."
@@ -2354,6 +2360,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/typeorm-sample@workspace:src/backends/typeorm-sample"
   dependencies:
+    "@types/node": "npm:^20.14.10"
     typeorm: "npm:^0.3.20"
     typescript: "npm:^5.5.3"
     vite: "npm:^5.3.3"
