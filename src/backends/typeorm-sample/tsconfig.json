@@ -4,6 +4,9 @@
     "target": "ESNext",
     "module": "ESNext",
     "baseUrl": ".",
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "allowJs": true,
     "types": []
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx"],
