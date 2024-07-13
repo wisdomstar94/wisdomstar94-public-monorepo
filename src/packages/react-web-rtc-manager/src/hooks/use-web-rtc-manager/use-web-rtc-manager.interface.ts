@@ -1,4 +1,9 @@
 export declare namespace IUseWebRtcManager {
+  export type ClientId = string;
+  export type ReceiveId = string;
+
+  export type PeerConnectionKey = `${ClientId}.${ReceiveId}` | `${ReceiveId}.${ClientId}`;
+
   export type CreateConnectionType = 'sendOffer' | 'getOffer';
 
   export interface CreateConnectionOptions<T> {

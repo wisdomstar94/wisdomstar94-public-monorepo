@@ -52,7 +52,7 @@ export default function Page() {
         callback(data: { sdp: RTCSessionDescriptionInit, clientId: string, receiveId: string }) {
           console.log('getAnswer!', data);
 
-          const peerConnectionInfo = webRtcManager.getPeerConnectionInfo(data.receiveId);
+          const peerConnectionInfo = webRtcManager.getPeerConnectionInfo(data.clientId, data.receiveId);
           if (peerConnectionInfo === undefined) {
             throw new Error(`peerConnectionInfo is undefined.`);
           }
@@ -62,7 +62,7 @@ export default function Page() {
       {
         eventName: 'getCandidate',
         callback(data: { candidate: RTCIceCandidate, clientId: string, receiveId: string }) {
-          const peerConnectionInfo = webRtcManager.getPeerConnectionInfo(data.receiveId);
+          const peerConnectionInfo = webRtcManager.getPeerConnectionInfo(data.clientId, data.receiveId);
           if (peerConnectionInfo === undefined) {
             throw new Error(`peerConnectionInfo is undefined.`);
           }
@@ -179,6 +179,7 @@ export default function Page() {
     },
     onSignalingStateChange(peerConnectionInfo, event) {
       console.log('@onSignalingStateChange', event);
+      
     },
     onDataChannel(peerConnectionInfo, event) {
       console.log('@onDataChannel', event);
@@ -191,17 +192,12 @@ export default function Page() {
     },
   });
 
-  // useEffect(() => {
-  //   if (!socketioManager.isConnected) return;
-
-  //   webRtcManager.createPeerConnection({
-  //     clientId: socketioManager.getSocketId(),
-  //     meta: {
-  //       nickname: 'zzz'
-  //     },
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [socketioManager.isConnected]);
+  useEffect(() => {
+    if (!socketioManager.isConnected) return;
+    (window as any).r = webRtcManager;
+    // socketioManager.emit({ eventName: 'requestAllUsers', data: undefined });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socketioManager.isConnected]);
 
   return (
     <>

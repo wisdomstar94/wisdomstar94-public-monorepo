@@ -31,10 +31,10 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   const onSignalingStateChangeRef = useRef(props.onSignalingStateChange);
   onSignalingStateChangeRef.current = props.onSignalingStateChange;
 
-  const rtcPeerConnectionInfoMapRef = useRef<Map<string, IUseWebRtcManager.RTCPeerConnectionInfo<T>>>(new Map());
+  const rtcPeerConnectionInfoMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, IUseWebRtcManager.RTCPeerConnectionInfo<T>>>(new Map());
 
-  function getPeerConnectionInfo(clientId: string) {
-    return rtcPeerConnectionInfoMapRef.current.get(clientId);
+  function getPeerConnectionInfo(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
+    return rtcPeerConnectionInfoMapRef.current.get(`${clientId}.${receiveId}`) ?? rtcPeerConnectionInfoMapRef.current.get(`${receiveId}.${clientId}`);
   }
 
   function getPeerConnectionInfoMap() {
@@ -50,8 +50,8 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       sdp,
     } = options;
 
-    const targetPeerConnectionInfo = getPeerConnectionInfo(clientId);
-    if (targetPeerConnectionInfo !== undefined) {
+    const targetPeerConnectionInfo = getPeerConnectionInfo(clientId, receiveId);
+    if (targetPeerConnectionInfo !== undefined && targetPeerConnectionInfo.receiveId === receiveId) {
       console.warn(`이미 해당 peer connection 이 존재합니다.`, options.clientId);
       return;
     }
@@ -151,18 +151,18 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       onCreatedPeerConnectionInfo(peerConnectionInfo);
     }
 
-    rtcPeerConnectionInfoMapRef.current.set(clientId, peerConnectionInfo);
+    rtcPeerConnectionInfoMapRef.current.set(`${clientId}.${receiveId}`, peerConnectionInfo);
   }
 
-  function closePeerConnection(clientId: string) {
-    const targetPeerConnectionInfo = getPeerConnectionInfo(clientId);
+  function closePeerConnection(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
+    const targetPeerConnectionInfo = getPeerConnectionInfo(clientId, receiveId);
     if (targetPeerConnectionInfo === undefined) {
       console.warn('이미 존재하지 않는 peerConnection 입니다.');
       return;
     }
 
     targetPeerConnectionInfo.rtcPeerConnection.close();
-    rtcPeerConnectionInfoMapRef.current.delete(clientId);
+    rtcPeerConnectionInfoMapRef.current.delete(`${clientId}.${receiveId}`);
     if (typeof onClosedPeerConnectionInfo === 'function') {
       onClosedPeerConnectionInfo(targetPeerConnectionInfo);
     }

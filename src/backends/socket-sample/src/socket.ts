@@ -96,9 +96,11 @@ export default function(server: http.Server) {
     // }, 1000);
 
     // web rtc 관련
+    // socket.on('requestAllUsers', () => {
     io.fetchSockets().then((res) => {
-      socket.broadcast.emit('allUsers', res.map(x => x.id));
+      socket.emit('allUsers', res.map(x => x.id));
     });
+    // });
     
     socket.on('sendOffer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       io.fetchSockets().then((sockets) => {
