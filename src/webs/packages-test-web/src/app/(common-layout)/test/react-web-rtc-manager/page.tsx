@@ -170,12 +170,6 @@ export default function Page() {
     onIceCandidate(peerConnectionInfo, event) {
       console.log('@onIceCandidate.event', { peerConnectionInfo, event });
       if (event.candidate) {
-        // const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel("chat");
-        
-        // setTimeout(() => {
-        //   dataChannel.send('hi 용 ㅋ');
-        // }, 3000);
-
         let receiveId = peerConnectionInfo.clientId !== clientId ? peerConnectionInfo.clientId : peerConnectionInfo.receiveId;
 
         socketioManager.emit({
@@ -186,12 +180,7 @@ export default function Page() {
             receiveId,
           },
         });
-      } else {
-        // const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel("chat");
-        // dataChannel.onmessage = (event) => {
-        //   console.log('@event.data', event.data);
-        // };
-      }
+      } 
     },
     onIceCandidateError(peerConnectionInfo, event) {
       // console.log('@onIceCandidateError.event', event);
