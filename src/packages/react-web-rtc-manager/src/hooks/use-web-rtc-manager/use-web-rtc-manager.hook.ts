@@ -154,16 +154,16 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     const isApplyDefaultTurnServer = options.isApplyDefaultTurnServer ?? true;
 
     const defaultIceServers: RTCIceServer[] = [
-      // { urls: "stun:stun.l.google.com:19302" },
-      // { urls: "stun:stun.l.google.com:5349" },
-      // { urls: "stun:stun1.l.google.com:3478" },
-      // { urls: "stun:stun1.l.google.com:5349" },
-      // { urls: "stun:stun2.l.google.com:19302" },
-      // { urls: "stun:stun2.l.google.com:5349" },
-      // { urls: "stun:stun3.l.google.com:3478" },
-      // { urls: "stun:stun3.l.google.com:5349" },
-      // { urls: "stun:stun4.l.google.com:19302" },
-      // { urls: "stun:stun4.l.google.com:5349" }
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun.l.google.com:5349" },
+      { urls: "stun:stun1.l.google.com:3478" },
+      { urls: "stun:stun1.l.google.com:5349" },
+      { urls: "stun:stun2.l.google.com:19302" },
+      { urls: "stun:stun2.l.google.com:5349" },
+      { urls: "stun:stun3.l.google.com:3478" },
+      { urls: "stun:stun3.l.google.com:5349" },
+      { urls: "stun:stun4.l.google.com:19302" },
+      { urls: "stun:stun4.l.google.com:5349" }
     ];
 
     let applyIceServers: RTCIceServer[] | undefined = rtcConfiguration.iceServers;
@@ -176,7 +176,7 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       iceServers: applyIceServers,
     };
 
-    console.log('@configuration', configuration);
+    // console.log('@configuration', configuration);
 
     const peerConnection = new RTCPeerConnection(configuration);
 
