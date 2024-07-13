@@ -1,7 +1,7 @@
 export declare namespace IUseSocketioManager {
   export interface ListenerItem {
     eventName: string;
-    callback: (data: any) => void;
+    callback: (...args: any[]) => void;
   }
 
   export interface EmitOptions<T> {

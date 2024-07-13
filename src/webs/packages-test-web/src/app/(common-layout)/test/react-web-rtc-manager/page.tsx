@@ -3,13 +3,24 @@
 
 import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
 import { useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type MetaData = {
   nickname: string;
 };
 
 export default function Page() {
+  // test variables start
+  const [inputedDataChannelName, setInputedDataChannelName] = useState('chat');
+  const [inputedData, setInputedData] = useState('hi hi');
+  const [getDatas, setGetDatas] = useState<Array<{ data: string; createdAt: Date }>>([]);
+  const [clientId, setClientId] = useState('');
+  // test variables end
+
+  useEffect(() => {
+    setClientId(crypto.randomUUID());
+  }, []);
+
   const socketioManager = useSocketioManager({
     isAutoConnect: true,
     listeners: [
@@ -17,12 +28,13 @@ export default function Page() {
         eventName: 'allUsers',
         callback(clientIds: string[]) {
           console.log('@allUsers', clientIds);
-          for (const clientId of clientIds) {
-            if (clientId === socketioManager.getSocketId()) continue;
+          console.log('@clientId', clientId);
+          for (const id of clientIds) {
+            if (id === clientId) continue;
 
             webRtcManager.createPeerConnection({
-              clientId: socketioManager.getSocketId(),
-              receiveId: clientId,
+              clientId: clientId,
+              receiveId: id,
               type: 'sendOffer',
               meta: {
                 nickname: 'zzz'
@@ -79,6 +91,15 @@ export default function Page() {
     defaultRtcConfiguration: {
       // ...
     },
+    dataChannelListeners: [
+      {
+        channelName: 'chat',
+        callback(event) {
+          console.log('@[chat] channel event get!', event);
+          setGetDatas(prev => prev.concat({ data: event.data, createdAt: new Date() }));
+        }, 
+      }
+    ],
     onCreatedPeerConnectionInfo(peerConnectionInfo) {
       const {
         clientId,
@@ -89,11 +110,11 @@ export default function Page() {
 
       console.log('@onCreatedPeerConnection', peerConnectionInfo);  
       if (peerConnectionInfo.type === 'sendOffer') {
-        const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel("chat");
-        dataChannel.onmessage = (event) => {
-          console.log('@dataChannel.onmessage', event);
-          dataChannel.send('zzzzzzz');
-        };
+        // const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel("chat");
+        // dataChannel.onmessage = (event) => {
+        //   console.log('@dataChannel.onmessage', event);
+        //   dataChannel.send('zzzzzzz');
+        // };
 
         rtcPeerConnection.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true }).then((sdp) => {
           console.log('create offer success');
@@ -110,17 +131,17 @@ export default function Page() {
       } 
 
       if (peerConnectionInfo.type === 'getOffer' && peerConnectionInfo.sdp !== undefined) {
-        rtcPeerConnection.addEventListener('datachannel', (event) => {
-          console.log('@@@ datachannel', event);
-          event.channel.send('hi');
-          event.channel.onmessage = (e) => {
-            console.log('---  e', e);
-          };
-        });
+        // rtcPeerConnection.addEventListener('datachannel', (event) => {
+        //   console.log('@@@ datachannel', event);
+        //   event.channel.send('hi');
+        //   event.channel.onmessage = (e) => {
+        //     console.log('---  e', e);
+        //   };
+        // });
         peerConnectionInfo.rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(peerConnectionInfo.sdp)).then(() => {
           console.log('answer set remote description success');
-          peerConnectionInfo.rtcPeerConnection.createAnswer()
-            .then(sdp => {
+          peerConnectionInfo.rtcPeerConnection.createAnswer({ offerToReceiveVideo: true, offerToReceiveAudio: true })
+            .then(sdp => { 
               console.log('create answer success');
               peerConnectionInfo.rtcPeerConnection.setLocalDescription(new RTCSessionDescription(sdp));
               socketioManager.emit({
@@ -161,9 +182,6 @@ export default function Page() {
         //   console.log('@event.data', event.data);
         // };
       }
-      // if (peerConnectionInfo.clientId === socketioManager.getSocketId()) return;
-      // if (event.candidate === null) return;
-      // console.log('!!!');
     },
     onIceCandidateError(peerConnectionInfo, event) {
       // console.log('@onIceCandidateError.event', event);
@@ -193,15 +211,109 @@ export default function Page() {
   });
 
   useEffect(() => {
-    if (!socketioManager.isConnected) return;
-    (window as any).r = webRtcManager;
-    // socketioManager.emit({ eventName: 'requestAllUsers', data: undefined });
+    if (socketioManager.isConnected === true && clientId !== '') {
+      socketioManager.emit({ eventName: 'requestAllUsers', data: { clientId } });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socketioManager.isConnected]);
+  }, [socketioManager.isConnected, clientId]);
 
   return (
     <>
-      
+      <div className="w-full flex flex-wrap gap-2 relative">
+        <table className="w-full relative text-xs border-t border-l border-slate-400">
+          <tbody>
+            <tr>
+              <th className="border-r border-b border-slate-400 text-left bg-slate-200">
+                현재 내 clientId
+              </th>
+              <td className="border-r border-b border-slate-400 p-1">
+                <div className="px-1 py-0.5 bg-blue-100 border border-slate-600">
+                  { clientId }
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th className="border-r border-b border-slate-400 text-left bg-slate-200">
+                나를 제외한 현재 연결되어 있는 socket ids
+              </th>
+              <td className="border-r border-b border-slate-400">
+                <ul className="w-full relative flex flex-wrap gap-2">
+                  {
+                    Array.from(webRtcManager.getPeerConnectionInfoMap()).map(([key, info]) => {
+                      const [clientId, receiveId] = key.split('.');
+                      return (
+                        <li key={key} className="w-full flex flex-wrap p-1">
+                          <div className="px-1 py-0.5 bg-blue-100 relative w-full flex flex-wrap gap-1 border border-slate-600">
+                            <div>
+                              { clientId }
+                            </div>
+                            <div className="w-full h-[1px] bg-black"></div>
+                            <div>
+                              { receiveId }
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })
+                  }
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="w-full flex flex-wrap gap-2 relative text-xs items-end">
+          <div className="inline-flex flex-col">
+            <label>
+              data channel name
+            </label>
+            <input type="text" className="border border-slate-500" value={inputedDataChannelName} onChange={e => setInputedDataChannelName(e.target.value)} />
+          </div>
+          <div className="inline-flex flex-col">
+            <label>
+              data 
+            </label>
+            <input type="text" className="border border-slate-500" value={inputedData} onChange={e => setInputedData(e.target.value)} />
+          </div>
+          <div className="inline-flex flex-col">
+            {/* <label>
+              &nbsp; 
+            </label> */}
+            <button
+              className="bg-blue-200 rounded-md cursor-pointer hover:bg-blue-300 px-2 py-1"
+              onClick={() => {
+                webRtcManager.emitDataChannel({
+                  channelName: inputedDataChannelName,
+                  data: inputedData,
+                })
+              }}
+              >
+              이벤트 보내기
+            </button>
+          </div>
+        </div>
+        <div className="w-full flex flex-wrap gap-2 relative">
+          {
+            Array.from(webRtcManager.getPeerConnectionDataChannelMap()).map(([key, value]) => {
+              return (
+                <div key={key} className="w-full border border-red-400 px-2 py-1 text-xs">
+                  key : { key }, channel : { value.label }
+                </div>
+              );
+            })
+          }
+        </div>
+        <div className="w-full flex flex-wrap gap-2 relative">
+          {
+            getDatas.map((item) => {
+              return (
+                <div key={item.data + item.createdAt.getTime()} className="w-full border border-yellow-500 px-2 py-1 text-xs">
+                  createdAt: { item.createdAt.toLocaleString() } / data: { item.data }
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
     </>
   );
 }

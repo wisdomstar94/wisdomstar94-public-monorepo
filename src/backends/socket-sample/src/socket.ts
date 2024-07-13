@@ -96,29 +96,31 @@ export default function(server: http.Server) {
     // }, 1000);
 
     // web rtc 관련
-    // socket.on('requestAllUsers', () => {
-    io.fetchSockets().then((res) => {
-      socket.emit('allUsers', res.map(x => x.id));
+    socket.on('requestAllUsers', (data: { clientId: string }) => {
+      socket.data.clientId = data.clientId;
+      console.log('@socket.data', socket.data);
+      io.fetchSockets().then((res) => {
+        socket.emit('allUsers', res.map(x => x.data.clientId));
+      });
     });
-    // });
     
     socket.on('sendOffer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       io.fetchSockets().then((sockets) => {
-        const receiveSocket = sockets.find(k => k.id === data.receiveId);
+        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getOffer', data);
       });
     });
 
     socket.on('sendAnswer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       io.fetchSockets().then((sockets) => {
-        const receiveSocket = sockets.find(k => k.id === data.receiveId);
+        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getAnswer', data);
       });
     });
 
     socket.on('sendCandidate', (data: { candidate: any, clientId: string, receiveId: string }) => {
       io.fetchSockets().then((sockets) => {
-        const receiveSocket = sockets.find(k => k.id === data.receiveId);
+        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getCandidate', data);
       });
     });

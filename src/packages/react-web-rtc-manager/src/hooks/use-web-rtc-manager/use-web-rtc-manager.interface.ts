@@ -27,8 +27,23 @@ export declare namespace IUseWebRtcManager {
     rtcPeerConnection: RTCPeerConnection;
   }
 
+  export interface ChangedRtcPeerConnectionInfo {
+    timestamp: number;
+  }
+
+  export interface DataChannelListener {
+    channelName: string;
+    callback: (event: MessageEvent<any>) => void;
+  }
+
+  export interface DataChannelEmitOptions {
+    channelName: string;
+    data: string;
+  }
+
   export interface Props<T> {
     // autoStart?: boolean;
+    dataChannelListeners?: DataChannelListener[];
     onIceCandidate?: (peerConnectionInfo: RTCPeerConnectionInfo<T>, event: RTCPeerConnectionIceEvent) => void;
     onIceCandidateError?: (peerConnectionInfo: RTCPeerConnectionInfo<T>, event: RTCPeerConnectionIceErrorEvent) => void;
     onIceConnectionStateChange?: (peerConnectionInfo: RTCPeerConnectionInfo<T>, event: Event) => void;

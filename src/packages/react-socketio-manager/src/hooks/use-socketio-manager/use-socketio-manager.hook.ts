@@ -9,9 +9,11 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     listeners,
   } = props;
 
+  const [socket, setSocket] = useState<Socket>();
   const socketRef = useRef<Socket>();
   const [isConnected, setIsConnected] = useState(false);
   const prevEmitInfo = useRef<Map<string, any>>(new Map());
+  const prevListenersRef = useRef(listeners);
 
   function connect(options?: IUseSocketioManager.ConnectOptions) {
     if (socketRef.current?.connected === true) {
@@ -27,8 +29,16 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
         "my-key": "my-value"
       }
     });
+    setSocket(socket);
     socketRef.current = socket;
-    setListners();
+    // setListners();
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
   }
 
   function disconnect() {
@@ -58,28 +68,6 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     prevEmitInfo.current.set(eventName, data);
   }
 
-  function setListners() {
-    if (socketRef.current === undefined) {
-      console.error(`socket 이 연결된 상태가 아닙니다.!`);
-      return;
-    }
-
-    const socket = socketRef.current;
-    listeners.forEach((item) => {
-      socket.on(item.eventName, (data: any) => {
-        item.callback(data);
-      });
-    });
-
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
-
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-    });
-  }
-
   function getSocketId() {
     const socket = socketRef.current;
     if (socket === undefined) {
@@ -103,11 +91,26 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     };
   }, [isAutoConnect]);
 
+  useEffect(() => {
+    if (socket === undefined) return;
+
+    listeners.forEach((item) => {
+      const prevListener = prevListenersRef.current.find(x => x.eventName === item.eventName);
+      if (prevListener !== undefined) {
+        socket.off(item.eventName, prevListener.callback);
+      }
+      socket.on(item.eventName, item.callback);
+    });
+
+    prevListenersRef.current = listeners;
+  }, [listeners, socket]);
+
   return {
     connect,
     disconnect,
     emit,
     getSocketId,
     isConnected,
+    socket,
   };
 }

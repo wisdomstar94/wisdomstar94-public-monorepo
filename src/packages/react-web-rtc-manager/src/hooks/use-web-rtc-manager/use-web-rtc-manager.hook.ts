@@ -1,8 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IUseWebRtcManager } from "./use-web-rtc-manager.interface";
 
 export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>) {
   const defaultRtcConfiguration = props.defaultRtcConfiguration;
+  const dataChannelListeners = props.dataChannelListeners;
+  const isDataChannelListenersInitRef = useRef(false);
 
   const onCreatedPeerConnectionInfo = props.onCreatedPeerConnectionInfo;
   const onClosedPeerConnectionInfo = props.onClosedPeerConnectionInfo;
@@ -31,7 +33,10 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   const onSignalingStateChangeRef = useRef(props.onSignalingStateChange);
   onSignalingStateChangeRef.current = props.onSignalingStateChange;
 
+  const [changedRtcPeerConnectionInfo, setChangedRtcPeerConnectionInfo] = useState<IUseWebRtcManager.ChangedRtcPeerConnectionInfo>();
+  const [changedRtcPeerConnectionDataChannelMap, setChangedRtcPeerConnectionDataChannelMap] = useState<IUseWebRtcManager.ChangedRtcPeerConnectionInfo>();
   const rtcPeerConnectionInfoMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, IUseWebRtcManager.RTCPeerConnectionInfo<T>>>(new Map());
+  const rtcPeerConnectionDataChannelMapRef = useRef<Map<`${IUseWebRtcManager.PeerConnectionKey}.${string}`, RTCDataChannel>>(new Map());
 
   function getPeerConnectionInfo(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
     return rtcPeerConnectionInfoMapRef.current.get(`${clientId}.${receiveId}`) ?? rtcPeerConnectionInfoMapRef.current.get(`${receiveId}.${clientId}`);
@@ -39,6 +44,91 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
 
   function getPeerConnectionInfoMap() {
     return rtcPeerConnectionInfoMapRef.current;
+  }
+
+  function getPeerConnectionDataChannelMap() {
+    return rtcPeerConnectionDataChannelMapRef.current;
+  }
+
+  function _onCreatedPeerConnectionInfo(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>) {
+    if (peerConnectionInfo.type === 'sendOffer') {
+      console.log('');
+      console.log('');
+      console.log(Date.now() + ' ::: @data channel 초기화....');
+      console.log('');
+      console.log('');
+      for (const dataChannelListener of (dataChannelListeners ?? [])) {
+        console.log('@createDataChannel', dataChannelListener);
+        const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel(dataChannelListener.channelName);
+        rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${dataChannelListener.channelName}`, dataChannel);
+        setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
+        dataChannel.onopen = (event) => {
+          console.log('@open....', event);
+        };  
+        dataChannel.onmessage = (event) => {
+          dataChannelListener.callback(event);
+        };
+      }
+    }
+
+    if (peerConnectionInfo.type === 'getOffer' && peerConnectionInfo.sdp !== undefined) {
+      console.log('');
+      console.log('');
+      console.log(Date.now() + ` ::: @addEventListener('datachannel'`);
+      console.log('');
+      console.log('');
+      peerConnectionInfo.rtcPeerConnection.addEventListener('datachannel', (event) => {
+        console.log(`@addEventListener('datachannel in..'`);
+        const channelName = event.channel.label;
+        rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${channelName}`, event.channel);
+        setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
+        const dataChannelListener = dataChannelListeners?.find(x => x.channelName === channelName);
+        event.channel.onopen = (event) => {
+          console.log('@event.channel.onopen = (event)');
+        };
+        event.channel.onmessage = (event) => {
+          dataChannelListener?.callback(event);
+        };
+      });
+    }
+  }
+
+  function _onIceCandidate(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>, event: RTCPeerConnectionIceEvent) {
+
+  }
+
+  function _onConnectionStateChange(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>, event: Event) {
+    console.log('@...connectionState', peerConnectionInfo.rtcPeerConnection.connectionState);
+    if (peerConnectionInfo.rtcPeerConnection.connectionState === 'connected') {
+      
+    }
+    switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
+      case 'connected': break;
+      case 'disconnected': closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId); break;
+    }
+  }
+
+  // function _
+  
+  function emitDataChannel(options: IUseWebRtcManager.DataChannelEmitOptions) {
+    const {
+      channelName,
+      data,
+    } = options;
+
+    const arr = Array.from(rtcPeerConnectionDataChannelMapRef.current);
+    for (const [key, channel] of arr) {
+      if (key.includes('.' + channelName)) {
+        channel.send(data);
+      }
+    }
+    // const channel = rtcPeerConnectionDataChannelMapRef.current.get(channelName);
+    // if (channel === undefined) {
+    //   console.warn(`${channelName} data channel 은 생성되지 않았습니다.`);
+    //   return;
+    // }
+
+    // channel.send(data);
   }
 
   function createPeerConnection(options: IUseWebRtcManager.CreateConnectionOptionnOptionalRtcConfiguration<T>) {
@@ -99,10 +189,13 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       meta,
     };
 
+    _onCreatedPeerConnectionInfo(peerConnectionInfo);
+
     peerConnection.onicecandidate = (event) => {
       if (typeof onIceCandidateRef.current === 'function') {
         onIceCandidateRef.current(peerConnectionInfo, event);
       }
+      _onIceCandidate(peerConnectionInfo, event);
     };
 
     peerConnection.onicecandidateerror = (event) => {
@@ -127,6 +220,7 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       if (typeof onConnectionStateChangeRef.current === 'function') {
         onConnectionStateChangeRef.current(peerConnectionInfo, event);
       }
+      _onConnectionStateChange(peerConnectionInfo, event);
     };
 
     peerConnection.ondatachannel = (event) => {
@@ -152,9 +246,11 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     }
 
     rtcPeerConnectionInfoMapRef.current.set(`${clientId}.${receiveId}`, peerConnectionInfo);
+    setChangedRtcPeerConnectionInfo({ timestamp: Date.now() });
   }
 
   function closePeerConnection(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
+    console.log('@closePeerConnection', { clientId, receiveId })
     const targetPeerConnectionInfo = getPeerConnectionInfo(clientId, receiveId);
     if (targetPeerConnectionInfo === undefined) {
       console.warn('이미 존재하지 않는 peerConnection 입니다.');
@@ -163,6 +259,14 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
 
     targetPeerConnectionInfo.rtcPeerConnection.close();
     rtcPeerConnectionInfoMapRef.current.delete(`${clientId}.${receiveId}`);
+    for (const [key, value] of Array.from(new Map(rtcPeerConnectionDataChannelMapRef.current))) {
+      // console.log('@key', key);
+      if (key.startsWith(`${clientId}.${receiveId}`) || key.startsWith(`${receiveId}.${clientId}`)) {
+        rtcPeerConnectionDataChannelMapRef.current.delete(key);
+      }
+    }
+    setChangedRtcPeerConnectionInfo({ timestamp: Date.now() });
+    setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
     if (typeof onClosedPeerConnectionInfo === 'function') {
       onClosedPeerConnectionInfo(targetPeerConnectionInfo);
     }
@@ -180,7 +284,11 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   return {
     getPeerConnectionInfo,
     getPeerConnectionInfoMap,
+    getPeerConnectionDataChannelMap,
     closePeerConnection,
     createPeerConnection,
+    emitDataChannel,
+    changedRtcPeerConnectionInfo,
+    changedRtcPeerConnectionDataChannelMap,
   };
 }
