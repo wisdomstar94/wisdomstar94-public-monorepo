@@ -133,6 +133,7 @@ export default function(server: http.Server) {
     });
 
     socket.on('sendPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
+      console.log('@sendPeerDisconnected', data);
       io.fetchSockets().then((sockets) => {
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getPeerDisconnected', data);
@@ -140,8 +141,10 @@ export default function(server: http.Server) {
     });
 
     socket.on('sendSyncPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
+      console.log('@sendSyncPeerDisconnected', data);
       io.fetchSockets().then((sockets) => {
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        console.log('@sendSyncPeerDisconnected.receiveSocket isExist', receiveSocket !== undefined);
         receiveSocket?.emit('getSyncPeerDisconnected', data);
       });
     });
