@@ -253,11 +253,11 @@ export default function Page() {
       switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
         case 'connected': break;
         case 'disconnected': 
-          webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
-          if (peerConnectionInfo.type === 'sendOffer') {
-            socketioManager.emit({ eventName: 'sendPeerDisconnected', data: { clientId: peerConnectionInfo.clientId, receiveId: peerConnectionInfo.receiveId } })
-            // socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: peerConnectionInfo.receiveId } })
-          }
+          // webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
+          // if (peerConnectionInfo.type === 'sendOffer') {
+          //   socketioManager.emit({ eventName: 'sendPeerDisconnected', data: { clientId: peerConnectionInfo.clientId, receiveId: peerConnectionInfo.receiveId } })
+          //   // socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: peerConnectionInfo.receiveId } })
+          // }
           break;
       }
     },
