@@ -112,6 +112,7 @@ export default function(server: http.Server) {
     });
     
     socket.on('sendOffer', (data: { sdp: any, clientId: string, receiveId: string }) => {
+      console.log('@@sendOffer', data);
       io.fetchSockets().then((sockets) => {
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getOffer', data);
@@ -119,6 +120,7 @@ export default function(server: http.Server) {
     });
 
     socket.on('sendAnswer', (data: { sdp: any, clientId: string, receiveId: string }) => {
+      console.log('@@sendAnswer', data);
       io.fetchSockets().then((sockets) => {
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getAnswer', data);
@@ -126,6 +128,7 @@ export default function(server: http.Server) {
     });
 
     socket.on('sendCandidate', (data: { candidate: any, clientId: string, receiveId: string }) => {
+      console.log('@@sendCandidate', data);
       io.fetchSockets().then((sockets) => {
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
         receiveSocket?.emit('getCandidate', data);
