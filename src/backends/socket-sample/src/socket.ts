@@ -103,6 +103,13 @@ export default function(server: http.Server) {
         socket.emit('allUsers', res.map(x => x.data.clientId));
       });
     });
+
+    socket.on('requestOneUser', (data: { targetClientId: string }) => {
+      io.fetchSockets().then((res) => {
+        const isExist = res.find(k => k.data.clientId === data.targetClientId) !== undefined;
+        socket.emit('oneUser', { clientId: data.targetClientId, isExist });
+      });
+    });
     
     socket.on('sendOffer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       io.fetchSockets().then((sockets) => {

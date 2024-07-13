@@ -45,6 +45,22 @@ export default function Page() {
         },
       },
       {
+        eventName: 'oneUser',
+        callback(data: { clientId: string, isExist: boolean }) {
+          console.log('@oneUser', data.clientId);
+          if (data.isExist) {
+            webRtcManager.createPeerConnection({
+              clientId: clientId,
+              receiveId: data.clientId,
+              type: 'sendOffer',
+              meta: {
+                nickname: 'zzz'
+              },
+            });
+          }
+        },
+      },
+      {
         eventName: 'getOffer',
         callback(data: { sdp: RTCSessionDescriptionInit, clientId: string, receiveId: string }) {
           console.log('getOffer!', data);
@@ -207,8 +223,10 @@ export default function Page() {
       switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
         case 'connected': break;
         case 'disconnected': 
-          // if ()
-          // webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId); 
+          webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
+          if (peerConnectionInfo.type === 'sendOffer') {
+            socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: peerConnectionInfo.receiveId } })
+          }
           break;
       }
     },
