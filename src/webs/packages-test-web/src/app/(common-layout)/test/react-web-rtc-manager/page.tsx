@@ -99,7 +99,27 @@ export default function Page() {
             console.log('candidate add success');
           });
         },
-      }
+      },
+      {
+        eventName: 'getPeerDisconnected',
+        callback(data: { clientId: string, receiveId: string }) {
+          webRtcManager.closePeerConnection(data.clientId, data.receiveId);
+          socketioManager.emit({ eventName: 'sendSyncPeerDisconnected', data: { client: data.receiveId, receiveId: data.clientId } });
+        },
+      },
+      {
+        eventName: 'getSyncPeerDisconnected',
+        callback(data: { clientId: string, receiveId: string }) {
+          webRtcManager.createPeerConnection({
+            clientId: clientId,
+            receiveId: data.clientId,
+            type: 'sendOffer',
+            meta: {
+              nickname: 'zzz'
+            },
+          });
+        },
+      },
     ],
     socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL is not defined!`) })()
   });
@@ -225,7 +245,8 @@ export default function Page() {
         case 'disconnected': 
           webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
           if (peerConnectionInfo.type === 'sendOffer') {
-            socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: peerConnectionInfo.receiveId } })
+            socketioManager.emit({ eventName: 'sendPeerDisconnected', data: { clientId: peerConnectionInfo.clientId, receiveId: peerConnectionInfo.receiveId } })
+            // socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: peerConnectionInfo.receiveId } })
           }
           break;
       }

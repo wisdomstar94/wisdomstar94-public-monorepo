@@ -131,5 +131,19 @@ export default function(server: http.Server) {
         receiveSocket?.emit('getCandidate', data);
       });
     });
+
+    socket.on('sendPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
+      io.fetchSockets().then((sockets) => {
+        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        receiveSocket?.emit('getPeerDisconnected', data);
+      });
+    });
+
+    socket.on('sendSyncPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
+      io.fetchSockets().then((sockets) => {
+        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        receiveSocket?.emit('getSyncPeerDisconnected', data);
+      });
+    });
   });
 }
