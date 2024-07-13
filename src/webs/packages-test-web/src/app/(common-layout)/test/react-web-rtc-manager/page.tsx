@@ -4,6 +4,7 @@
 import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
 import { useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
 import { useEffect, useState } from "react";
+import { v4 } from "uuid";
 
 type MetaData = {
   nickname: string;
@@ -18,7 +19,7 @@ export default function Page() {
   // test variables end
 
   useEffect(() => {
-    setClientId(crypto.randomUUID());
+    setClientId(v4());
   }, []);
 
   const socketioManager = useSocketioManager({
