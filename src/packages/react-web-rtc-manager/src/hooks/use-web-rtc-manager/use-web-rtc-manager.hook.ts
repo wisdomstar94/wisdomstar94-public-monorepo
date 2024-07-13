@@ -94,7 +94,12 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   }
 
   function _onIceCandidate(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>, event: RTCPeerConnectionIceEvent) {
-
+    console.log('@@@@ event.candidate?.type', event.candidate?.type);
+    if (event.candidate?.type !== undefined && event.candidate?.type !== null) {
+      const count = peerConnectionInfo.candidateTypeCounting.get(event.candidate.type) ?? 0;
+      peerConnectionInfo.candidateTypeCounting.set(event.candidate.type, count + 1);
+      setChangedRtcPeerConnectionInfo({ timestamp: Date.now() });
+    }
   }
 
   function _onConnectionStateChange(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>, event: Event) {
@@ -119,7 +124,9 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     const arr = Array.from(rtcPeerConnectionDataChannelMapRef.current);
     for (const [key, channel] of arr) {
       if (key.includes('.' + channelName)) {
-        channel.send(data);
+        if (channel.readyState === 'open') {
+          channel.send(data);
+        }
       }
     }
     // const channel = rtcPeerConnectionDataChannelMapRef.current.get(channelName);
@@ -180,6 +187,12 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
 
     const peerConnection = new RTCPeerConnection(configuration);
 
+    const candidateTypeCounting: Map<RTCIceCandidateType, number> = new Map();
+    candidateTypeCounting.set('host', 0);
+    candidateTypeCounting.set('prflx', 0);
+    candidateTypeCounting.set('relay', 0);
+    candidateTypeCounting.set('srflx', 0);
+
     const peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T> = {
       clientId,
       receiveId,
@@ -187,15 +200,16 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       sdp,
       rtcPeerConnection: peerConnection, 
       meta,
+      candidateTypeCounting,
     };
 
     _onCreatedPeerConnectionInfo(peerConnectionInfo);
 
     peerConnection.onicecandidate = (event) => {
+      _onIceCandidate(peerConnectionInfo, event);
       if (typeof onIceCandidateRef.current === 'function') {
         onIceCandidateRef.current(peerConnectionInfo, event);
       }
-      _onIceCandidate(peerConnectionInfo, event);
     };
 
     peerConnection.onicecandidateerror = (event) => {

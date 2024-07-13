@@ -25,6 +25,7 @@ export declare namespace IUseWebRtcManager {
     type: CreateConnectionType;
     meta?: T;
     rtcPeerConnection: RTCPeerConnection;
+    candidateTypeCounting: Map<RTCIceCandidateType, number>;
   }
 
   export interface ChangedRtcPeerConnectionInfo {

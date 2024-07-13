@@ -233,7 +233,7 @@ export default function Page() {
             </tr>
             <tr>
               <th className="border-r border-b border-slate-400 text-left bg-slate-200">
-                나를 제외한 현재 연결되어 있는 socket ids
+                나를 제외한 현재 연결되어 있는 client ids
               </th>
               <td className="border-r border-b border-slate-400">
                 <ul className="w-full relative flex flex-wrap gap-2">
@@ -243,11 +243,22 @@ export default function Page() {
                       return (
                         <li key={key} className="w-full flex flex-wrap p-1">
                           <div className="px-1 py-0.5 bg-blue-100 relative w-full flex flex-wrap gap-1 border border-slate-600">
-                            <div>
+                            <div className="inline-flex px-2 py-0.5 bg-orange-300 rounded-lg gap-2">
+                              {
+                                Array.from(info.candidateTypeCounting).map(([candidateType, count]) => {
+                                  return (
+                                    <div key={candidateType + count}>
+                                      { candidateType }: { count }
+                                    </div>
+                                  )
+                                })
+                              }
+                            </div>
+                            <div className="w-full">
                               { clientId }
                             </div>
                             <div className="w-full h-[1px] bg-black"></div>
-                            <div>
+                            <div className="w-full">
                               { receiveId }
                             </div>
                           </div>
