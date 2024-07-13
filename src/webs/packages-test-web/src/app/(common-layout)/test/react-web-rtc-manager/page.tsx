@@ -103,6 +103,7 @@ export default function Page() {
       {
         eventName: 'getPeerDisconnected',
         callback(data: { clientId: string, receiveId: string }) {
+          console.log('@getPeerDisconnected', data);
           webRtcManager.closePeerConnection(data.clientId, data.receiveId);
           socketioManager.emit({ eventName: 'sendSyncPeerDisconnected', data: { client: data.receiveId, receiveId: data.clientId } });
         },
@@ -110,6 +111,7 @@ export default function Page() {
       {
         eventName: 'getSyncPeerDisconnected',
         callback(data: { clientId: string, receiveId: string }) {
+          console.log('@getSyncPeerDisconnected', data);
           webRtcManager.createPeerConnection({
             clientId: clientId,
             receiveId: data.clientId,
