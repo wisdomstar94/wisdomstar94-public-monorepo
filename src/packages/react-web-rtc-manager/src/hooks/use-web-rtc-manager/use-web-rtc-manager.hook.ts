@@ -107,10 +107,10 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     if (peerConnectionInfo.rtcPeerConnection.connectionState === 'connected') {
       
     }
-    switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
-      case 'connected': break;
-      case 'disconnected': closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId); break;
-    }
+    // switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
+    //   case 'connected': break;
+    //   case 'disconnected': closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId); break;
+    // }
   }
 
   // function _

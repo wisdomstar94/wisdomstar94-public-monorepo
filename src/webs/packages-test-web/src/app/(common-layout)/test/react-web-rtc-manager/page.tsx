@@ -203,6 +203,14 @@ export default function Page() {
     },
     onConnectionStateChange(peerConnectionInfo, event) {
       console.log('@onConnectionStateChange', { peerConnectionInfo,  event });
+
+      switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
+        case 'connected': break;
+        case 'disconnected': 
+          // if ()
+          // webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId); 
+          break;
+      }
     },
     onClosedPeerConnectionInfo(peerConnectionInfo) {
       console.log('@onClosedPeerConnectionInfo', peerConnectionInfo);    
