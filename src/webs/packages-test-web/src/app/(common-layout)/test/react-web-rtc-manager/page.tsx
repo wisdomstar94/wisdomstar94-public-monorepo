@@ -91,6 +91,13 @@ export default function Page() {
   const webRtcManager = useWebRtcManager<MetaData>({
     defaultRtcConfiguration: {
       // ...
+      iceServers: [
+        {
+          urls: process.env.NEXT_PUBLIC_ICE_SERVER_URL ?? (() => { throw new Error(`NEXT_PUBLIC_ICE_SERVER_URL is not defined!`) })(),
+          username: process.env.NEXT_PUBLIC_ICE_SERVER_USERNAME ?? (() => { throw new Error(`NEXT_PUBLIC_ICE_SERVER_USERNAME is not defined!`) })(),
+          credential: process.env.NEXT_PUBLIC_ICE_SERVER_CREDENTIAL ?? (() => { throw new Error(`NEXT_PUBLIC_ICE_SERVER_CREDENTIAL is not defined!`) })(),
+        }
+      ]
     },
     dataChannelListeners: [
       {
