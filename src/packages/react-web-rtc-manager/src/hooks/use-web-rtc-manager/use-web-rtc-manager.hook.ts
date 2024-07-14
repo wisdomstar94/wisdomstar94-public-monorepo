@@ -4,7 +4,6 @@ import { IUseWebRtcManager } from "./use-web-rtc-manager.interface";
 export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>) {
   const defaultRtcConfiguration = props.defaultRtcConfiguration;
   const dataChannelListeners = props.dataChannelListeners;
-  const isDataChannelListenersInitRef = useRef(false);
 
   const onCreatedPeerConnectionInfo = props.onCreatedPeerConnectionInfo;
   const onClosedPeerConnectionInfo = props.onClosedPeerConnectionInfo;
@@ -52,18 +51,12 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
 
   function _onCreatedPeerConnectionInfo(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>) {
     if (peerConnectionInfo.type === 'sendOffer') {
-      console.log('');
-      console.log('');
-      console.log(Date.now() + ' ::: @data channel 초기화....');
-      console.log('');
-      console.log('');
       for (const dataChannelListener of (dataChannelListeners ?? [])) {
-        console.log('@createDataChannel', dataChannelListener);
         const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel(dataChannelListener.channelName);
         rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${dataChannelListener.channelName}`, dataChannel);
         setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
         dataChannel.onopen = (event) => {
-          console.log('@open....', event);
+          
         };  
         dataChannel.onmessage = (event) => {
           dataChannelListener.callback(event);
@@ -72,19 +65,13 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     }
 
     if (peerConnectionInfo.type === 'getOffer' && peerConnectionInfo.sdp !== undefined) {
-      console.log('');
-      console.log('');
-      console.log(Date.now() + ` ::: @addEventListener('datachannel'`);
-      console.log('');
-      console.log('');
       peerConnectionInfo.rtcPeerConnection.addEventListener('datachannel', (event) => {
-        console.log(`@addEventListener('datachannel in..'`);
         const channelName = event.channel.label;
         rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${channelName}`, event.channel);
         setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
         const dataChannelListener = dataChannelListeners?.find(x => x.channelName === channelName);
         event.channel.onopen = (event) => {
-          console.log('@event.channel.onopen = (event)');
+          
         };
         event.channel.onmessage = (event) => {
           dataChannelListener?.callback(event);
@@ -94,7 +81,6 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   }
 
   function _onIceCandidate(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>, event: RTCPeerConnectionIceEvent) {
-    console.log('@@@@ event.candidate?.type', event.candidate?.type);
     if (event.candidate?.type !== undefined && event.candidate?.type !== null) {
       const count = peerConnectionInfo.candidateTypeCounting.get(event.candidate.type) ?? 0;
       peerConnectionInfo.candidateTypeCounting.set(event.candidate.type, count + 1);
@@ -103,17 +89,9 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   }
 
   function _onConnectionStateChange(peerConnectionInfo: IUseWebRtcManager.RTCPeerConnectionInfo<T>, event: Event) {
-    console.log('@...connectionState', peerConnectionInfo.rtcPeerConnection.connectionState);
-    if (peerConnectionInfo.rtcPeerConnection.connectionState === 'connected') {
-      
-    }
-    // switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
-    //   case 'connected': break;
-    //   case 'disconnected': closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId); break;
-    // }
+    // const connectionState = peerConnectionInfo.rtcPeerConnection.connectionState; // "closed" | "connected" | "connecting" | "disconnected" | "failed" | "new";
+    setChangedRtcPeerConnectionInfo({ timestamp: Date.now() });
   }
-
-  // function _
   
   function emitDataChannel(options: IUseWebRtcManager.DataChannelEmitOptions) {
     const {
@@ -129,13 +107,6 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
         }
       }
     }
-    // const channel = rtcPeerConnectionDataChannelMapRef.current.get(channelName);
-    // if (channel === undefined) {
-    //   console.warn(`${channelName} data channel 은 생성되지 않았습니다.`);
-    //   return;
-    // }
-
-    // channel.send(data);
   }
 
   function createPeerConnection(options: IUseWebRtcManager.CreateConnectionOptionnOptionalRtcConfiguration<T>) {
@@ -182,8 +153,6 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       ...rtcConfiguration,
       iceServers: applyIceServers,
     };
-
-    // console.log('@configuration', configuration);
 
     const peerConnection = new RTCPeerConnection(configuration);
 
@@ -264,7 +233,6 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   }
 
   function closePeerConnection(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
-    console.log('@closePeerConnection', { clientId, receiveId })
     const targetPeerConnectionInfo = getPeerConnectionInfo(clientId, receiveId);
     if (targetPeerConnectionInfo === undefined) {
       console.warn('이미 존재하지 않는 peerConnection 입니다.');
@@ -275,7 +243,6 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     rtcPeerConnectionInfoMapRef.current.delete(`${clientId}.${receiveId}`);
     rtcPeerConnectionInfoMapRef.current.delete(`${receiveId}.${clientId}`);
     for (const [key, value] of Array.from(new Map(rtcPeerConnectionDataChannelMapRef.current))) {
-      // console.log('@key', key);
       if (key.startsWith(`${clientId}.${receiveId}`) || key.startsWith(`${receiveId}.${clientId}`)) {
         rtcPeerConnectionDataChannelMapRef.current.delete(key);
       }
