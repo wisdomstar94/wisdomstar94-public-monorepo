@@ -42,6 +42,17 @@ export default function(server: http.Server) {
   //   }
   // });
 
+  // setInterval(() => {
+  //   io.fetchSockets().then((sockets) => {
+  //     console.log('@@sendAnswer.sockets', sockets.map((item) => {
+  //       return {
+  //         socketId: item.id,
+  //         dataClientId: item.data.clientId,
+  //       };
+  //     }));
+  //   })
+  // }, 3000);
+
   io.on('connection', async(socket) => {
     console.log('New client connected', socket.id);
     const authData = socket.handshake.auth;

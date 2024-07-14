@@ -4,8 +4,6 @@ import { Socket, io } from "socket.io-client";
 
 export function useSocketioManager(props: IUseSocketioManager.Props) {
   const {
-    socketUrl,
-    isAutoConnect,
     listeners,
   } = props;
 
@@ -15,44 +13,49 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
   const prevEmitInfo = useRef<Map<string, any>>(new Map());
   const prevListenersRef = useRef(listeners);
 
-  function connect(options?: IUseSocketioManager.ConnectOptions) {
-    if (socketRef.current?.connected === true) {
+  function setSocketWrapper(s: Socket | undefined) {
+    if (s === undefined) {
+      listeners.forEach((item) => {
+        const prevListener = prevListenersRef.current.find(x => x.eventName === item.eventName);
+        if (prevListener !== undefined) {
+          socketRef.current?.off(item.eventName, prevListener.callback);
+        }
+        socketRef.current?.off(item.eventName, item.callback);
+      });
+    }
+
+    setSocket(s);
+    socketRef.current = s;
+  }
+
+  function connect(connectOptions: IUseSocketioManager.ConnectOptions) {
+    if (socketRef.current !== undefined) {
       return;
     }
 
-    const socket = io(`ws://${socketUrl.replace('http://', '').replace('https://', '').replace('ws://', '')}`, {
-      reconnectionDelayMax: 1000 * 5,
-      auth: {
-        token: options?.authToken,
-        ...options?.authData,
-      },
-      query: {
-        "my-key": "my-value"
-      }
-    });
-    setSocket(socket);
-    socketRef.current = socket;
-    // setListners();
-    socket.on('connect', () => {
+    const socket = io(`ws://${connectOptions.socketUrl.replace('http://', '').replace('https://', '').replace('ws://', '')}`, connectOptions?.opts);
+    setSocketWrapper(socket);
+
+    const onConnected = () => {
       setIsConnected(true);
-    });
+    };
 
-    socket.on('disconnect', () => {
+    const onDisconnected = (reason: Socket.DisconnectReason) => {
       setIsConnected(false);
-    });
+      if (reason === 'io server disconnect') {
+        socket.off('connect', onConnected);
+        socket.off('disconnect', onDisconnected);
+        setSocketWrapper(undefined);
+      }
+    };
 
-    // listeners.forEach((item) => {
-    //   const prevListener = prevListenersRef.current.find(x => x.eventName === item.eventName);
-    //   if (prevListener !== undefined) {
-    //     socket.off(item.eventName, prevListener.callback);
-    //   }
-    //   socket.on(item.eventName, item.callback);
-    // });
-    // prevListenersRef.current = listeners;
+    socket.on('connect', onConnected);
+    socket.on('disconnect', onDisconnected);
   }
 
   function disconnect() {
     socketRef.current?.disconnect();
+    setSocketWrapper(undefined);
   }
 
   function emit<T>(options: IUseSocketioManager.EmitOptions<T>) {
@@ -90,16 +93,10 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
   }
 
   useEffect(() => {
-    if (isAutoConnect) {
-      connect();
-    } else {
-      disconnect();
-    }
-
     return () => {
       disconnect();
     };
-  }, [isAutoConnect]);
+  }, []);
 
   useEffect(() => {
     if (socket === undefined) return;

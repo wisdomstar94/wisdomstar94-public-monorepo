@@ -1,3 +1,5 @@
+import { ManagerOptions, SocketOptions } from "socket.io-client";
+
 export declare namespace IUseSocketioManager {
   export interface ListenerItem {
     eventName: string;
@@ -11,13 +13,11 @@ export declare namespace IUseSocketioManager {
   }
 
   export interface ConnectOptions {
-    authToken?: string;
-    authData?: Record<string, any>;
+    socketUrl: string;
+    opts?: Partial<ManagerOptions & SocketOptions>;
   }
 
   export interface Props {
-    socketUrl: string;
-    isAutoConnect: boolean;
     listeners: ListenerItem[];
   }
 }

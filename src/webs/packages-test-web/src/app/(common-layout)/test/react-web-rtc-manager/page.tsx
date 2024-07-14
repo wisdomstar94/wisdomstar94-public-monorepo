@@ -23,7 +23,6 @@ export default function Page() {
   }, []);
 
   const socketioManager = useSocketioManager({
-    isAutoConnect: false,
     listeners: [
       {
         eventName: 'allUsers',
@@ -154,7 +153,6 @@ export default function Page() {
       //   },
       // },
     ],
-    socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL is not defined!`) })()
   });
 
   const webRtcManager = useWebRtcManager<MetaData>({
@@ -307,8 +305,11 @@ export default function Page() {
     }
 
     socketioManager.connect({
-      authData: {
-        clientId,
+      socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL is not defined!`) })(),
+      opts: {
+        auth: {
+          clientId,  
+        },
       },
     });  
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -331,14 +332,14 @@ export default function Page() {
                 현재 내 clientId
               </th>
               <td className="border-r border-b border-slate-400 p-1">
-                <div className="px-1 py-0.5 bg-blue-100 border border-slate-600">
+                <div className="px-1 py-0.5 bg-blue-100 border border-slate-600 font-bold text-purple-500">
                   { clientId }
                 </div>
               </td>
             </tr>
             <tr>
               <th className="border-r border-b border-slate-400 text-left bg-slate-200">
-                나를 제외한 현재 연결되어 있는 client ids
+                web rtc 로 peer 연결된 정보
               </th>
               <td className="border-r border-b border-slate-400">
                 <ul className="w-full relative flex flex-wrap gap-2">
@@ -348,18 +349,23 @@ export default function Page() {
                       return (
                         <li key={key} className="w-full flex flex-wrap p-1">
                           <div className="px-1 py-0.5 bg-blue-100 relative w-full flex flex-wrap gap-1 border border-slate-600">
-                            <div className="inline-flex px-2 py-0.5 bg-orange-300 rounded-lg gap-2">
-                              {
-                                Array.from(info.candidateTypeCounting).map(([candidateType, count]) => {
-                                  return (
-                                    <div key={candidateType + count}>
-                                      { candidateType }: { count }
-                                    </div>
-                                  )
-                                })
-                              }
+                            <div className="w-full flex flex-wrap py-0.5 rounded-lg gap-2">
+                              <div className="inline-flex px-2 py-0.5 bg-orange-300 rounded-lg gap-2">
+                                {
+                                  Array.from(info.candidateTypeCounting).map(([candidateType, count]) => {
+                                    return (
+                                      <div key={candidateType + count}>
+                                        { candidateType }: { count }
+                                      </div>
+                                    )
+                                  })
+                                }
+                              </div>
+                              <div className="inline-flex px-2 py-0.5 bg-green-500 rounded-lg gap-2">
+                                { info.rtcPeerConnection.connectionState }
+                              </div>
                             </div>
-                            <div className="w-full">
+                            <div className="w-full font-bold text-purple-500">
                               { clientId }
                             </div>
                             <div className="w-full h-[1px] bg-black"></div>
