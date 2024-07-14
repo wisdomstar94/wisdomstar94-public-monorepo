@@ -48,8 +48,6 @@ export default function Page() {
   babylonCharacterController.setThisClientCharacterId(characterId);
 
   const socketioManager = useSocketioManager({
-    isAutoConnect: false,
-    socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL 값이 없습니다.`) })(),
     listeners: [
       {
         eventName: 'otherUserConnect', 
@@ -547,7 +545,14 @@ export default function Page() {
   useEffect(() => {
     if (!babylonCharacterController.isThisClientCharacterLoaded) return;
     console.log('@tt');
-    socketioManager.connect({ authToken: authCheck.accessToken ?? '' });
+    socketioManager.connect({ 
+      socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL 값이 없습니다.`) })(),
+      opts: {
+        auth: {
+          token: authCheck.accessToken ?? '',
+        },
+      },
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [babylonCharacterController.isThisClientCharacterLoaded]);
 

@@ -3368,6 +3368,7 @@ __metadata:
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     "@wisdomstar94/react-socketio-manager": "workspace:^"
     "@wisdomstar94/react-touch-container": "workspace:^"
+    "@wisdomstar94/react-web-rtc-manager": "workspace:^"
     animejs: "npm:^3.2.2"
     babylonjs-gltf2interface: "npm:^7.14.0"
     eslint: "npm:^8"

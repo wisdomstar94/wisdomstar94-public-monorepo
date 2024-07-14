@@ -25,6 +25,7 @@
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
     "@wisdomstar94/react-socketio-manager": "workspace:^",
     "@wisdomstar94/react-touch-container": "workspace:^",
+    "@wisdomstar94/react-web-rtc-manager": "workspace:^",
     "animejs": "^3.2.2",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.4",

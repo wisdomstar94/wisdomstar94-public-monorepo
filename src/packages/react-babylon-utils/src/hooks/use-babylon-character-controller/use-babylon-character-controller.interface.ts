@@ -54,6 +54,8 @@ export declare namespace IUseBabylonCharacterController {
     chracterPhysicsBodyOptions?: ChracterPhysicsBodyOptions;
   }
 
+  export type AddRequireInfoWithoutScene = Omit<AddRequireInfo, 'scene'>;
+
   export interface DebugOptions {
     isShowCharacterParentBoxMesh?: boolean;
   }

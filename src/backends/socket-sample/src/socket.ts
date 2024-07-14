@@ -20,27 +20,27 @@ export default function(server: http.Server) {
     },
   });
 
-  // io.use(async (socket, next) => {
-  //   try {
-  //     const token = socket.handshake.auth.token;
+  io.use(async (socket, next) => {
+    try {
+      const token = socket.handshake.auth.token;
 
-  //     const jwtSecretKey = process.env.JWT_SECRET_KEY;
-  //     if (typeof jwtSecretKey !== 'string') {
-  //       next(new Error('Authentication error..!'));
-  //       return;
-  //     }
+      const jwtSecretKey = process.env.JWT_SECRET_KEY;
+      if (typeof jwtSecretKey !== 'string') {
+        next(new Error('Authentication error..!'));
+        return;
+      }
 
-  //     // Verify and decode the JWT
-  //     const decoded = jwt.verify(token, jwtSecretKey);
+      // Verify and decode the JWT
+      const decoded = jwt.verify(token, jwtSecretKey);
 
-  //     // Attach the user object to the socket
-  //     socket.data.jwtPayload = decoded;
-  //     next();
-  //   } catch (error) {
-  //     console.error('Authentication error', error);
-  //     next(new Error('Authentication error'));
-  //   }
-  // });
+      // Attach the user object to the socket
+      socket.data.jwtPayload = decoded;
+      next();
+    } catch (error) {
+      console.error('Authentication error', error);
+      next(new Error('Authentication error'));
+    }
+  });
 
   // setInterval(() => {
   //   io.fetchSockets().then((sockets) => {
@@ -55,23 +55,23 @@ export default function(server: http.Server) {
 
   io.on('connection', async(socket) => {
     console.log('New client connected', socket.id);
-    const authData = socket.handshake.auth;
-    console.log('@authData', authData);
+    // const authData = socket.handshake.auth;
+    // console.log('@authData', authData);
 
-    const socketClientId = authData.clientId;
-    if (typeof socketClientId !== 'string' || socketClientId?.trim() === '') {
-      socket.disconnect();
-      return;
-    }
+    // const socketClientId = authData.clientId;
+    // if (typeof socketClientId !== 'string' || socketClientId?.trim() === '') {
+    //   socket.disconnect();
+    //   return;
+    // }
 
-    const totalSocketList = await io.fetchSockets();
-    const targets = totalSocketList.filter(k => k.data.clientId === socketClientId);
-    for (const target of targets) {
-      if (target.id !== socket.id) {
-        target.data.clientId = '';
-        target.disconnect();
-      }
-    }
+    // const totalSocketList = await io.fetchSockets();
+    // const targets = totalSocketList.filter(k => k.data.clientId === socketClientId);
+    // for (const target of targets) {
+    //   if (target.id !== socket.id) {
+    //     target.data.clientId = '';
+    //     target.disconnect();
+    //   }
+    // }
 
     socket.on('disconnect', () => {
       console.log('user disconnect', socket.id);
@@ -125,8 +125,6 @@ export default function(server: http.Server) {
 
     // web rtc 관련
     socket.on('requestAllUsers', (data: { clientId: string }) => {
-      
-
       socket.data.clientId = data.clientId;
       console.log('@socket.data', socket.data);
       io.fetchSockets().then((res) => {
