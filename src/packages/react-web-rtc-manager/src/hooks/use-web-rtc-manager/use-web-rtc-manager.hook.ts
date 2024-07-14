@@ -4,6 +4,7 @@ import { IUseWebRtcManager } from "./use-web-rtc-manager.interface";
 export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>) {
   const defaultRtcConfiguration = props.defaultRtcConfiguration;
   const dataChannelListeners = props.dataChannelListeners;
+  const prevDataChannelListenersRef = useRef(dataChannelListeners);
 
   const onCreatedPeerConnectionInfo = props.onCreatedPeerConnectionInfo;
   const onClosedPeerConnectionInfo = props.onClosedPeerConnectionInfo;
@@ -55,12 +56,12 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
         const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel(dataChannelListener.channelName);
         rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${dataChannelListener.channelName}`, dataChannel);
         setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
-        dataChannel.onopen = (event) => {
+        // dataChannel.onopen = (event) => {
           
-        };  
-        dataChannel.onmessage = (event) => {
-          dataChannelListener.callback(event);
-        };
+        // };  
+        // dataChannel.onmessage = (event) => {
+        //   dataChannelListener.callback(event);
+        // };
       }
     }
 
@@ -69,13 +70,13 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
         const channelName = event.channel.label;
         rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${channelName}`, event.channel);
         setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
-        const dataChannelListener = dataChannelListeners?.find(x => x.channelName === channelName);
-        event.channel.onopen = (event) => {
+        // const dataChannelListener = dataChannelListeners?.find(x => x.channelName === channelName);
+        // event.channel.onopen = (event) => {
           
-        };
-        event.channel.onmessage = (event) => {
-          dataChannelListener?.callback(event);
-        };
+        // };
+        // event.channel.onmessage = (event) => {
+        //   dataChannelListener?.callback(event);
+        // };
       });
     }
   }
@@ -262,6 +263,25 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       }
     };
   }, []);
+
+  useEffect(() => {
+    dataChannelListeners?.forEach((item) => {
+      const prevListener = prevDataChannelListenersRef.current?.find(x => x.channelName === item.channelName);
+
+      const peersDataChannels = Array.from(rtcPeerConnectionDataChannelMapRef.current).filter(([key, value]) => {
+        return key.endsWith('.' + item.channelName);
+      });
+
+      for (const [key, channel] of peersDataChannels) {
+        if (prevListener !== undefined) {
+          channel.removeEventListener('message', prevListener.callback);
+        }
+        channel.addEventListener('message', item.callback);
+      }
+    });
+
+    prevDataChannelListenersRef.current = dataChannelListeners;
+  }, [dataChannelListeners]);
 
   return {
     getPeerConnectionInfo,

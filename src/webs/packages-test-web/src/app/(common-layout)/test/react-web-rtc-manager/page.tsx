@@ -171,6 +171,7 @@ export default function Page() {
         channelName: 'chat',
         callback(event) {
           console.log('@[chat] channel event get!', event);
+          console.log('@@ inputedData', inputedData);
           setGetDatas(prev => prev.concat({ data: event.data, createdAt: new Date() }));
         }, 
       }
