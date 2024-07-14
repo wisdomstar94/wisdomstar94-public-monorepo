@@ -12,6 +12,7 @@ export declare namespace IUseSocketioManager {
 
   export interface ConnectOptions {
     authToken?: string;
+    authData?: Record<string, any>;
   }
 
   export interface Props {

@@ -273,6 +273,7 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
 
     targetPeerConnectionInfo.rtcPeerConnection.close();
     rtcPeerConnectionInfoMapRef.current.delete(`${clientId}.${receiveId}`);
+    rtcPeerConnectionInfoMapRef.current.delete(`${receiveId}.${clientId}`);
     for (const [key, value] of Array.from(new Map(rtcPeerConnectionDataChannelMapRef.current))) {
       // console.log('@key', key);
       if (key.startsWith(`${clientId}.${receiveId}`) || key.startsWith(`${receiveId}.${clientId}`)) {

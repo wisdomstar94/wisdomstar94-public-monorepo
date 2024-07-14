@@ -42,8 +42,25 @@ export default function(server: http.Server) {
   //   }
   // });
 
-  io.on('connection', socket => {
+  io.on('connection', async(socket) => {
     console.log('New client connected', socket.id);
+    const authData = socket.handshake.auth;
+    console.log('@authData', authData);
+
+    const socketClientId = authData.clientId;
+    if (typeof socketClientId !== 'string' || socketClientId?.trim() === '') {
+      socket.disconnect();
+      return;
+    }
+
+    const totalSocketList = await io.fetchSockets();
+    const targets = totalSocketList.filter(k => k.data.clientId === socketClientId);
+    for (const target of targets) {
+      if (target.id !== socket.id) {
+        target.data.clientId = '';
+        target.disconnect();
+      }
+    }
 
     socket.on('disconnect', () => {
       console.log('user disconnect', socket.id);
@@ -97,6 +114,8 @@ export default function(server: http.Server) {
 
     // web rtc 관련
     socket.on('requestAllUsers', (data: { clientId: string }) => {
+      
+
       socket.data.clientId = data.clientId;
       console.log('@socket.data', socket.data);
       io.fetchSockets().then((res) => {
@@ -115,6 +134,7 @@ export default function(server: http.Server) {
       console.log('@@sendOffer', data);
       io.fetchSockets().then((sockets) => {
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        console.log('@@sendOffer.receiveSocket exist', receiveSocket !== undefined);
         receiveSocket?.emit('getOffer', data);
       });
     });
@@ -122,7 +142,16 @@ export default function(server: http.Server) {
     socket.on('sendAnswer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       console.log('@@sendAnswer', data);
       io.fetchSockets().then((sockets) => {
+        console.log('@@sendAnswer.sockets', sockets.map((item) => {
+          return {
+            socketId: item.id,
+            dataClientId: item.data.clientId,
+          };
+        }));
         const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        console.log('@@sendAnswer.receiveSocket exist', receiveSocket !== undefined);
+        console.log('@@sendAnswer.receiveSocket.data', receiveSocket?.data);
+        console.log(`@@sendAnswer.receiveSocket?.emit('getAnswer', data)`);
         receiveSocket?.emit('getAnswer', data);
       });
     });
@@ -135,13 +164,51 @@ export default function(server: http.Server) {
       });
     });
 
-    socket.on('sendPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
-      console.log('@sendPeerDisconnected', data);
-      io.fetchSockets().then((sockets) => {
-        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
-        receiveSocket?.emit('getPeerDisconnected', data);
-      });
-    });
+    // socket.on('applySendOffer', (data: { clientId: string, receiveId: string }) => {
+    //   console.log('@@applySendOffer', data);
+    //   io.fetchSockets().then((sockets) => {
+    //     const targetSockets = sockets.filter(k => k.data.clientId === data.clientId || k.data.clientId === data.receiveId);
+    //     const receiveSocket = targetSockets.find(k => k.data.clientId === data.receiveId);
+    //     const key1 = `${data.clientId}.${data.receiveId}`;
+    //     const key2 = `${data.receiveId}.${data.clientId}`;
+
+    //     const isAppliedSendOffer = targetSockets.find(k => {
+    //       return k.data[key1] === 'appliedSendOffer' || k.data[key2] === 'appliedSendOffer';
+    //     }) !== undefined;
+
+    //     console.log('@isAppliedSendOffer', isAppliedSendOffer);
+
+    //     if (!isAppliedSendOffer) {
+    //       targetSockets.forEach((s) => {
+    //         s.data[key1] = 'appliedSendOffer';
+    //         s.data[key2] = 'appliedSendOffer';
+    //       });
+    //       socket.emit('applySendOfferSuccess', data);
+    //       receiveSocket?.emit('appliedSendOffer', data);
+    //     } 
+    //   });
+    // });
+
+    // socket.on('successConnect', (data: { clientId: string, receiveId: string }) => {
+    //   console.log('@@successConnect', data);
+    //   io.fetchSockets().then((sockets) => {
+    //     const targetSockets = sockets.filter(k => k.data.clientId === data.clientId || k.data.clientId === data.receiveId);
+    //     const key1 = `${data.clientId}.${data.receiveId}`;
+    //     const key2 = `${data.receiveId}.${data.clientId}`;
+    //     targetSockets.forEach((s) => {
+    //       s.data[key1] = '';
+    //       s.data[key2] = '';
+    //     });
+    //   });
+    // });
+
+    // socket.on('sendPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
+    //   console.log('@sendPeerDisconnected', data);
+    //   io.fetchSockets().then((sockets) => {
+    //     const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+    //     receiveSocket?.emit('getPeerDisconnected', data);
+    //   });
+    // });
 
     // socket.on('sendSyncPeerDisconnected', (data: { clientId: string, receiveId: string }) => {
     //   console.log('@sendSyncPeerDisconnected', data);

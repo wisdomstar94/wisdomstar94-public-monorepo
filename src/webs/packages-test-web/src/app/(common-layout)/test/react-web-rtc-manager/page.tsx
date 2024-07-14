@@ -23,7 +23,7 @@ export default function Page() {
   }, []);
 
   const socketioManager = useSocketioManager({
-    isAutoConnect: true,
+    isAutoConnect: false,
     listeners: [
       {
         eventName: 'allUsers',
@@ -65,6 +65,7 @@ export default function Page() {
         callback(data: { sdp: RTCSessionDescriptionInit, clientId: string, receiveId: string }) {
           console.log('getOffer!', data);
 
+          webRtcManager.closePeerConnection(data.clientId, data.receiveId);
           webRtcManager.createPeerConnection({
             clientId: data.receiveId,
             receiveId: data.clientId,
@@ -100,22 +101,37 @@ export default function Page() {
           });
         },
       },
-      {
-        eventName: 'getPeerDisconnected',
-        callback(data: { clientId: string, receiveId: string }) {
-          console.log('@getPeerDisconnected', data);
-          webRtcManager.closePeerConnection(data.clientId, data.receiveId);
-          // socketioManager.emit({ eventName: 'sendSyncPeerDisconnected', data: { clientId: data.receiveId, receiveId: data.clientId } });
-          webRtcManager.createPeerConnection({
-            clientId: clientId,
-            receiveId: data.clientId,
-            type: 'sendOffer',
-            meta: {
-              nickname: 'zzz'
-            },
-          });
-        },
-      },
+      // {
+      //   eventName: 'getPeerDisconnected',
+      //   callback(data: { clientId: string, receiveId: string }) {
+      //     console.log('@getPeerDisconnected', data);
+      //     webRtcManager.closePeerConnection(data.clientId, data.receiveId);
+      //     // socketioManager.emit({ eventName: 'sendSyncPeerDisconnected', data: { clientId: data.receiveId, receiveId: data.clientId } });
+      //     webRtcManager.createPeerConnection({
+      //       clientId: clientId,
+      //       receiveId: data.clientId,
+      //       type: 'sendOffer',
+      //       meta: {
+      //         nickname: 'zzz'
+      //       },
+      //     });
+      //   },
+      // },
+      // {
+      //   eventName: 'applySendOfferSuccess',
+      //   callback(data: { clientId: string, receiveId: string }) {
+      //     webRtcManager.closePeerConnection(data.clientId, data.receiveId);
+      //     console.log('@webRtcManager.createPeerConnection', { clientId, receiveId: data.clientId !== clientId ? data.clientId : data.receiveId, })
+      //     webRtcManager.createPeerConnection({
+      //       clientId: clientId,
+      //       receiveId: data.clientId !== clientId ? data.clientId : data.receiveId,
+      //       type: 'sendOffer',
+      //       meta: {
+      //         nickname: 'zzz'
+      //       },
+      //     });
+      //   },
+      // },
       // {
       //   eventName: 'getSyncPeerDisconnected',
       //   callback(data: { clientId: string, receiveId: string }) {
@@ -128,6 +144,13 @@ export default function Page() {
       //         nickname: 'zzz'
       //       },
       //     });
+      //   },
+      // },
+      // {
+      //   eventName: 'appliedSendOffer',
+      //   callback(data: { clientId: string, receiveId: string }) {
+      //     console.log('@appliedSendOffer', data);
+      //     webRtcManager.closePeerConnection(data.clientId, data.receiveId);
       //   },
       // },
     ],
@@ -248,16 +271,28 @@ export default function Page() {
       console.log('@onDataChannel', event);
     },
     onConnectionStateChange(peerConnectionInfo, event) {
-      console.log('@onConnectionStateChange', { peerConnectionInfo,  event });
+      console.log(Date.now() + ' @onConnectionStateChange', { peerConnectionInfo,  event });
+      console.log(Date.now() + ' connectionState' + peerConnectionInfo.rtcPeerConnection.connectionState);
 
       switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
-        case 'connected': break;
+        case 'connected': 
+          // socketioManager.emit({ eventName: 'successConnect', data: { clientId, receiveId: peerConnectionInfo.clientId !== clientId ? peerConnectionInfo.clientId : peerConnectionInfo.receiveId } });
+          break;
         case 'disconnected': 
+          // webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
+          // socketioManager.emit({ eventName: 'applySendOffer', data: { clientId, receiveId: peerConnectionInfo.clientId !== clientId ? peerConnectionInfo.clientId : peerConnectionInfo.receiveId } });
           // webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
           // if (peerConnectionInfo.type === 'sendOffer') {
           //   socketioManager.emit({ eventName: 'sendPeerDisconnected', data: { clientId: peerConnectionInfo.clientId, receiveId: peerConnectionInfo.receiveId } })
           //   // socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: peerConnectionInfo.receiveId } })
           // }
+          break;
+        case 'failed': 
+          console.log('@@@@@ failed', Date.now());
+          webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
+          if (peerConnectionInfo.type === 'sendOffer') {
+            socketioManager.emit({ eventName: 'requestOneUser', data: { targetClientId: clientId !== peerConnectionInfo.clientId ? peerConnectionInfo.clientId : peerConnectionInfo.receiveId } });
+          }
           break;
       }
     },
@@ -265,6 +300,19 @@ export default function Page() {
       console.log('@onClosedPeerConnectionInfo', peerConnectionInfo);    
     },
   });
+
+  useEffect(() => {
+    if (clientId === '') {
+      return;
+    }
+
+    socketioManager.connect({
+      authData: {
+        clientId,
+      },
+    });  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clientId]);
 
   useEffect(() => {
     if (socketioManager.isConnected === true && clientId !== '') {

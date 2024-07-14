@@ -24,6 +24,7 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
       reconnectionDelayMax: 1000 * 5,
       auth: {
         token: options?.authToken,
+        ...options?.authData,
       },
       query: {
         "my-key": "my-value"
@@ -39,6 +40,15 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
     socket.on('disconnect', () => {
       setIsConnected(false);
     });
+
+    // listeners.forEach((item) => {
+    //   const prevListener = prevListenersRef.current.find(x => x.eventName === item.eventName);
+    //   if (prevListener !== undefined) {
+    //     socket.off(item.eventName, prevListener.callback);
+    //   }
+    //   socket.on(item.eventName, item.callback);
+    // });
+    // prevListenersRef.current = listeners;
   }
 
   function disconnect() {
@@ -101,9 +111,8 @@ export function useSocketioManager(props: IUseSocketioManager.Props) {
       }
       socket.on(item.eventName, item.callback);
     });
-
     prevListenersRef.current = listeners;
-  }, [listeners, socket]);
+  }, [listeners, socket, isConnected]);
 
   return {
     connect,
