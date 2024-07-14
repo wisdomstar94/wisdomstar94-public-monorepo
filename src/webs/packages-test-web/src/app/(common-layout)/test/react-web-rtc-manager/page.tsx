@@ -184,6 +184,7 @@ export default function Page() {
         meta,
       } = peerConnectionInfo;
 
+      console.log('@inputedData', inputedData);
       console.log('@onCreatedPeerConnection', peerConnectionInfo);  
       if (peerConnectionInfo.type === 'sendOffer') {
         // const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel("chat");
