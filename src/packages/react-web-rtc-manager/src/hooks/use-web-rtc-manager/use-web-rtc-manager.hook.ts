@@ -36,7 +36,7 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   const [changedRtcPeerConnectionInfo, setChangedRtcPeerConnectionInfo] = useState<IUseWebRtcManager.ChangedRtcPeerConnectionInfo>();
   const [changedRtcPeerConnectionDataChannelMap, setChangedRtcPeerConnectionDataChannelMap] = useState<IUseWebRtcManager.ChangedRtcPeerConnectionInfo>();
   const rtcPeerConnectionInfoMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, IUseWebRtcManager.RTCPeerConnectionInfo<T>>>(new Map());
-  const rtcPeerConnectionDataChannelMapRef = useRef<Map<`${IUseWebRtcManager.PeerConnectionKey}.${string}`, RTCDataChannel>>(new Map());
+  const rtcPeerConnectionDataChannelMapRef = useRef<Map<`${IUseWebRtcManager.PeerConnectionKey}.${string}`, IUseWebRtcManager.RTCDataChannelInfo<T>>>(new Map());
 
   function getPeerConnectionInfo(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
     return rtcPeerConnectionInfoMapRef.current.get(`${clientId}.${receiveId}`) ?? rtcPeerConnectionInfoMapRef.current.get(`${receiveId}.${clientId}`);
@@ -54,30 +54,12 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     if (peerConnectionInfo.type === 'sendOffer') {
       for (const dataChannelListener of (dataChannelListeners ?? [])) {
         const dataChannel = peerConnectionInfo.rtcPeerConnection.createDataChannel(dataChannelListener.channelName);
-        rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${dataChannelListener.channelName}`, dataChannel);
+        rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${dataChannelListener.channelName}`, { 
+          channel: dataChannel,
+          peerConnectionInfo,
+        });
         setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
-        // dataChannel.onopen = (event) => {
-          
-        // };  
-        // dataChannel.onmessage = (event) => {
-        //   dataChannelListener.callback(event);
-        // };
       }
-    }
-
-    if (peerConnectionInfo.type === 'getOffer' && peerConnectionInfo.sdp !== undefined) {
-      peerConnectionInfo.rtcPeerConnection.addEventListener('datachannel', (event) => {
-        const channelName = event.channel.label;
-        rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${channelName}`, event.channel);
-        setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
-        // const dataChannelListener = dataChannelListeners?.find(x => x.channelName === channelName);
-        // event.channel.onopen = (event) => {
-          
-        // };
-        // event.channel.onmessage = (event) => {
-        //   dataChannelListener?.callback(event);
-        // };
-      });
     }
   }
 
@@ -94,17 +76,18 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     setChangedRtcPeerConnectionInfo({ timestamp: Date.now() });
   }
   
-  function emitDataChannel(options: IUseWebRtcManager.DataChannelEmitOptions) {
+  function emitDataChannel<M = unknown>(options: IUseWebRtcManager.DataChannelEmitOptions<M>) {
     const {
       channelName,
       data,
     } = options;
 
     const arr = Array.from(rtcPeerConnectionDataChannelMapRef.current);
-    for (const [key, channel] of arr) {
+    for (const [key, channelInfo] of arr) {
       if (key.includes('.' + channelName)) {
-        if (channel.readyState === 'open') {
-          channel.send(data);
+        if (channelInfo.channel.readyState === 'open') {
+          const sendData = typeof data === 'string' ? data : JSON.stringify(data);
+          channelInfo.channel.send(sendData);
         }
       }
     }
@@ -208,6 +191,19 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     };
 
     peerConnection.ondatachannel = (event) => {
+      if (peerConnectionInfo.type === 'getOffer' && peerConnectionInfo.sdp !== undefined) {
+        const channelName = event.channel.label;
+        rtcPeerConnectionDataChannelMapRef.current.set(`${peerConnectionInfo.clientId}.${peerConnectionInfo.receiveId}.${channelName}`, {
+          channel: event.channel,
+          peerConnectionInfo,
+        });
+        const listener = dataChannelListeners?.find(k => k.channelName === channelName);
+        if (typeof listener?.receivedChannel === 'function') {
+          listener?.receivedChannel(peerConnectionInfo, event);
+        }
+        setChangedRtcPeerConnectionDataChannelMap({ timestamp: Date.now() });
+      }
+
       if (typeof onDataChannelRef.current === 'function') {
         onDataChannelRef.current(peerConnectionInfo, event);
       }
@@ -264,23 +260,60 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     };
   }, []);
 
+  const onDataChannelMessageListenerMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, (event: MessageEvent<any>) => void>>(new Map());
+  const onDataChannelOpenedListenerMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, (event: Event) => void>>(new Map());
+
+  const onDataChannelMessageListenerPrevMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, (event: MessageEvent<any>) => void>>(new Map());
+  const onDataChannelOpenedListenerPrevMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, (event: Event) => void>>(new Map());
+
   useEffect(() => {
     dataChannelListeners?.forEach((item) => {
-      const prevListener = prevDataChannelListenersRef.current?.find(x => x.channelName === item.channelName);
+      // const prevListener = prevDataChannelListenersRef.current?.find(x => x.channelName === item.channelName);
 
       const peersDataChannels = Array.from(rtcPeerConnectionDataChannelMapRef.current).filter(([key, value]) => {
         return key.endsWith('.' + item.channelName);
       });
 
-      for (const [key, channel] of peersDataChannels) {
-        if (prevListener !== undefined) {
-          channel.removeEventListener('message', prevListener.callback);
+      for (const [key, channelInfo] of peersDataChannels) {
+        // const split = key.split('.');
+        // const pairKey = split[0] + '.' + split[1];
+
+        // if (prevListener !== undefined) {
+        //   channelInfo.channel.removeEventListener('message', prevListener.callback);
+        //   if (prevListener.opened !== undefined) {
+        //     channelInfo.channel.removeEventListener('open', prevListener.opened);
+        //   }
+        // }
+        const onDataChannelMessagePrev = onDataChannelMessageListenerPrevMapRef.current.get(key);
+        const onDataChannelOpenedPrev = onDataChannelOpenedListenerPrevMapRef.current.get(key);
+
+        if (typeof onDataChannelMessagePrev === 'function') {
+          channelInfo.channel.removeEventListener('message',  onDataChannelMessagePrev);
         }
-        channel.addEventListener('message', item.callback);
+
+        if (typeof onDataChannelOpenedPrev === 'function') {
+          channelInfo.channel.removeEventListener('open',  onDataChannelOpenedPrev);
+        }
+
+        onDataChannelMessageListenerMapRef.current.set(key, (event: MessageEvent<any>) => {
+          item.callback(channelInfo.peerConnectionInfo, event);
+        });
+
+        onDataChannelOpenedListenerMapRef.current.set(key, (event: Event) => {
+          if (typeof item.opened === 'function') {
+            item.opened(channelInfo.peerConnectionInfo, event);
+          }
+        });
+
+        channelInfo.channel.addEventListener('message', onDataChannelMessageListenerMapRef.current.get(key)!);
+        channelInfo.channel.addEventListener('open', onDataChannelOpenedListenerMapRef.current.get(key)!);
+
+        onDataChannelMessageListenerPrevMapRef.current.set(key, onDataChannelMessageListenerMapRef.current.get(key)!);
+        onDataChannelOpenedListenerPrevMapRef.current.set(key, onDataChannelOpenedListenerMapRef.current.get(key)!);
       }
     });
 
-    prevDataChannelListenersRef.current = dataChannelListeners;
+    // prevDataChannelListenersRef.current = dataChannelListeners;
   }, [dataChannelListeners]);
 
   return {
