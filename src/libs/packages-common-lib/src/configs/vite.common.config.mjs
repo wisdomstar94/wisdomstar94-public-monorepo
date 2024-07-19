@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { join } from 'node:path';
 
 /**
  * @param {import('vite').UserConfig} overrideConfig 
@@ -10,6 +11,11 @@ export function getCommonViteConfig(overrideConfig) {
    */
   const config = {
     publicDir: false,
+    resolve: {
+      alias: {
+        '@/': join(overrideConfig.root, 'src/'),
+      },
+    },
     ...overrideConfig,
     build: {
       ssr: true,

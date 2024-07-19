@@ -14,7 +14,7 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": ["${configDir}/src/*"],
+      "@/*": ["src/*"],
       "#packages-common-lib": ["../../libs/packages-common-lib/src/index"]
     }
   },

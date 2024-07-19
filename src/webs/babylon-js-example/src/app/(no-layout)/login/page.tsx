@@ -25,7 +25,7 @@ export default function Page() {
     isLoggingRef.current = true;
     applySocketLogin(nickname).then((res) => {
       localStorage.setItem('access_token', res.access_token);
-      router.push('/test/socket-apply-v2');
+      router.push('/test/socket-apply-v3');
     }).catch((err) => {
       console.error(err);
     }).finally(() => {

@@ -44,8 +44,9 @@ export declare namespace IUseWebRtcManager {
     channel: RTCDataChannel;
   }
 
-  export interface DataChannelEmitOptions<M> {
+  export interface DataChannelEmitOptions<M, T> {
     channelName: string;
+    rtcPeerConnections?: RTCPeerConnectionInfo<T>[];
     data?: string | M;
   }
 

@@ -56,68 +56,67 @@ export default function(server: http.Server) {
   io.on('connection', async(socket) => {
     console.log('New client connected', socket.id);
     // const authData = socket.handshake.auth;
-    // console.log('@authData', authData);
+    const socketClientId = socket.data?.jwtPayload?.characterId;
+    console.log('socketClientId', socketClientId);
+    if (typeof socketClientId !== 'string' || socketClientId?.trim() === '') {
+      socket.disconnect();
+      return;
+    }
 
-    // const socketClientId = authData.clientId;
-    // if (typeof socketClientId !== 'string' || socketClientId?.trim() === '') {
-    //   socket.disconnect();
-    //   return;
-    // }
-
-    // const totalSocketList = await io.fetchSockets();
-    // const targets = totalSocketList.filter(k => k.data.clientId === socketClientId);
-    // for (const target of targets) {
-    //   if (target.id !== socket.id) {
-    //     target.data.clientId = '';
-    //     target.disconnect();
-    //   }
-    // }
+    const totalSocketList = await io.fetchSockets();
+    const targets = totalSocketList.filter(k => k.data.jwtPayload?.characterId === socketClientId);
+    for (const target of targets) {
+      if (target.id !== socket.id) {
+        delete target.data.jwtPayload;
+        target.disconnect();
+      }
+    }
 
     socket.on('disconnect', () => {
       console.log('user disconnect', socket.id);
-      socket.broadcast.emit("otherUserDisconnect", { characterId: socket.data.characterId });
+      socket.broadcast.emit("otherUserDisconnect", { characterId: socket.data.jwtPayload.characterId });
     });
 
-    socket.on('good', (data: any) => {
-      console.log('on.good', data); // 클라이언트 -> 서버
-    });
+    // socket.on('good', (data: any) => {
+    //   console.log('on.good', data); // 클라이언트 -> 서버
+    // });
 
-    socket.on('meConnect', (data: IUseBabylonCharacterController.AddRequireInfo) => {
-      console.log('@meConnect', data.characterId);
-      socket.data = { characterId: data.characterId };
-      // console.log('@meConnect', socket);
-      socket.broadcast.emit('otherUserConnect', data);
-    });
+    // socket.on('meConnect', (data: IUseBabylonCharacterController.AddRequireInfo) => {
+    //   console.log('@meConnect', data.characterId);
+    //   socket.data = { characterId: data.characterId };
+    //   // console.log('@meConnect', socket);
+    //   socket.broadcast.emit('otherUserConnect', data);
+    // });
     
-    socket.on('meCurrentPositionAndRotation', (data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) => {
-      console.log('@meCurrentPositionAndRotation', data.characterId);
-      socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
-    });
+    // socket.on('meCurrentPositionAndRotation', (data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions) => {
+    //   console.log('@meCurrentPositionAndRotation', data.characterId);
+    //   socket.broadcast.emit('otherUserCurrentPositionAndRotation', data);
+    // });
 
-    socket.on('meCurrent', (params: { data: IUseBabylonCharacterController.AddRequireInfo; characterId?: string }) => {
-      console.log('@meCurrent', params.data.characterId);
-      if (params.characterId === undefined) {
-        socket.broadcast.emit('otherUserCurrent', params.data);
-      } else {
-        console.log('## ## ##');
-        io.fetchSockets().then((list) => {
-          // console.log('@@list', list);
-          const targetSocket = list.find(k => k.data.characterId === params.characterId);
-          // console.log('targetSocket', targetSocket);
-          targetSocket?.emit('otherUserCurrent', params.data);
-        })
-      }
-    });
+    // socket.on('meCurrent', (params: { data: IUseBabylonCharacterController.AddRequireInfo; characterId?: string }) => {
+    //   console.log('@meCurrent', params.data.characterId);
+    //   if (params.characterId === undefined) {
+    //     socket.broadcast.emit('otherUserCurrent', params.data);
+    //   } else {
+    //     console.log('## ## ##');
+    //     io.fetchSockets().then((list) => {
+    //       // console.log('@@list', list);
+    //       const targetSocket = list.find(k => k.data.characterId === params.characterId);
+    //       // console.log('targetSocket', targetSocket);
+    //       targetSocket?.emit('otherUserCurrent', params.data);
+    //     })
+    //   }
+    // });
 
-    socket.on('meMoving', (data: IUseBabylonCharacterController.CharacterMovingOptions) => {
-      console.log('@meMoving', data.characterId);
-      socket.broadcast.emit('otherUserModelMovingInfo', data);
-    });
+    // socket.on('meMoving', (data: IUseBabylonCharacterController.CharacterMovingOptions) => {
+    //   console.log('@meMoving', data.characterId);
+    //   socket.broadcast.emit('otherUserModelMovingInfo', data);
+    // });
 
-    socket.on('meJumping', (data: { characterId: string, jumpingOptions: IUseBabylonCharacterController.CharacterJumpingOptions }) => {
-      console.log('@meJumping', data.characterId);
-      socket.broadcast.emit('otherUserModelJumpingInfo', data);
-    });
+    // socket.on('meJumping', (data: { characterId: string, jumpingOptions: IUseBabylonCharacterController.CharacterJumpingOptions }) => {
+    //   console.log('@meJumping', data.characterId);
+    //   socket.broadcast.emit('otherUserModelJumpingInfo', data);
+    // });
 
     // setInterval(() => {
     //   socket.broadcast.emit('getOtherDatas', { timestemp: Date.now() });
@@ -125,16 +124,17 @@ export default function(server: http.Server) {
 
     // web rtc 관련
     socket.on('requestAllUsers', (data: { clientId: string }) => {
-      socket.data.clientId = data.clientId;
-      console.log('@socket.data', socket.data);
+      console.log('@requestAllUsers', data);
+      // socket.data.clientId = data.clientId;
+      // console.log('@socket.data', socket.data);
       io.fetchSockets().then((res) => {
-        socket.emit('allUsers', res.map(x => x.data.clientId));
+        socket.emit('allUsers', res.map(x => x.data.jwtPayload.characterId));
       });
     });
 
     socket.on('requestOneUser', (data: { targetClientId: string }) => {
       io.fetchSockets().then((res) => {
-        const isExist = res.find(k => k.data.clientId === data.targetClientId) !== undefined;
+        const isExist = res.find(k => k.data.jwtPayload.characterId === data.targetClientId) !== undefined;
         socket.emit('oneUser', { clientId: data.targetClientId, isExist });
       });
     });
@@ -142,7 +142,7 @@ export default function(server: http.Server) {
     socket.on('sendOffer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       console.log('@@sendOffer', data);
       io.fetchSockets().then((sockets) => {
-        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        const receiveSocket = sockets.find(k => k.data.jwtPayload.characterId === data.receiveId);
         console.log('@@sendOffer.receiveSocket exist', receiveSocket !== undefined);
         receiveSocket?.emit('getOffer', data);
       });
@@ -151,13 +151,7 @@ export default function(server: http.Server) {
     socket.on('sendAnswer', (data: { sdp: any, clientId: string, receiveId: string }) => {
       console.log('@@sendAnswer', data);
       io.fetchSockets().then((sockets) => {
-        console.log('@@sendAnswer.sockets', sockets.map((item) => {
-          return {
-            socketId: item.id,
-            dataClientId: item.data.clientId,
-          };
-        }));
-        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        const receiveSocket = sockets.find(k => k.data.jwtPayload.characterId === data.receiveId);
         console.log('@@sendAnswer.receiveSocket exist', receiveSocket !== undefined);
         console.log('@@sendAnswer.receiveSocket.data', receiveSocket?.data);
         console.log(`@@sendAnswer.receiveSocket?.emit('getAnswer', data)`);
@@ -168,7 +162,7 @@ export default function(server: http.Server) {
     socket.on('sendCandidate', (data: { candidate: any, clientId: string, receiveId: string }) => {
       console.log('@@sendCandidate', data);
       io.fetchSockets().then((sockets) => {
-        const receiveSocket = sockets.find(k => k.data.clientId === data.receiveId);
+        const receiveSocket = sockets.find(k => k.data.jwtPayload.characterId === data.receiveId);
         receiveSocket?.emit('getCandidate', data);
       });
     });

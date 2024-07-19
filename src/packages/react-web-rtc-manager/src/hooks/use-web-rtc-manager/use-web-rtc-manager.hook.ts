@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IUseWebRtcManager } from "./use-web-rtc-manager.interface";
+import { isEqualClientIdAndReceiveIdSumKey } from "@/libs/utils";
 
 export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>) {
   const defaultRtcConfiguration = props.defaultRtcConfiguration;
@@ -76,14 +77,21 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
     setChangedRtcPeerConnectionInfo({ timestamp: Date.now() });
   }
   
-  function emitDataChannel<M = unknown>(options: IUseWebRtcManager.DataChannelEmitOptions<M>) {
+  function emitDataChannel<M = unknown>(options: IUseWebRtcManager.DataChannelEmitOptions<M, T>) {
     const {
       channelName,
+      rtcPeerConnections,
       data,
     } = options;
 
     const arr = Array.from(rtcPeerConnectionDataChannelMapRef.current);
     for (const [key, channelInfo] of arr) {
+      if (rtcPeerConnections !== undefined) {
+        if (rtcPeerConnections.find(item => isEqualClientIdAndReceiveIdSumKey(item, channelInfo.peerConnectionInfo)) === undefined) {
+          continue;
+        }
+      }
+
       if (key.includes('.' + channelName)) {
         if (channelInfo.channel.readyState === 'open') {
           const sendData = typeof data === 'string' ? data : JSON.stringify(data);

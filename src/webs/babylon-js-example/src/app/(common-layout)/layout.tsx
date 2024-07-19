@@ -8,7 +8,7 @@ export default function Layout({
   const menus: ICommonRootLayout.MenuItem[] = [
     // { name: 'test/other-character-add', href: '/test/other-character-add' },
     // { name: 'test/socket-apply', href: '/test/socket-apply' },
-    { name: 'test/socket-apply-v2', href: '/test/socket-apply-v2' },
+    { name: 'test/socket-apply-v3', href: '/test/socket-apply-v3' },
   ];
 
   return (
