@@ -12,6 +12,7 @@ import "@babylonjs/loaders/glTF";
 import { RtcData } from "./type";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
+import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
 
 type MetaData = {
   nickName: string;
@@ -62,6 +63,27 @@ export default function Page() {
     callMaxCount: 4,
     isAutoStart: false,
     isCallWhenStarted: true,
+    isForceCallWhenFnExecuting: true,
+  });
+
+  const emitMeCurrentPositionAndRotationInterval = usePromiseInterval({
+    fn: async() => {
+      emitOpponentCurrentPositionAndRotation();
+      return;
+    },
+    intervalTime: 1000,
+    isAutoStart: false,
+    isCallWhenStarted: true,
+    isForceCallWhenFnExecuting: true,
+  });
+
+  const emitMeCurrentPositionAndRotationTimeout = usePromiseTimeout({
+    fn: async() => {
+      emitOpponentCurrentPositionAndRotation();
+    },
+    timeoutTime: 500,
+    isAutoStart: false,
+    isCallWhenStarted: false,
     isForceCallWhenFnExecuting: true,
   });
 
@@ -699,6 +721,24 @@ export default function Page() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meCharacterLoaded]);
+
+  useEffect(() => {
+    if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
+      emitMeCurrentPositionAndRotationInterval.stop();
+      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 250 : 1000 });
+    } else {
+      emitMeCurrentPositionAndRotationInterval.stop();
+      emitMeCurrentPositionAndRotationTimeout.start();
+      emitMeCurrentPositionAndRotationInterval.fnCall();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [babylonCharacterController.isThisClientCharacterControlling, babylonCharacterController.isExistThisClientCharacterNearOtherCharacters])
+
+  useEffect(() => {
+    body.denyScroll();
+    body.denyTextDrag();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (socketioManager.isConnected === true && characterId !== '') {
