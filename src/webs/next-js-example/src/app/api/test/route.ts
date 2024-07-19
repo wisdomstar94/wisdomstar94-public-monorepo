@@ -28,5 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
 
   return NextResponse.json({
     timestamp: Date.now(),
+  }, {
+    status: 200,
   });
 }
