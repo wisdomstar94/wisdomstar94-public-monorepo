@@ -16,6 +16,7 @@ export default function Layout({
     { name: 'test/use-optimistic', href: '/test/use-optimistic' },
     { name: 'test/server-action/basic', href: '/test/server-action/basic' },
     { name: 'test/api-call/basic', href: '/test/api-call/basic' },
+    { name: 'test/parallel-routes-and-intercepting-routes', href: '/test/parallel-routes-and-intercepting-routes' },
   ];
 
   return (
