@@ -48,6 +48,7 @@ export declare namespace IUseWebRtcManager {
     channelName: string;
     rtcPeerConnections?: RTCPeerConnectionInfo<T>[];
     data?: string | M;
+    prevent?: (prevData?: string | M | undefined) => boolean;
   }
 
   export interface Props<T> {

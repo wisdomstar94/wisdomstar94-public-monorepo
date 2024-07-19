@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import "@babylonjs/loaders/glTF";
 import { RtcData } from "./type";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
+import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 
 type MetaData = {
   nickName: string;
@@ -47,16 +48,15 @@ export default function Page() {
   });
   babylonCharacterController.setThisClientCharacterId(characterId);
   
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      (window as any).babylonCharacterController = babylonCharacterController;
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined') {
+  //     (window as any).babylonCharacterController = babylonCharacterController;
+  //   }
+  // }, []);
 
   const emitInitMeCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
       emitOpponentCurrentPositionAndRotation();
-      return;
     },
     intervalTime: 500,
     callMaxCount: 4,
@@ -167,6 +167,14 @@ export default function Page() {
               babylonCharacterController.setCharacterPositionAndRotation({
                 ...obj.data,
               });
+            } break;
+            case 'opponentMoving': {
+              if (obj.data.characterId === characterId) return;
+              babylonCharacterController.setCharacterMoving(obj.data);
+            } break;
+            case 'opponentJumping': {
+              if (obj.data.characterId === characterId) return;
+              babylonCharacterController.setCharacterJumping(obj.data.characterId, obj.data.jumpingOptions);
             } break;
           }
         },
@@ -404,6 +412,88 @@ export default function Page() {
         },
       },
     ],
+  });
+
+  function disposeMoving(params: { 
+    direction: IUseBabylonCharacterController.CharacterGoDirection | undefined;
+    isRunning: boolean;
+    // cameraDirection?: Vector3;
+  }) {
+    const {
+      direction,
+      isRunning,
+      // cameraDirection,
+    } = params;
+
+    const c = babylonCharacterController.getCharacter(characterId);
+    if (c === undefined) return;
+
+    const cDirection = c?.camera?.getForwardRay().direction;
+    const movingInfo: IUseBabylonCharacterController.CharacterMovingOptions = { characterId, direction, isRunning: isRunning, cameraDirection: cDirection !== undefined ? { x: cDirection.x, y: cDirection.y, z: cDirection.z } : undefined };
+    webRtcManager.emitDataChannel<RtcData>({
+      channelName: oneChannelName,
+      data: {
+        event: 'opponentMoving',
+        data: movingInfo,
+      },
+      prevent(prevData) {
+        if (typeof prevData === 'string') return true;
+        if (prevData?.event === 'opponentMoving') {
+          if (prevData?.data.direction === direction && prevData?.data.isRunning === movingInfo.isRunning) return true;
+        }
+        return false;
+        // if (prevData?.direction === direction && prevData?.isRunning === movingInfo.isRunning) return true;
+        // return false;
+      },
+    });
+    babylonCharacterController.setCharacterMoving({ characterId, direction, isRunning });
+  }
+
+  function disposeJumping() {
+    const c = babylonCharacterController.getCharacter(characterId);
+    if (c === undefined) return;
+
+    if (c !== undefined && c.isJumpPossible !== false) {
+      // socketioManager.emit({
+      //   eventName: 'meJumping', 
+      //   data: { characterId, jumpingOptions: c.jumpingOptions },
+      //   prevent() {
+      //     return c.isJumpPossible === false;
+      //   },
+      // });
+      webRtcManager.emitDataChannel<RtcData>({
+        channelName: oneChannelName,
+        data: {
+          event: 'opponentJumping',
+          data: { characterId, jumpingOptions: c.jumpingOptions },
+        },
+        prevent(prevData) {
+          return c.isJumpPossible === false;
+        },
+      })
+      babylonCharacterController.setCharacterJumping(characterId);
+    }
+  }
+
+  useKeyboardManager({
+    onChangeKeyMapStatus(keyMap) {
+      const isUpPress = keyMap.get('ArrowUp');
+      const isDownPress = keyMap.get('ArrowDown');
+      const isLeftPress = keyMap.get('ArrowLeft');
+      const isRightPress = keyMap.get('ArrowRight');
+      const isShiftPress = keyMap.get('Shift');
+      const isJumpPress = keyMap.get(' ');
+      if (isUpPress && !isDownPress && !isLeftPress && !isRightPress) { disposeMoving({ direction: 'Up', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && isDownPress && !isLeftPress && !isRightPress) { disposeMoving({ direction: 'Down', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && !isDownPress && isLeftPress && !isRightPress) { disposeMoving({ direction: 'Left', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && !isDownPress && !isLeftPress && isRightPress) { disposeMoving({ direction: 'Right', isRunning: isShiftPress ?? false }); }
+      if (isUpPress && !isDownPress && isLeftPress && !isRightPress) { disposeMoving({ direction: 'Up+Left', isRunning: isShiftPress ?? false }); }
+      if (isUpPress && !isDownPress && !isLeftPress && isRightPress) { disposeMoving({ direction: 'Up+Right', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && isDownPress && isLeftPress && !isRightPress) { disposeMoving({ direction: 'Down+Left', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && isDownPress && !isLeftPress && isRightPress) { disposeMoving({ direction: 'Down+Right', isRunning: isShiftPress ?? false }); }
+      if (!isUpPress && !isDownPress && !isLeftPress && !isRightPress) { disposeMoving({ direction: undefined, isRunning: isShiftPress ?? false }); }
+      if (isJumpPress) { disposeJumping(); }
+    },
   });
 
   async function onReady(initInfo: IBabylonCanvas.InitInfo) {

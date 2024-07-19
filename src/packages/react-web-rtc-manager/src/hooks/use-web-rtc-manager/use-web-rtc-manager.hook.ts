@@ -39,6 +39,8 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
   const rtcPeerConnectionInfoMapRef = useRef<Map<IUseWebRtcManager.PeerConnectionKey, IUseWebRtcManager.RTCPeerConnectionInfo<T>>>(new Map());
   const rtcPeerConnectionDataChannelMapRef = useRef<Map<`${IUseWebRtcManager.PeerConnectionKey}.${string}`, IUseWebRtcManager.RTCDataChannelInfo<T>>>(new Map());
 
+  const prevDataChannelEmitInfoRef = useRef<Map<string, any>>(new Map());
+
   function getPeerConnectionInfo(clientId: IUseWebRtcManager.ClientId, receiveId: IUseWebRtcManager.ReceiveId) {
     return rtcPeerConnectionInfoMapRef.current.get(`${clientId}.${receiveId}`) ?? rtcPeerConnectionInfoMapRef.current.get(`${receiveId}.${clientId}`);
   }
@@ -82,7 +84,17 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
       channelName,
       rtcPeerConnections,
       data,
+      prevent,
     } = options;
+
+    if (typeof prevent === 'function') {
+      const prevData = prevDataChannelEmitInfoRef.current.get(channelName);
+      if (prevent(prevData)) {
+        console.warn(`${channelName} 에 대해 emit event 가 발생했지만 prevent 에 의해 차단되었습니다.`);
+        prevDataChannelEmitInfoRef.current.set(channelName, data);
+        return;
+      }
+    }
 
     const arr = Array.from(rtcPeerConnectionDataChannelMapRef.current);
     for (const [key, channelInfo] of arr) {
@@ -99,6 +111,7 @@ export function useWebRtcManager<T = unknown>(props: IUseWebRtcManager.Props<T>)
         }
       }
     }
+    prevDataChannelEmitInfoRef.current.set(channelName, data);
   }
 
   function createPeerConnection(options: IUseWebRtcManager.CreateConnectionOptionnOptionalRtcConfiguration<T>) {
