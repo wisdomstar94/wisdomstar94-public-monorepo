@@ -15,6 +15,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
   const firstQuaternionWithCameraRef = useRef<Quaternion>();
   const thisClientCharacterIdRef = useRef(thisClientCharacterOptions?.characterId ?? '');
   const charactersRef = useRef<Map<string, IUseBabylonCharacterController.CharacterItem>>(new Map());
+  const charactersAddingRef = useRef<Set<string>>(new Set());
   const [isThisClientCharacterControlling, setIsThisClientCharacterControlling] = useState(false);
   const [isThisClientCharacterLoaded, setIsThisClientCharacterLoaded] = useState(false);
   const [isExistThisClientCharacterNearOtherCharacters, setIsExistThisClientCharacterNearOtherCharacters] = useState(false);
@@ -41,10 +42,13 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     const linearDamping = chracterPhysicsBodyOptions?.linearDamping ?? 10;
 
     const t = charactersRef.current.get(characterId);
-    if (t !== undefined) {
+    if (charactersAddingRef.current.has(characterId) || t !== undefined) {
       console.warn('이미 해당 캐릭터는 존재합니다.');
       return Promise.resolve(undefined);
     }
+
+    // console.log('@@@@@@@@ add', params);
+    charactersAddingRef.current.add(characterId);
 
     // 캐릭터와 맵핑할 메쉬
 
@@ -97,7 +101,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
     // model import!!!
     const result = SceneLoader.ImportMeshAsync(undefined, glbFileUrl.baseUrl, glbFileUrl.filename, scene).then((result) => {
-      // console.log('@result', result);
+      console.log('@model import result', result);
       const characterLoaderResult = result;
       const characterMeshes = characterLoaderResult.meshes;
       const characterAnimationGroups = new Map<string, AnimationGroup>();
@@ -160,6 +164,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         addRequireInfo: params,
       };
       charactersRef.current.set(characterId, characterItem);
+      charactersAddingRef.current.delete(characterId);
       if (typeof onAdded === 'function') {
         onAdded(characterItem);
       }

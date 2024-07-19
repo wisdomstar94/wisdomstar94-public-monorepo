@@ -10,6 +10,7 @@ import { useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
 import { useEffect, useRef, useState } from "react";
 import "@babylonjs/loaders/glTF";
 import { RtcData } from "./type";
+import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
 
 type MetaData = {
   nickName: string;
@@ -45,6 +46,52 @@ export default function Page() {
     },
   });
   babylonCharacterController.setThisClientCharacterId(characterId);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).babylonCharacterController = babylonCharacterController;
+    }
+  }, []);
+
+  const emitInitMeCurrentPositionAndRotationInterval = usePromiseInterval({
+    fn: async() => {
+      emitOpponentCurrentPositionAndRotation();
+      return;
+    },
+    intervalTime: 500,
+    callMaxCount: 4,
+    isAutoStart: false,
+    isCallWhenStarted: true,
+    isForceCallWhenFnExecuting: true,
+  });
+
+  function emitOpponentCurrentPositionAndRotation() {
+    const c = babylonCharacterController.getCharacter(characterId);
+    if (c !== undefined) {
+      const firstMesh: AbstractMesh | undefined = c.characterMeshes[0];
+      const ro = firstMesh?.rotationQuaternion;
+      const data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions = {
+        characterId,
+        position: { x: c.characterBox.position.x, y: c.characterBox.position.y, z: c.characterBox.position.z },
+        rotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
+        // notApplyPositionWhenNotBigDiffrenceOptions: isForce === true ? {
+        //   isNotApplyPositionWhenNotBigDiffrence: false,
+        // } : undefined,
+        // animateOptions: isForce === true ? {
+        //   isAnimate: true,
+        //   duration: 500,
+        // } : undefined,
+      };
+      // console.log('@opponentCurrentPositionAndRotation');
+      webRtcManager.emitDataChannel<RtcData>({
+        channelName: oneChannelName,
+        data: {
+          event: 'opponentCurrentPositionAndRotation',
+          data,
+        },
+      });
+    }
+  }
 
   const webRtcManager = useWebRtcManager<MetaData>({
     defaultRtcConfiguration: {
@@ -111,6 +158,16 @@ export default function Page() {
                 });;
               }
             } break;
+            case 'opponentCurrentPositionAndRotation': {
+              console.log('11111');
+              if (obj.data.characterId === characterId) return;
+              const c = babylonCharacterController.getCharacter(obj.data.characterId);
+              if (c === undefined) return;
+              console.log('22222');
+              babylonCharacterController.setCharacterPositionAndRotation({
+                ...obj.data,
+              });
+            } break;
           }
         },
         // send offer 에 해당하는 peer 에서 발생하게 될 이벤트, 즉 data channel 을 생성한 peer 에서 발생하게될 이벤트
@@ -123,11 +180,15 @@ export default function Page() {
               data: null,
             },
           });
+
+          emitInitMeCurrentPositionAndRotationInterval.start();
         },
         // get offer 에 해당하는 peer 에서 발생하게 될 이벤트, 즉 data channel 을 받은 peer 에서 발생하게될 이벤트
         receivedChannel(peerConnectionInfo, event) {
           console.log(`[${Date.now()}] @@@${event.channel.label} received!!!`, peerConnectionInfo);
           
+          emitInitMeCurrentPositionAndRotationInterval.start();
+
           // 상대편에게 상대편의 connectInfo 를 요청함
           webRtcManager.emitDataChannel<RtcData>({
             rtcPeerConnections: [peerConnectionInfo],

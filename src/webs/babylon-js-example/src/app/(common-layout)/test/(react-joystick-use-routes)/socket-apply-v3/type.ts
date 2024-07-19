@@ -10,7 +10,13 @@ export interface RequestConnectInfoRtcData {
   data?: null;
 }
 
+export interface OpponentCurrentPositionAndRotationRtcData {
+  event: 'opponentCurrentPositionAndRotation';
+  data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions;
+}
+
 export type RtcData = 
-OpponentConnectInfoRtcData |
-  RequestConnectInfoRtcData
+  OpponentConnectInfoRtcData |
+  RequestConnectInfoRtcData | 
+  OpponentCurrentPositionAndRotationRtcData
 ;
