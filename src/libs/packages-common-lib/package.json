@@ -2,6 +2,9 @@
   "name": "@wisdomstar94/packages-common-lib",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "ncu:update": "ncu -u"
+  },
   "devDependencies": {
     "@types/react": "^18",
     "@types/react-dom": "^18",

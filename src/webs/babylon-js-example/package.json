@@ -12,9 +12,9 @@
     "pm2:start": "pm2 start ecosystem.config.js"
   },
   "dependencies": {
-    "@babylonjs/core": "^7.14.0",
+    "@babylonjs/core": "^7.16.0",
     "@babylonjs/havok": "^1.3.7",
-    "@babylonjs/loaders": "^7.14.0",
+    "@babylonjs/loaders": "^7.16.0",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "@wisdomstar94/react-babylon-utils": "workspace:^",
     "@wisdomstar94/react-body": "workspace:^",
@@ -28,7 +28,7 @@
     "@wisdomstar94/react-web-rtc-manager": "workspace:^",
     "animejs": "^3.2.2",
     "jsonwebtoken": "^9.0.2",
-    "next": "14.2.4",
+    "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "uuid": "^10.0.0"
@@ -40,11 +40,11 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uuid": "^10",
-    "babylonjs-gltf2interface": "^7.14.0",
+    "babylonjs-gltf2interface": "^7.16.0",
     "eslint": "^8",
-    "eslint-config-next": "14.2.4",
+    "eslint-config-next": "14.2.5",
     "postcss": "^8",
-    "tailwindcss": "^3.4.4",
+    "tailwindcss": "^3.4.6",
     "typescript": "^5.5.3"
   }
 }

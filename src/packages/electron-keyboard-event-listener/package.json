@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "cargo": "cargo"
+    "cargo": "cargo",
+    "ncu:update": "ncu -u"
   }
 }
