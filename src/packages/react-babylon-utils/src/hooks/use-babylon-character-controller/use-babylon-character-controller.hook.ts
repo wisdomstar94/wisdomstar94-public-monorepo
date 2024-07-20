@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
-import { AnimationGroup, AnimationPropertiesOverride, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsPrestepType, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, AnimationPropertiesOverride, Axis, Color3, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsPrestepType, PhysicsShapeBox, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, StandardMaterial, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
 import { calculateDistance3D } from "@/libs/utils";
+import earcut from 'earcut';
 import anime from "animejs";
 
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
@@ -24,7 +25,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     thisClientCharacterIdRef.current = characterId;
   }
 
-  function add(params: IUseBabylonCharacterController.AddRequireInfo): Promise<undefined | IUseBabylonCharacterController.CharacterItem> {
+  async function add(params: IUseBabylonCharacterController.AddRequireInfo): Promise<undefined | IUseBabylonCharacterController.CharacterItem> {
     const {
       camera,
       characterId,
@@ -54,14 +55,17 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     // 캐릭터와 맵핑할 메쉬
 
     // 캐릭터와 맵핑할 메쉬 :: 눈에 보여지는 부분
-    const characterBox = MeshBuilder.CreateCylinder("box", { 
+    const characterBox = MeshBuilder.CreateBox("box", { 
+      width: characterSize.x,
       height: characterSize.y, 
-      diameter: characterSize.x,
+      size: characterSize.z,
     }, scene);
     characterBox.position.x = characterInitPosition.x;
     characterBox.position.y = characterInitPosition.y;
     characterBox.position.z = characterInitPosition.z;
+    console.log(`characterBox.getPivotPoint()`, characterBox.getPivotPoint());
     characterBox.rotationQuaternion = Quaternion.Identity();
+    
     // characterBox.setPivotMatrix(Matrix.Translation(0, characterSize.y / 2, 0), false);
     // characterBox.translate(Axis.Y, characterSize.y);
     // characterBox.setPivotMatrix(Matrix.Translation(0, characterSize.y / 2, 0), false);
@@ -76,10 +80,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       false, 
       scene,
     );
-    characterBoxPhysicsBody.shape = new PhysicsShapeCylinder(
+    characterBoxPhysicsBody.shape = new PhysicsShapeBox(
       new Vector3(0, 0, 0),
-      new Vector3(0, characterSize.y, 0),
-      characterSize.x,
+      Quaternion.Identity(),
+      new Vector3(characterSize.x, characterSize.y, characterSize.z),
       scene,
     );
     characterBoxPhysicsBody.setMassProperties({ 
@@ -88,6 +92,58 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     });
     characterBoxPhysicsBody.setAngularDamping(angularDamping);
     characterBoxPhysicsBody.setLinearDamping(linearDamping);
+
+    // 캐릭터 닉네임이 표시되는 메쉬
+    const nicknameBox = MeshBuilder.CreateBox('nickname', {
+      width: 0.5 * (characterNickName ?? '').length, // x 축 길이
+      height: 0.4, // y 축 길이
+      size: 0.01, // z 축 길이
+    });
+
+    const nicknameBoxdMaterial = new StandardMaterial("nickname", scene);
+    nicknameBoxdMaterial.ambientColor = new Color3(0, 0, 0);
+    nicknameBoxdMaterial.specularColor = new Color3(0, 0, 0);
+    nicknameBoxdMaterial.emissiveColor = new Color3(0, 0, 0);
+    nicknameBoxdMaterial.diffuseColor = new Color3(0, 0, 0);
+    nicknameBoxdMaterial.useLightmapAsShadowmap = true;
+    nicknameBoxdMaterial.alpha = 0.7;
+        
+    nicknameBox.material = nicknameBoxdMaterial;
+    nicknameBox.parent = characterBox;
+
+    nicknameBox.position.x = 0;
+    nicknameBox.position.y = characterSize.y;
+
+    const fontData = await (await fetch("/fonts/Noto Sans KR Regular.json")).json();
+    const nicknameTextMesh = MeshBuilder.CreateText(
+      "nickname",
+      characterNickName ?? 'no named',
+      fontData,
+      {
+        size: 0.15,
+        resolution: 1,
+        depth: 0.01,
+      },
+      scene,
+      earcut,
+    );
+    
+    if (nicknameTextMesh === null) {
+      throw new Error(`text mesh 생성에 실패하였습니다.`);
+    }
+
+    const nicknameTextMeshMaterial = new StandardMaterial("nickname-text", scene);
+    nicknameTextMeshMaterial.ambientColor = new Color3(1, 1, 1);
+    nicknameTextMeshMaterial.specularColor = new Color3(1, 1, 1);
+    nicknameTextMeshMaterial.emissiveColor = new Color3(1, 1, 1);
+    nicknameTextMeshMaterial.diffuseColor = new Color3(1, 1, 1);
+    nicknameTextMeshMaterial.useLightmapAsShadowmap = true;
+    nicknameTextMeshMaterial.alpha = 0.8;
+    nicknameTextMesh.parent = nicknameBox;
+    nicknameTextMesh.position.y = -0.08;
+    nicknameTextMesh.position.z = -0.03;
+    nicknameTextMesh.material = nicknameTextMeshMaterial;
+    // nicknameTextMesh.setPivotPoint(new Vector3(0, 3, 0));
 
     // 카메라 설정
     if (camera !== undefined) {
@@ -128,6 +184,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         if (characterBox !== undefined) {
           mesh.parent = characterBox;
         }
+
+        console.log(`mesh.getPivotPoint()`, mesh.getPivotPoint());
+        mesh.setPivotPoint(new Vector3(0, - characterSize.y / 2, 0));
+
         mesh.scaling.scaleInPlace(0.01);
         if (characterInitRotation !== undefined) {
           const newQ = Quaternion.Identity();

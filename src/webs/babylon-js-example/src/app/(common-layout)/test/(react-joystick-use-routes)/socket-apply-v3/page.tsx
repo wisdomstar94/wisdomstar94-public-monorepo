@@ -46,7 +46,7 @@ export default function Page() {
       //   (window as any).character = {};
       // }
       // (window as any).character[characterItem.characterId] = characterItem;
-      // (window as any).babylonCharacterController = babylonCharacterController;
+      (window as any).babylonCharacterController = babylonCharacterController;
     },
   });
   babylonCharacterController.setThisClientCharacterId(characterId);
@@ -659,7 +659,7 @@ export default function Page() {
       camera,
       scene,
       characterInitPosition: { x: 5, y: 1, z: 0 },
-      characterSize: { x: 0.5, y: 1.5, z: 0.5 },
+      characterSize: { x: 0.5, y: 2, z: 0.5 },
       characterId,
       characterNickName: authCheck.payload?.characterNickName,
       characterAnimationGroupNames: {
