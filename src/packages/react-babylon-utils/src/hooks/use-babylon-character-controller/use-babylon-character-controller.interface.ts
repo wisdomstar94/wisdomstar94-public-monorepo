@@ -45,6 +45,7 @@ export declare namespace IUseBabylonCharacterController {
     camera?: ArcRotateCamera;
     characterId: string;
     characterNickName?: string;
+    characterVisibilityDelay?: number;
     scene: Scene;
     glbFileUrl: GlbFileUrl;
     characterSize: VectorThree;

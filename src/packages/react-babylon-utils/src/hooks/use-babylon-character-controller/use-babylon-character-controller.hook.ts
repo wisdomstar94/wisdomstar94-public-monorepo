@@ -29,6 +29,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       camera,
       characterId,
       characterNickName,
+      characterVisibilityDelay,
       scene,
       glbFileUrl,
       characterSize,
@@ -82,7 +83,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       scene,
     );
     characterBoxPhysicsBody.setMassProperties({ 
-      mass: 1, 
+      mass: typeof characterVisibilityDelay === 'number' ? 0 : 1, 
       inertia: new Vector3(0, 0, 0), 
     });
     characterBoxPhysicsBody.setAngularDamping(angularDamping);
@@ -142,7 +143,19 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         } else {
           mesh.rotationQuaternion = Quaternion.Identity();
         }
+
+        if (typeof characterVisibilityDelay === 'number') {
+          mesh.visibility = 0;
+        }
       });
+
+      setTimeout(() => {
+        characterMeshes.forEach(mesh => mesh.visibility = 1);
+        characterBoxPhysicsBody.setMassProperties({ 
+          mass: 1, 
+          inertia: new Vector3(0, 0, 0), 
+        });
+      }, characterVisibilityDelay);
 
       characterLoaderResult.animationGroups.forEach(anim => {
         characterAnimationGroups.set(anim.name, anim);

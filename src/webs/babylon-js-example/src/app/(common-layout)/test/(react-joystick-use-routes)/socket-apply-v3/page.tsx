@@ -161,6 +161,7 @@ export default function Page() {
               if (babylonCharacterController.getCharacter(obj.data.characterId) === undefined) {
                 babylonCharacterController.add({ 
                   ...obj.data, 
+                  characterVisibilityDelay: 300,
                   scene: sceneRef.current!, 
                   chracterPhysicsBodyOptions: {
                     angularDamping: 100,
