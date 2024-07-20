@@ -6,7 +6,7 @@ import HavokPhysics from "@babylonjs/havok";
 import { BabylonCanvas, IBabylonCanvas, IUseBabylonCharacterController, useBabylonCharacterController, useBabylonMeshPhysicsManager } from "@wisdomstar94/react-babylon-utils";
 import { useBody } from "@wisdomstar94/react-body";
 import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
-import { useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
+import { IUseWebRtcManager, useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
 import { useEffect, useRef, useState } from "react";
 import "@babylonjs/loaders/glTF";
 import { RtcData } from "./type";
@@ -42,10 +42,6 @@ export default function Page() {
       isShowCharacterParentBoxMesh: false,
     },
     onAdded(characterItem, scene) {
-      // if ((window as any).character === undefined) {
-      //   (window as any).character = {};
-      // }
-      // (window as any).character[characterItem.characterId] = characterItem;
       // (window as any).babylonCharacterController = babylonCharacterController;
 
       // 닉네임 셋팅
@@ -55,7 +51,7 @@ export default function Page() {
         width: 0.5 * 3, // x 축 길이
         height: 0.4, // y 축 길이
         size: 0.01, // z 축 길이
-      }
+      };
 
       const nicknameBgBox = MeshBuilder.CreateBox('nickname-bg-box', {
         width: nicknameBoxSize.width, // x 축 길이
@@ -167,6 +163,36 @@ export default function Page() {
     }
   }
 
+  function emitOpponentConnectInfo(params: { peerConnectionInfos?: IUseWebRtcManager.RTCPeerConnectionInfo<MetaData>[] }) {
+    const { peerConnectionInfos } = params;
+
+    const meCharacter = babylonCharacterController.getCharacter(characterId);
+    if (meCharacter !== undefined) {
+      const firstMesh: AbstractMesh | undefined = meCharacter.characterMeshes[0];
+      const ro = firstMesh?.rotationQuaternion;
+
+      const data: IUseBabylonCharacterController.AddRequireInfoWithoutScene = {
+        characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
+        characterId: meCharacter.characterId,
+        characterNickName: authCheck.payload?.characterNickName,
+        characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
+        characterInitRotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
+        characterJumpingOptions: meCharacter.jumpingOptions,
+        characterSize: meCharacter.characterSize,
+        glbFileUrl: meCharacter.glbFileUrl,
+      };
+
+      webRtcManager.emitDataChannel<RtcData>({
+        channelName: oneChannelName,
+        rtcPeerConnections: peerConnectionInfos,
+        data: {
+          event: 'opponentConnectInfo',
+          data,
+        }
+      });
+    }
+  }
+
   const webRtcManager = useWebRtcManager<MetaData>({
     defaultRtcConfiguration: {
       // ...
@@ -183,34 +209,13 @@ export default function Page() {
         channelName: oneChannelName,
         callback(peerConnectionInfo, event) {
           const obj: RtcData = JSON.parse(event.data);
+          console.log('@channel', obj);
 
           switch(obj.event) {
             case 'requestConnectInfo': {
-              const meCharacter = babylonCharacterController.getCharacter(characterId);
-              if (meCharacter !== undefined) {
-                const firstMesh: AbstractMesh | undefined = meCharacter.characterMeshes[0];
-                const ro = firstMesh?.rotationQuaternion;
-
-                const data: IUseBabylonCharacterController.AddRequireInfoWithoutScene = {
-                  characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
-                  characterId: meCharacter.characterId,
-                  characterNickName: authCheck.payload?.characterNickName,
-                  characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
-                  characterInitRotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
-                  characterJumpingOptions: meCharacter.jumpingOptions,
-                  characterSize: meCharacter.characterSize,
-                  glbFileUrl: meCharacter.glbFileUrl,
-                };
-
-                webRtcManager.emitDataChannel<RtcData>({
-                  channelName: oneChannelName,
-                  rtcPeerConnections: [peerConnectionInfo],
-                  data: {
-                    event: 'opponentConnectInfo',
-                    data,
-                  }
-                });
-              }
+              emitOpponentConnectInfo({ 
+                peerConnectionInfos: [peerConnectionInfo],
+              });
             } break;
             case 'opponentConnectInfo': {
               if (obj.data.characterId === characterId) return;
@@ -279,31 +284,9 @@ export default function Page() {
           });
 
           // 상대편에게 나의 현재 connectInfo 정보를 전달함
-          const meCharacter = babylonCharacterController.getCharacter(characterId);
-          if (meCharacter !== undefined) {
-            const firstMesh: AbstractMesh | undefined = meCharacter.characterMeshes[0];
-            const ro = firstMesh?.rotationQuaternion;
-
-            const data: IUseBabylonCharacterController.AddRequireInfoWithoutScene = {
-              characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
-              characterId: meCharacter.characterId,
-              characterNickName: authCheck.payload?.characterNickName,
-              characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
-              characterInitRotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
-              characterJumpingOptions: meCharacter.jumpingOptions,
-              characterSize: meCharacter.characterSize,
-              glbFileUrl: meCharacter.glbFileUrl,
-            };
-
-            webRtcManager.emitDataChannel<RtcData>({
-              channelName: oneChannelName,
-              rtcPeerConnections: [peerConnectionInfo],
-              data: {
-                event: 'opponentConnectInfo',
-                data,
-              }
-            });
-          }
+          emitOpponentConnectInfo({ 
+            peerConnectionInfos: [peerConnectionInfo],
+          });
         },
       }
     ],
