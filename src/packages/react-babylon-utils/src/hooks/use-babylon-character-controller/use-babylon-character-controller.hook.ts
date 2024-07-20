@@ -93,66 +93,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     characterBoxPhysicsBody.setAngularDamping(angularDamping);
     characterBoxPhysicsBody.setLinearDamping(linearDamping);
 
-    // 캐릭터 닉네임이 표시되는 메쉬
-    {
-      const nicknameBoxSize = {
-        width: 0.5 * 3, // x 축 길이
-        height: 0.4, // y 축 길이
-        size: 0.01, // z 축 길이
-      }
-
-      const nicknameBgBox = MeshBuilder.CreateBox('nickname-bg-box', {
-        width: nicknameBoxSize.width, // x 축 길이
-        height: nicknameBoxSize.height, // y 축 길이
-        size: nicknameBoxSize.size, // z 축 길이
-      });
-  
-      const nicknameBgBoxMaterial = new StandardMaterial("nickname-bg-box", scene);
-      nicknameBgBoxMaterial.ambientColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.specularColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.emissiveColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.diffuseColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.useLightmapAsShadowmap = true;
-      nicknameBgBoxMaterial.alpha = 0.7;
-          
-      nicknameBgBox.material = nicknameBgBoxMaterial;
-      nicknameBgBox.parent = characterBox;
-  
-      nicknameBgBox.position.x = 0;
-      nicknameBgBox.position.y = characterSize.y;
-  
-      const nicknameTextBox = MeshBuilder.CreateBox('nickname-bg-box', {
-        width: nicknameBoxSize.width, // x 축 길이
-        height: nicknameBoxSize.height, // y 축 길이
-        size: nicknameBoxSize.size, // z 축 길이
-      });
-
-      const nicknameTextBoxMaterial = new StandardMaterial("nickname-text-box", scene);
-      nicknameTextBoxMaterial.ambientColor = new Color3(1, 1, 1);
-      nicknameTextBoxMaterial.specularColor = new Color3(1, 1, 1);
-      nicknameTextBoxMaterial.emissiveColor = new Color3(1, 1, 1);
-      nicknameTextBoxMaterial.diffuseColor = new Color3(1, 1, 1);
-      nicknameTextBox.material = nicknameTextBoxMaterial;
-      nicknameTextBox.parent = nicknameBgBox;
-      nicknameTextBox.position.z = -0.01;
-
-      // text 
-      const size = 64; 
-      const font = `normal ${size}px 'Noto Sans KR'`;
-      
-      const dynamicTextureWidth = 512;
-      const dynamicTextureHeight = 130;
-      const dynamicTexture = new DynamicTexture('nickname-texture', { width: dynamicTextureWidth, height: dynamicTextureHeight, }, scene);
-      nicknameTextBoxMaterial.diffuseTexture = dynamicTexture;
-      nicknameTextBoxMaterial.diffuseTexture.hasAlpha = true;
-      const ctx = dynamicTexture.getContext();
-      const measure = ctx.measureText(characterNickName);
-      console.log('@measure', measure);
-
-      ctx.clearRect(0, 0, 512, 512);
-      dynamicTexture.drawText(characterNickName, null, null, font, "#ffffff", "transparent", true);
-    }
-
     // 카메라 설정
     if (camera !== undefined) {
       camera.alpha = Math.PI / 2;
@@ -253,7 +193,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       charactersRef.current.set(characterId, characterItem);
       charactersAddingRef.current.delete(characterId);
       if (typeof onAdded === 'function') {
-        onAdded(characterItem);
+        onAdded(characterItem, scene);
       }
 
       if (thisClientCharacterIdRef.current === characterId) {

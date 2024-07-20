@@ -137,7 +137,7 @@ export declare namespace IUseBabylonCharacterController {
 
   export interface Props {
     debugOptions?: DebugOptions;
-    onAdded?: (characterItem: CharacterItem) => void;
+    onAdded?: (characterItem: CharacterItem, scene: Scene) => void;
     thisClientCharacterOptions?: ThisClientCharacterOptions;
   }
 }

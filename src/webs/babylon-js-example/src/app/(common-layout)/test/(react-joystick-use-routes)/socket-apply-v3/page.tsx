@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuthCheck } from "@/hooks/use-auth-check/use-auth-check.hook";
-import { AbstractMesh, ActionManager, ArcRotateCamera, Color3, DirectionalLight, HavokPlugin, HemisphericLight, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, Quaternion, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { AbstractMesh, ActionManager, ArcRotateCamera, Color3, DirectionalLight, DynamicTexture, HavokPlugin, HemisphericLight, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, Quaternion, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
 import { BabylonCanvas, IBabylonCanvas, IUseBabylonCharacterController, useBabylonCharacterController, useBabylonMeshPhysicsManager } from "@wisdomstar94/react-babylon-utils";
 import { useBody } from "@wisdomstar94/react-body";
@@ -41,12 +41,69 @@ export default function Page() {
     debugOptions: {
       isShowCharacterParentBoxMesh: false,
     },
-    onAdded(characterItem) {
+    onAdded(characterItem, scene) {
       // if ((window as any).character === undefined) {
       //   (window as any).character = {};
       // }
       // (window as any).character[characterItem.characterId] = characterItem;
-      (window as any).babylonCharacterController = babylonCharacterController;
+      // (window as any).babylonCharacterController = babylonCharacterController;
+
+      // 닉네임 셋팅
+      const characterNickName = characterItem.characterNickName ?? 'no named';
+
+      const nicknameBoxSize = {
+        width: 0.5 * 3, // x 축 길이
+        height: 0.4, // y 축 길이
+        size: 0.01, // z 축 길이
+      }
+
+      const nicknameBgBox = MeshBuilder.CreateBox('nickname-bg-box', {
+        width: nicknameBoxSize.width, // x 축 길이
+        height: nicknameBoxSize.height, // y 축 길이
+        size: nicknameBoxSize.size, // z 축 길이
+      });
+  
+      const nicknameBgBoxMaterial = new StandardMaterial("nickname-bg-box", scene);
+      nicknameBgBoxMaterial.ambientColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.specularColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.emissiveColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.diffuseColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.useLightmapAsShadowmap = true;
+      nicknameBgBoxMaterial.alpha = 0.7;
+          
+      nicknameBgBox.material = nicknameBgBoxMaterial;
+      nicknameBgBox.parent = characterItem.characterBox;
+  
+      nicknameBgBox.position.x = 0;
+      nicknameBgBox.position.y = characterItem.characterSize.y;
+  
+      const nicknameTextBox = MeshBuilder.CreateBox('nickname-bg-box', {
+        width: nicknameBoxSize.width, // x 축 길이
+        height: nicknameBoxSize.height, // y 축 길이
+        size: nicknameBoxSize.size, // z 축 길이
+      });
+
+      const nicknameTextBoxMaterial = new StandardMaterial("nickname-text-box", scene);
+      nicknameTextBoxMaterial.ambientColor = new Color3(1, 1, 1);
+      nicknameTextBoxMaterial.specularColor = new Color3(1, 1, 1);
+      nicknameTextBoxMaterial.emissiveColor = new Color3(1, 1, 1);
+      nicknameTextBoxMaterial.diffuseColor = new Color3(1, 1, 1);
+      nicknameTextBox.material = nicknameTextBoxMaterial;
+      nicknameTextBox.parent = nicknameBgBox;
+      nicknameTextBox.position.z = -0.01;
+
+      // text 
+      const size = 64; 
+      const font = `normal ${size}px 'Noto Sans KR'`;
+      
+      const dynamicTextureWidth = 512;
+      const dynamicTextureHeight = 130;
+      const dynamicTexture = new DynamicTexture('nickname-texture', { width: dynamicTextureWidth, height: dynamicTextureHeight, }, scene);
+      nicknameTextBoxMaterial.diffuseTexture = dynamicTexture;
+      nicknameTextBoxMaterial.diffuseTexture.hasAlpha = true;
+      const ctx = dynamicTexture.getContext();
+      ctx.clearRect(0, 0, 512, 512);
+      dynamicTexture.drawText(characterNickName, null, null, font, "#ffffff", "transparent", true);
     },
   });
   babylonCharacterController.setThisClientCharacterId(characterId);
