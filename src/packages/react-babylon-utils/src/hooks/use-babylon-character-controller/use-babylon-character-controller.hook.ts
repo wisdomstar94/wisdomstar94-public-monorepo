@@ -47,7 +47,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       return Promise.resolve(undefined);
     }
 
-    // console.log('@@@@@@@@ add', params);
     charactersAddingRef.current.add(characterId);
 
     // 캐릭터와 맵핑할 메쉬
@@ -101,7 +100,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
     // model import!!!
     const result = SceneLoader.ImportMeshAsync(undefined, glbFileUrl.baseUrl, glbFileUrl.filename, scene).then((result) => {
-      console.log('@model import result', result);
       const characterLoaderResult = result;
       const characterMeshes = characterLoaderResult.meshes;
       const characterAnimationGroups = new Map<string, AnimationGroup>();
@@ -169,8 +167,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         onAdded(characterItem);
       }
 
-      console.log('@thisClientCharacterIdRef.current', thisClientCharacterIdRef.current);
-      console.log('@characterId', characterId);
       if (thisClientCharacterIdRef.current === characterId) {
         setIsThisClientCharacterLoaded(true);
       }
@@ -399,7 +395,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           }
         }
 
-        // console.log(`[${characterId}] cameraDirection`, cameraDirection);
         // const { direction } = camera.getForwardRay();
         
         // const forward = camera.getDirection(new Vector3(0, 0, 1)).normalize();
@@ -479,7 +474,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         }
         if (keydown) {
           const quaternion = euler.toQuaternion().clone();
-          // console.log('@@@ quaternion', JSON.stringify(quaternion));
           if (characterItem.characterBox.rotationQuaternion !== null) {
             characterItem.characterMeshes.forEach(o => {
               Quaternion.SlerpToRef(
@@ -530,13 +524,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           }
         }
         if (characterItem.jumpingInterval === undefined) {
-          // console.log('keydown', keydown);
           if (keydown) {
-            // console.log('keydown...', animating);
             // if (!animatingRef.current) {
             // animatingRef.current = true;
             idleAnim?.stop();
-            // console.log('@@@ @@@ @@@');
             if (characterItem.isRunning) {
               walkingAnim?.stop();
               runningAnim?.start(true);

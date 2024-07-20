@@ -48,12 +48,6 @@ export default function Page() {
     },
   });
   babylonCharacterController.setThisClientCharacterId(characterId);
-  
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     (window as any).babylonCharacterController = babylonCharacterController;
-  //   }
-  // }, []);
 
   const emitInitMeCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
@@ -104,7 +98,6 @@ export default function Page() {
         //   duration: 500,
         // } : undefined,
       };
-      // console.log('@opponentCurrentPositionAndRotation');
       webRtcManager.emitDataChannel<RtcData>({
         channelName: oneChannelName,
         data: {
@@ -130,12 +123,7 @@ export default function Page() {
       {
         channelName: oneChannelName,
         callback(peerConnectionInfo, event) {
-          console.log(`@[${oneChannelName}] channel event get!`, event);
-          // console.log('@@ inputedData', inputedData);
-          // setGetDatas(prev => prev.concat({ data: event.data, createdAt: new Date() }));
-          // const data = event.data;
           const obj: RtcData = JSON.parse(event.data);
-          console.log('@obj', obj);
 
           switch(obj.event) {
             case 'requestConnectInfo': {
@@ -181,11 +169,9 @@ export default function Page() {
               }
             } break;
             case 'opponentCurrentPositionAndRotation': {
-              console.log('11111');
               if (obj.data.characterId === characterId) return;
               const c = babylonCharacterController.getCharacter(obj.data.characterId);
               if (c === undefined) return;
-              console.log('22222');
               babylonCharacterController.setCharacterPositionAndRotation({
                 ...obj.data,
               });
@@ -215,8 +201,6 @@ export default function Page() {
         },
         // get offer 에 해당하는 peer 에서 발생하게 될 이벤트, 즉 data channel 을 받은 peer 에서 발생하게될 이벤트
         receivedChannel(peerConnectionInfo, event) {
-          console.log(`[${Date.now()}] @@@${event.channel.label} received!!!`, peerConnectionInfo);
-          
           emitInitMeCurrentPositionAndRotationInterval.start();
 
           // 상대편에게 상대편의 connectInfo 를 요청함
@@ -263,7 +247,6 @@ export default function Page() {
 
       if (peerConnectionInfo.type === 'sendOffer') {
         rtcPeerConnection.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true }).then((sdp) => {
-          console.log('create offer success');
           rtcPeerConnection.setLocalDescription(new RTCSessionDescription(sdp));
           socketioManager.emit({
             eventName: 'sendOffer',
@@ -278,10 +261,8 @@ export default function Page() {
 
       if (peerConnectionInfo.type === 'getOffer' && peerConnectionInfo.sdp !== undefined) {
         peerConnectionInfo.rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(peerConnectionInfo.sdp)).then(() => {
-          console.log('answer set remote description success');
           peerConnectionInfo.rtcPeerConnection.createAnswer({ offerToReceiveVideo: true, offerToReceiveAudio: true })
             .then(sdp => { 
-              console.log('create answer success');
               peerConnectionInfo.rtcPeerConnection.setLocalDescription(new RTCSessionDescription(sdp));
               socketioManager.emit({
                 eventName: 'sendAnswer',
@@ -293,13 +274,12 @@ export default function Page() {
               });
             })
             .catch(error => {
-                console.log(error);
+              console.error(error);
             });
         });
       }
     },
     onIceCandidate(peerConnectionInfo, event) {
-      console.log('@onIceCandidate.event', { peerConnectionInfo, event });
       if (event.candidate) {
         let receiveId = peerConnectionInfo.clientId !== characterId ? peerConnectionInfo.clientId : peerConnectionInfo.receiveId;
 
@@ -314,35 +294,30 @@ export default function Page() {
       } 
     },
     onIceCandidateError(peerConnectionInfo, event) {
-      // console.log('@onIceCandidateError.event', event);
+      
     },
     onIceConnectionStateChange(peerConnectionInfo, event) {
-      console.log('@onIceConnectionStateChange', event);
+      
     },
     onIceGatheringStateChange(peerConnectionInfo, event) {
-      console.log('@onIceGatheringStateChange', event);
+      
     },
     onNegotiationNeeded(peerConnectionInfo, event) {
-      console.log('@onNegotiationNeeded', event);
+      
     },
     onSignalingStateChange(peerConnectionInfo, event) {
-      console.log('@onSignalingStateChange', event);
       
     },
     onDataChannel(peerConnectionInfo, event) {
-      console.log('@onDataChannel', event);
+      
     },
     onConnectionStateChange(peerConnectionInfo, event) {
-      console.log(Date.now() + ' @onConnectionStateChange', { peerConnectionInfo,  event });
-      console.log(Date.now() + ' connectionState' + peerConnectionInfo.rtcPeerConnection.connectionState);
-
       switch(peerConnectionInfo.rtcPeerConnection.connectionState) {
         case 'connected': 
           break;
         case 'disconnected': 
           break;
         case 'failed': 
-          console.log('@@@@@ failed', Date.now());
           babylonCharacterController.remove(peerConnectionInfo.clientId !== characterId ? peerConnectionInfo.clientId : peerConnectionInfo.receiveId);
           webRtcManager.closePeerConnection(peerConnectionInfo.clientId, peerConnectionInfo.receiveId);
           if (peerConnectionInfo.type === 'sendOffer') {
@@ -352,7 +327,7 @@ export default function Page() {
       }
     },
     onClosedPeerConnectionInfo(peerConnectionInfo) {
-      console.log('@onClosedPeerConnectionInfo', peerConnectionInfo);    
+      
     },
   });
 
@@ -361,7 +336,6 @@ export default function Page() {
       {
         eventName: 'allUsers',
         callback(clientIds: string[]) {
-          console.log('@allUsers', clientIds);
           for (const id of clientIds) {
             if (id === characterId) continue;
 
@@ -379,7 +353,6 @@ export default function Page() {
       {
         eventName: 'oneUser',
         callback(data: { clientId: string, isExist: boolean }) {
-          console.log('@oneUser', data.clientId);
           if (data.isExist) {
             webRtcManager.createPeerConnection({
               clientId: characterId,
@@ -395,8 +368,6 @@ export default function Page() {
       {
         eventName: 'getOffer',
         callback(data: { sdp: RTCSessionDescriptionInit, clientId: string, receiveId: string }) {
-          console.log('getOffer!', data);
-
           webRtcManager.closePeerConnection(data.clientId, data.receiveId);
           webRtcManager.createPeerConnection({
             clientId: data.receiveId,
@@ -412,8 +383,6 @@ export default function Page() {
       {
         eventName: 'getAnswer',
         callback(data: { sdp: RTCSessionDescriptionInit, clientId: string, receiveId: string }) {
-          console.log('getAnswer!', data);
-
           const peerConnectionInfo = webRtcManager.getPeerConnectionInfo(data.clientId, data.receiveId);
           if (peerConnectionInfo === undefined) {
             throw new Error(`peerConnectionInfo is undefined.`);
@@ -429,7 +398,7 @@ export default function Page() {
             throw new Error(`peerConnectionInfo is undefined.`);
           }
           peerConnectionInfo.rtcPeerConnection.addIceCandidate(new RTCIceCandidate(data.candidate)).then(() => {
-            console.log('candidate add success');
+            
           });
         },
       },
@@ -709,7 +678,6 @@ export default function Page() {
 
   useEffect(() => {
     if (!meCharacterLoaded) return;
-    console.log('@socketioManager.connect...');
     socketioManager.connect({
       socketUrl: process.env.NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL ?? (() => { throw new Error(`NEXT_PUBLIC_WEBS_BABYLON_JS_EXAMPLE_SOCKET_CONNECT_URL 값이 없습니다.`) })(),
       opts: {

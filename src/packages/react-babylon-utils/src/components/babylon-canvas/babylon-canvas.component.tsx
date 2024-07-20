@@ -49,7 +49,6 @@ export function BabylonCanvas(props: IBabylonCanvas.Props) {
     });
 
     return () => {
-      console.log('scene, engine disposed! (from. BabylonCanvas Component)');
       sceneRef.current?.dispose();
       enginesRef.current?.engine.dispose();
     };
