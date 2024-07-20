@@ -15,6 +15,9 @@ import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
 import { Joystick } from "@wisdomstar94/react-joystick";
 import { TouchContainer } from "@wisdomstar94/react-touch-container";
+import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
+import { ChattingWindow } from "@/components/chatting-window/chatting-window.component";
+import { IChattingWindow } from "@/components/chatting-window/chatting-window.interface";
 
 type MetaData = {
   nickName: string;
@@ -32,6 +35,22 @@ export default function Page() {
 
   const babylonMeshPhysicsManager = useBabylonMeshPhysicsManager();
   const [meCharacterLoaded, setMeCharacterLoaded] = useState(false);
+
+  const [isChattingWindowShow, setIsChattingWindowShow] = useState(false);
+  const [chatItems, setChatItems] = useState<IChattingWindow.ChatItem[]>([]);
+
+  useAddEventListener({
+    windowEventRequiredInfo: {
+      eventName: 'keydown',
+      eventListener(event) {
+        const key = event.key;
+        // console.log('@key', key);
+        if (key.toLowerCase() === 'enter') {
+          setIsChattingWindowShow(prev => true);
+        }
+      },
+    },
+  });
 
   const babylonCharacterController = useBabylonCharacterController({
     thisClientCharacterOptions: {
@@ -253,6 +272,17 @@ export default function Page() {
             case 'opponentJumping': {
               if (obj.data.characterId === characterId) return;
               babylonCharacterController.setCharacterJumping(obj.data.characterId, obj.data.jumpingOptions);
+            } break;
+            case 'chatInfo': {
+              setChatItems(prev => {
+                const newItems = [...prev];
+                newItems.push({
+                  writer: obj.data.writer,
+                  writedAt: obj.data.writedAt,
+                  content: obj.data.content,
+                });
+                return newItems;
+              });
             } break;
           }
         },
@@ -521,6 +551,8 @@ export default function Page() {
 
   useKeyboardManager({
     onChangeKeyMapStatus(keyMap) {
+      if (isChattingWindowShow) return;
+
       const isUpPress = keyMap.get('ArrowUp');
       const isDownPress = keyMap.get('ArrowDown');
       const isLeftPress = keyMap.get('ArrowLeft');
@@ -792,6 +824,7 @@ export default function Page() {
       <div className="fixed bottom-10 right-10 z-10">
         <Joystick
           onPressed={(keys, isStrenth) => {
+            if (isChattingWindowShow) return;
             if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Up', isRunning: isStrenth }); } // ⬆
             if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down', isRunning: isStrenth }); } // ⬇
             if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { disposeMoving({ direction: 'Left', isRunning: isStrenth }); } // ⬅
@@ -802,6 +835,7 @@ export default function Page() {
             if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down+Right', isRunning: isStrenth }); } // ⬇ + ⮕
           }}
           onPressOut={() => {
+            if (isChattingWindowShow) return;
             disposeMoving({ direction: undefined, isRunning: false });
           }}
           />
@@ -810,10 +844,42 @@ export default function Page() {
         <TouchContainer
           className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
           onTouchStart={() => { 
+            if (isChattingWindowShow) return;
             disposeJumping();
           }}
           />
       </div>
+      <ChattingWindow 
+        isShow={isChattingWindowShow}
+        setIsShow={setIsChattingWindowShow}
+        chatItems={chatItems}
+        onChatEmit={(content) => {
+          const writer = babylonCharacterController.getCharacter(characterId)?.characterNickName ?? 'undefined';
+          const writedAt = Date.now();
+
+          setChatItems(prev => {
+            const newItems = [...prev];
+            newItems.push({
+              writer,
+              writedAt,
+              content,
+            });
+            return newItems;
+          });
+
+          webRtcManager.emitDataChannel<RtcData>({
+            channelName: oneChannelName,
+            data: {
+              event: 'chatInfo',
+              data: {
+                writedAt,
+                writer,
+                content,
+              },
+            },
+          });
+        }}
+        />
     </>
   );
 }

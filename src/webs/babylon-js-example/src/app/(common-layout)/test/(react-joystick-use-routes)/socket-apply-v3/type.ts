@@ -28,10 +28,20 @@ export type OpponentJumpingRtcData = {
   };
 }
 
+export type ChatInfoRtcData = {
+  event: 'chatInfo';
+  data: {
+    writer: string;
+    writedAt: number;
+    content: string;
+  };
+}
+
 export type RtcData = 
   OpponentConnectInfoRtcData |
   RequestConnectInfoRtcData | 
   OpponentCurrentPositionAndRotationRtcData | 
   OpponentMovingRtcData | 
-  OpponentJumpingRtcData
+  OpponentJumpingRtcData | 
+  ChatInfoRtcData
 ;
