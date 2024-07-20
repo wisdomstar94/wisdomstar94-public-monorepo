@@ -2,6 +2,7 @@ import { CSSProperties, useRef, useState } from "react";
 import { IJoystick } from "./joystick.interface";
 import styles from "./joystick.module.css";
 import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
+import { getTwoPointDistance } from "@/libs/utils";
 
 export function Joystick(props: IJoystick.Props) {
   const {
@@ -18,6 +19,17 @@ export function Joystick(props: IJoystick.Props) {
   const pressedCoordinate = useRef<IJoystick.Coordinate>({ x: 0, y: 0 });
   const movedCoordinate = useRef<IJoystick.Coordinate>({ x: 0, y: 0 });
   const [handlerTransformState, setHandlerTransformState] = useState<string>();
+
+  const isTouchEventEmitedRef = useRef(false);
+
+  useAddEventListener({
+    windowEventRequiredInfo: {
+      eventName: 'resize',
+      eventListener(event) {
+        isTouchEventEmitedRef.current = false;
+      },
+    },
+  });
 
   useAddEventListener({
     windowEventRequiredInfo: {
@@ -68,8 +80,6 @@ export function Joystick(props: IJoystick.Props) {
     windowEventRequiredInfo: {
       eventName: 'touchend',
       eventListener(event) {
-        const touch = getHandlerTouchItem(event);
-        if (touch !== undefined) return;
         joystickHandOuted(event);
       },
     },
@@ -102,13 +112,13 @@ export function Joystick(props: IJoystick.Props) {
     };
   }
 
-  function getTwoPointDistance(mainPoint: { x: number; y: number }, targetPoint: { x: number; y: number }){
-    return Math.sqrt(Math.pow((mainPoint.x - targetPoint.x), 2) + Math.pow((mainPoint.y - targetPoint.y), 2));
-  }
-
   function joystickPressed(event: MouseEvent | TouchEvent) {
+    if (!(event instanceof MouseEvent)) {
+      isTouchEventEmitedRef.current = true;
+    }
+
     if (isJoystickPressed.current) return;
-    console.log('@joystickPressed.event', event);
+    // console.log('@joystickPressed.event', event);
 
     const handlerElement = handlerElementRef.current;
     if (handlerElement === null) return;
@@ -125,8 +135,10 @@ export function Joystick(props: IJoystick.Props) {
       clientX = event.clientX;
       clientY = event.clientY;
     } else {
-      clientX = event.touches[0].clientX;
-      clientY = event.touches[0].clientY;
+      const touch = getHandlerTouchItem(event);
+      if (touch === undefined) return;
+      clientX = touch.clientX;
+      clientY = touch.clientY;
     }
 
     const handlerBounds = handlerElement.getBoundingClientRect();
@@ -144,7 +156,7 @@ export function Joystick(props: IJoystick.Props) {
     if (!isJoystickPressed.current) {
       return;
     }
-    console.log('@joystickMoved.event', event);
+    // console.log('@joystickMoved.event', event);
 
     let clientX = 0;
     let clientY = 0;
@@ -152,14 +164,13 @@ export function Joystick(props: IJoystick.Props) {
     if (event instanceof MouseEvent) {
       clientX = event.clientX;
       clientY = event.clientY;
+      if (isTouchEventEmitedRef.current) return;
     } else {
       const touch = getHandlerTouchItem(event);
       if (touch === undefined) throw new Error('핸들러 요소를 찾을 수 없습니다.');
       clientX = touch.clientX;
       clientY = touch.clientY;
     }
-
-    // console.log('@movedCoordinate.current', movedCoordinate.current);
 
     movedCoordinate.current.x = clientX;
     movedCoordinate.current.y = clientY;
@@ -183,10 +194,6 @@ export function Joystick(props: IJoystick.Props) {
     const radian = Math.atan2(pressedCoordinate.current.y - movedCoordinate.current.y, pressedCoordinate.current.x - movedCoordinate.current.x);
     const angle = radian * (180 / Math.PI);
     const distance = getTwoPointDistance(pressedCoordinate.current, movedCoordinate.current);
-
-    // const angle = getAngle()
-    // console.log('angle', angle);
-    // console.log('distance', distance);
 
     let pressKeys: IJoystick.PressKey[] = [];
     // calculate direction
@@ -230,9 +237,15 @@ export function Joystick(props: IJoystick.Props) {
   }
 
   function joystickHandOuted(event: MouseEvent | TouchEvent) {
+    if (event instanceof MouseEvent) {
+      if (isTouchEventEmitedRef.current) return;
+    } else {
+      const touch = getHandlerTouchItem(event);
+      if (touch !== undefined) return;  
+    }
+    // console.log('@joystickHandOuted.event', event);
+
     isJoystickPressed.current = false;
-    // setIsHandlerAllowAreaShow(false);
-    // console.log('joystickHandOuted.event', event);
 
     setHandlerTransformState('translateX(0) translateY(0)');
     if (typeof onPressOut === 'function') {
