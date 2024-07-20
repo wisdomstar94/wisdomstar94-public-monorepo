@@ -13,6 +13,8 @@ import { RtcData } from "./type";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
+import { Joystick } from "@wisdomstar94/react-joystick";
+import { TouchContainer } from "@wisdomstar94/react-touch-container";
 
 type MetaData = {
   nickName: string;
@@ -733,6 +735,31 @@ export default function Page() {
             lineThicknessSize: 0.2,
           }}
           onReady={onReady} 
+          />
+      </div>
+      <div className="fixed bottom-10 right-10 z-10">
+        <Joystick
+          onPressed={(keys, isStrenth) => {
+            if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Up', isRunning: isStrenth }); } // ⬆
+            if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down', isRunning: isStrenth }); } // ⬇
+            if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { disposeMoving({ direction: 'Left', isRunning: isStrenth }); } // ⬅
+            if (keys.includes('ArrowRight') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { disposeMoving({ direction: 'Right', isRunning: isStrenth }); } // ⮕
+            if (keys.includes('ArrowUp') && keys.includes('ArrowLeft')) { disposeMoving({ direction: 'Up+Left', isRunning: isStrenth }); } // ⬅ + ⬆
+            if (keys.includes('ArrowUp') && keys.includes('ArrowRight')) { disposeMoving({ direction: 'Up+Right', isRunning: isStrenth }); } // ⬆ + ⮕
+            if (keys.includes('ArrowDown') && keys.includes('ArrowLeft')) { disposeMoving({ direction: 'Down+Left', isRunning: isStrenth }); } // ⬅ + ⬇
+            if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down+Right', isRunning: isStrenth }); } // ⬇ + ⮕
+          }}
+          onPressOut={() => {
+            disposeMoving({ direction: undefined, isRunning: false });
+          }}
+          />
+      </div>
+      <div className="fixed bottom-10 left-10 z-10">
+        <TouchContainer
+          className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
+          onTouchStart={() => { 
+            disposeJumping();
+          }}
           />
       </div>
     </>

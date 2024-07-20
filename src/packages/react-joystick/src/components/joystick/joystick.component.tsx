@@ -11,6 +11,7 @@ export function Joystick(props: IJoystick.Props) {
     ids,
   } = props;
 
+  const handlerContainerElementRef = useRef<HTMLDivElement>(null);
   const handlerElementRef = useRef<HTMLDivElement>(null);
 
   const isJoystickPressed = useRef<boolean>(false);
@@ -76,7 +77,7 @@ export function Joystick(props: IJoystick.Props) {
 
   function getHandlerTouchItem(event: TouchEvent) {
     const touches = Array.from(event.touches);
-    const touch = touches.find(x => x.target === handlerElementRef.current);
+    const touch = touches.find(x => x.target === handlerElementRef.current || x.target === handlerContainerElementRef.current);
     return touch;
   }
 
@@ -107,9 +108,15 @@ export function Joystick(props: IJoystick.Props) {
 
   function joystickPressed(event: MouseEvent | TouchEvent) {
     if (isJoystickPressed.current) return;
+    console.log('@joystickPressed.event', event);
 
     const handlerElement = handlerElementRef.current;
     if (handlerElement === null) return;
+
+    const handlerContainerElement = handlerContainerElementRef.current;
+    if (handlerContainerElement === null) return;
+
+    if (event.target !== handlerElement && event.target !== handlerContainerElement) return;
 
     let clientX = 0;
     let clientY = 0;
@@ -137,6 +144,7 @@ export function Joystick(props: IJoystick.Props) {
     if (!isJoystickPressed.current) {
       return;
     }
+    console.log('@joystickMoved.event', event);
 
     let clientX = 0;
     let clientY = 0;
@@ -257,6 +265,7 @@ export function Joystick(props: IJoystick.Props) {
 
         </div>
         <div 
+          ref={handlerContainerElementRef}
           className={[
             styles['handler-container']
           ].join(' ')}>
