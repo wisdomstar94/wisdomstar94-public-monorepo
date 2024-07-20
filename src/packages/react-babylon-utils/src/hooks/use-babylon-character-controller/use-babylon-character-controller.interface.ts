@@ -49,6 +49,7 @@ export declare namespace IUseBabylonCharacterController {
     glbFileUrl: GlbFileUrl;
     characterSize: VectorThree;
     characterInitPosition: VectorThree;
+    characterInitRotation?: VectorFour;
     characterJumpingOptions: CharacterJumpingOptions;
     characterAnimationGroupNames: AnimationGroupNames;
     chracterPhysicsBodyOptions?: ChracterPhysicsBodyOptions;

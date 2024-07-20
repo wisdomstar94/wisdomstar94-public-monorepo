@@ -33,6 +33,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       glbFileUrl,
       characterSize,
       characterInitPosition,
+      characterInitRotation,
       characterJumpingOptions,
       characterAnimationGroupNames,
       chracterPhysicsBodyOptions,
@@ -127,7 +128,14 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           mesh.parent = characterBox;
         }
         mesh.scaling.scaleInPlace(0.01);
-        if (quaternion !== undefined) {
+        if (characterInitRotation !== undefined) {
+          const newQ = Quaternion.Identity();
+          newQ.x = characterInitRotation.x;
+          newQ.y = characterInitRotation.y;
+          newQ.z = characterInitRotation.z;
+          newQ.w = characterInitRotation.w;
+          mesh.rotationQuaternion = newQ;
+        } else if (quaternion !== undefined) {
           mesh.rotationQuaternion = quaternion;
         } else if (firstQuaternionWithCameraRef.current !== undefined) {
           mesh.rotationQuaternion = firstQuaternionWithCameraRef.current.clone();
@@ -395,13 +403,9 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           }
         }
 
-        // const { direction } = camera.getForwardRay();
-        
-        // const forward = camera.getDirection(new Vector3(0, 0, 1)).normalize();
         const forward = new Vector3(cameraDirection?.normalize().x, 0, cameraDirection?.normalize().z);
         const rot = Quaternion.FromLookDirectionLH(forward, Vector3.Up());
         const euler = rot.toEulerAngles();
-        // const euler = box.rotationQuaternion!.toEulerAngles();
         let keydown = false;
         let moveDirection = new Vector3(0, 0, 0);
         let isEulerChanged = false;

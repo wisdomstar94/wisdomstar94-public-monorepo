@@ -131,15 +131,20 @@ export default function Page() {
             case 'requestConnectInfo': {
               const meCharacter = babylonCharacterController.getCharacter(characterId);
               if (meCharacter !== undefined) {
+                const firstMesh: AbstractMesh | undefined = meCharacter.characterMeshes[0];
+                const ro = firstMesh?.rotationQuaternion;
+
                 const data: IUseBabylonCharacterController.AddRequireInfoWithoutScene = {
                   characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
                   characterId: meCharacter.characterId,
                   characterNickName: authCheck.payload?.characterNickName,
                   characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
+                  characterInitRotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
                   characterJumpingOptions: meCharacter.jumpingOptions,
                   characterSize: meCharacter.characterSize,
                   glbFileUrl: meCharacter.glbFileUrl,
                 };
+
                 webRtcManager.emitDataChannel<RtcData>({
                   channelName: oneChannelName,
                   rtcPeerConnections: [peerConnectionInfo],
@@ -218,15 +223,20 @@ export default function Page() {
           // 상대편에게 나의 현재 connectInfo 정보를 전달함
           const meCharacter = babylonCharacterController.getCharacter(characterId);
           if (meCharacter !== undefined) {
+            const firstMesh: AbstractMesh | undefined = meCharacter.characterMeshes[0];
+            const ro = firstMesh?.rotationQuaternion;
+
             const data: IUseBabylonCharacterController.AddRequireInfoWithoutScene = {
               characterAnimationGroupNames: meCharacter.characterAnimationGroupNames,
               characterId: meCharacter.characterId,
               characterNickName: authCheck.payload?.characterNickName,
               characterInitPosition: { x: meCharacter.characterBox.position.x, y: meCharacter.characterBox.position.y, z: meCharacter.characterBox.position.z },
+              characterInitRotation: ro !== undefined && ro !== null ? { x: ro.x, y: ro.y, z: ro.z, w: ro.w } : undefined,
               characterJumpingOptions: meCharacter.jumpingOptions,
               characterSize: meCharacter.characterSize,
               glbFileUrl: meCharacter.glbFileUrl,
             };
+
             webRtcManager.emitDataChannel<RtcData>({
               channelName: oneChannelName,
               rtcPeerConnections: [peerConnectionInfo],
