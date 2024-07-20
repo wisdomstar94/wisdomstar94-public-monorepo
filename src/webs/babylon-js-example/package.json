@@ -27,7 +27,6 @@
     "@wisdomstar94/react-touch-container": "workspace:^",
     "@wisdomstar94/react-web-rtc-manager": "workspace:^",
     "animejs": "^3.2.2",
-    "earcut": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
     "react": "^18",
@@ -36,7 +35,6 @@
   },
   "devDependencies": {
     "@types/animejs": "^3",
-    "@types/earcut": "^2.1.4",
     "@types/jsonwebtoken": "^9",
     "@types/node": "^20",
     "@types/react": "^18",

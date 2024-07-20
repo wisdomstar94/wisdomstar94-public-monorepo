@@ -532,6 +532,7 @@ export default function Page() {
     light.setDirectionToTarget(new Vector3(-1, 0, 1));
 
     const camera = new ArcRotateCamera("camera1", Math.PI / 2, -Math.PI / 2.5, 10, Vector3.Zero(), scene);
+    // camera.attachControl();
 
     const shadowGenerator = new ShadowGenerator(4096, light, undefined, camera);
     shadowGeneratorRef.current = shadowGenerator;

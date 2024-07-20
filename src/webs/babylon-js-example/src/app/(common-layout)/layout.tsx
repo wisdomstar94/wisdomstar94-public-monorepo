@@ -9,6 +9,7 @@ export default function Layout({
     // { name: 'test/other-character-add', href: '/test/other-character-add' },
     // { name: 'test/socket-apply', href: '/test/socket-apply' },
     { name: 'test/socket-apply-v3', href: '/test/socket-apply-v3' },
+    { name: 'test/texture-text', href: '/test/texture-text' },
   ];
 
   return (

@@ -1,9 +1,8 @@
 import { useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
-import { AnimationGroup, AnimationPropertiesOverride, Axis, Color3, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsPrestepType, PhysicsShapeBox, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, AnimationPropertiesOverride, Axis, Color3, DynamicTexture, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsPrestepType, PhysicsShapeBox, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, StandardMaterial, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
 import { calculateDistance3D } from "@/libs/utils";
-import earcut from 'earcut';
 import anime from "animejs";
 
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
@@ -29,7 +28,6 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     const {
       camera,
       characterId,
-      characterNickName,
       characterVisibilityDelay,
       scene,
       glbFileUrl,
@@ -40,6 +38,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       characterAnimationGroupNames,
       chracterPhysicsBodyOptions,
     } = params;
+
+    const characterNickName = params.characterNickName ?? 'no named';
 
     const angularDamping = chracterPhysicsBodyOptions?.angularDamping ?? 100;
     const linearDamping = chracterPhysicsBodyOptions?.linearDamping ?? 10;
@@ -94,56 +94,64 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     characterBoxPhysicsBody.setLinearDamping(linearDamping);
 
     // 캐릭터 닉네임이 표시되는 메쉬
-    const nicknameBox = MeshBuilder.CreateBox('nickname', {
-      width: 0.5 * (characterNickName ?? '').length, // x 축 길이
-      height: 0.4, // y 축 길이
-      size: 0.01, // z 축 길이
-    });
+    {
+      const nicknameBoxSize = {
+        width: 0.5 * 3, // x 축 길이
+        height: 0.4, // y 축 길이
+        size: 0.01, // z 축 길이
+      }
 
-    const nicknameBoxdMaterial = new StandardMaterial("nickname", scene);
-    nicknameBoxdMaterial.ambientColor = new Color3(0, 0, 0);
-    nicknameBoxdMaterial.specularColor = new Color3(0, 0, 0);
-    nicknameBoxdMaterial.emissiveColor = new Color3(0, 0, 0);
-    nicknameBoxdMaterial.diffuseColor = new Color3(0, 0, 0);
-    nicknameBoxdMaterial.useLightmapAsShadowmap = true;
-    nicknameBoxdMaterial.alpha = 0.7;
-        
-    nicknameBox.material = nicknameBoxdMaterial;
-    nicknameBox.parent = characterBox;
+      const nicknameBgBox = MeshBuilder.CreateBox('nickname-bg-box', {
+        width: nicknameBoxSize.width, // x 축 길이
+        height: nicknameBoxSize.height, // y 축 길이
+        size: nicknameBoxSize.size, // z 축 길이
+      });
+  
+      const nicknameBgBoxMaterial = new StandardMaterial("nickname-bg-box", scene);
+      nicknameBgBoxMaterial.ambientColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.specularColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.emissiveColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.diffuseColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.useLightmapAsShadowmap = true;
+      nicknameBgBoxMaterial.alpha = 0.7;
+          
+      nicknameBgBox.material = nicknameBgBoxMaterial;
+      nicknameBgBox.parent = characterBox;
+  
+      nicknameBgBox.position.x = 0;
+      nicknameBgBox.position.y = characterSize.y;
+  
+      const nicknameTextBox = MeshBuilder.CreateBox('nickname-bg-box', {
+        width: nicknameBoxSize.width, // x 축 길이
+        height: nicknameBoxSize.height, // y 축 길이
+        size: nicknameBoxSize.size, // z 축 길이
+      });
 
-    nicknameBox.position.x = 0;
-    nicknameBox.position.y = characterSize.y;
+      const nicknameTextBoxMaterial = new StandardMaterial("nickname-text-box", scene);
+      nicknameTextBoxMaterial.ambientColor = new Color3(1, 1, 1);
+      nicknameTextBoxMaterial.specularColor = new Color3(1, 1, 1);
+      nicknameTextBoxMaterial.emissiveColor = new Color3(1, 1, 1);
+      nicknameTextBoxMaterial.diffuseColor = new Color3(1, 1, 1);
+      nicknameTextBox.material = nicknameTextBoxMaterial;
+      nicknameTextBox.parent = nicknameBgBox;
+      nicknameTextBox.position.z = -0.01;
 
-    const fontData = await (await fetch("/fonts/Noto Sans KR Regular.json")).json();
-    const nicknameTextMesh = MeshBuilder.CreateText(
-      "nickname",
-      characterNickName ?? 'no named',
-      fontData,
-      {
-        size: 0.15,
-        resolution: 1,
-        depth: 0.01,
-      },
-      scene,
-      earcut,
-    );
-    
-    if (nicknameTextMesh === null) {
-      throw new Error(`text mesh 생성에 실패하였습니다.`);
+      // text 
+      const size = 64; 
+      const font = `normal ${size}px 'Noto Sans KR'`;
+      
+      const dynamicTextureWidth = 512;
+      const dynamicTextureHeight = 130;
+      const dynamicTexture = new DynamicTexture('nickname-texture', { width: dynamicTextureWidth, height: dynamicTextureHeight, }, scene);
+      nicknameTextBoxMaterial.diffuseTexture = dynamicTexture;
+      nicknameTextBoxMaterial.diffuseTexture.hasAlpha = true;
+      const ctx = dynamicTexture.getContext();
+      const measure = ctx.measureText(characterNickName);
+      console.log('@measure', measure);
+
+      ctx.clearRect(0, 0, 512, 512);
+      dynamicTexture.drawText(characterNickName, null, null, font, "#ffffff", "transparent", true);
     }
-
-    const nicknameTextMeshMaterial = new StandardMaterial("nickname-text", scene);
-    nicknameTextMeshMaterial.ambientColor = new Color3(1, 1, 1);
-    nicknameTextMeshMaterial.specularColor = new Color3(1, 1, 1);
-    nicknameTextMeshMaterial.emissiveColor = new Color3(1, 1, 1);
-    nicknameTextMeshMaterial.diffuseColor = new Color3(1, 1, 1);
-    nicknameTextMeshMaterial.useLightmapAsShadowmap = true;
-    nicknameTextMeshMaterial.alpha = 0.8;
-    nicknameTextMesh.parent = nicknameBox;
-    nicknameTextMesh.position.y = -0.08;
-    nicknameTextMesh.position.z = -0.03;
-    nicknameTextMesh.material = nicknameTextMeshMaterial;
-    // nicknameTextMesh.setPivotPoint(new Vector3(0, 3, 0));
 
     // 카메라 설정
     if (camera !== undefined) {
