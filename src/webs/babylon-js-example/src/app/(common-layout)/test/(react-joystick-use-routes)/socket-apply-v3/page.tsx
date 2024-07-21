@@ -84,49 +84,61 @@ export default function Page() {
         width: nicknameBoxSize.width, // x 축 길이
         height: nicknameBoxSize.height, // y 축 길이
         size: nicknameBoxSize.size, // z 축 길이
-      });
+      }, scene);
   
       const nicknameBgBoxMaterial = new StandardMaterial("nickname-bg-box", scene);
-      nicknameBgBoxMaterial.ambientColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.specularColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.emissiveColor = new Color3(0, 0, 0);
-      nicknameBgBoxMaterial.diffuseColor = new Color3(0, 0, 0);
+      const bgBoxColor = new Color3(0, 0, 0);
+      nicknameBgBoxMaterial.ambientColor = bgBoxColor;
+      nicknameBgBoxMaterial.specularColor = bgBoxColor;
+      nicknameBgBoxMaterial.emissiveColor = bgBoxColor;
+      nicknameBgBoxMaterial.diffuseColor = bgBoxColor;
       nicknameBgBoxMaterial.useLightmapAsShadowmap = true;
       nicknameBgBoxMaterial.alpha = 0.7;
           
       nicknameBgBox.material = nicknameBgBoxMaterial;
       nicknameBgBox.parent = characterItem.characterBox;
+      nicknameBgBox.visibility = 0;
   
       nicknameBgBox.position.x = 0;
       nicknameBgBox.position.y = characterItem.characterSize.y - 0.1;
-  
-      const nicknameTextBox = MeshBuilder.CreateBox('nickname-bg-box', {
+      // nicknameBgBox.setPivotPoint(new Vector3(0, 5, 0));
+
+      const nicknameTextPlane = MeshBuilder.CreatePlane('nickname-text-plane', {
         width: nicknameBoxSize.width, // x 축 길이
-        height: nicknameBoxSize.height, // y 축 길이
-        size: nicknameBoxSize.size, // z 축 길이
-      });
+        height: nicknameBoxSize.height * 3.5, // y 축 길이
+        // size: nicknameBoxSize.size, // z 축 길이
+      }, scene);
+      nicknameTextPlane.parent = nicknameBgBox;
+      nicknameTextPlane.position.z = -0.1;
+      nicknameTextPlane.position.y = -0.5;
+      // nicknameTextPlane.setPivotPoint(new Vector3(0, -5, 0));
 
-      const nicknameTextBoxMaterial = new StandardMaterial("nickname-text-box", scene);
-      nicknameTextBoxMaterial.ambientColor = new Color3(1, 1, 1);
-      nicknameTextBoxMaterial.specularColor = new Color3(1, 1, 1);
-      nicknameTextBoxMaterial.emissiveColor = new Color3(1, 1, 1);
-      nicknameTextBoxMaterial.diffuseColor = new Color3(1, 1, 1);
-      nicknameTextBox.material = nicknameTextBoxMaterial;
-      nicknameTextBox.parent = nicknameBgBox;
-      nicknameTextBox.position.z = -0.01;
+      const panel = new StackPanel();
+      panel.verticalAlignment = 0;
 
-      // text 
-      const size = 64; 
-      const font = `normal ${size}px 'Noto Sans KR'`;
+      const advancedTexture = AdvancedDynamicTexture.CreateForMesh(nicknameTextPlane);
+      advancedTexture.addControl(panel);
+
+      // title
+      console.log('@121212');
+      const textBlock = new TextBlock();
+      textBlock.text = characterNickName;
+      textBlock.color = "#ffffff";
+      textBlock.paddingTop = 40;
+      textBlock.paddingLeft = 40;
+      textBlock.paddingRight = 40;
+      textBlock.fontSize = 120;
+      textBlock.fontFamily = "Noto Sans KR, sans-serif";
+      textBlock.height = "900px";
+      textBlock.textWrapping = true;
+      textBlock.fontWeight = 'bold';
+      textBlock.shadowColor = 'black';
+      textBlock.shadowOffsetX = 0;
+      textBlock.shadowOffsetY = 0;
+      textBlock.shadowBlur = 15;
       
-      const dynamicTextureWidth = 512;
-      const dynamicTextureHeight = 130;
-      const dynamicTexture = new DynamicTexture('nickname-texture', { width: dynamicTextureWidth, height: dynamicTextureHeight, }, scene);
-      nicknameTextBoxMaterial.diffuseTexture = dynamicTexture;
-      nicknameTextBoxMaterial.diffuseTexture.hasAlpha = true;
-      const ctx = dynamicTexture.getContext();
-      ctx.clearRect(0, 0, 512, 512);
-      dynamicTexture.drawText(characterNickName, null, null, font, "#ffffff", "transparent", true);
+      textBlock.textVerticalAlignment = 0;
+      panel.addControl(textBlock);
     },
   });
   babylonCharacterController.setThisClientCharacterId(characterId);
@@ -808,76 +820,6 @@ export default function Page() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socketioManager.isConnected, characterId]);
-
-  const temp = usePromiseTimeout({
-    isAutoStart: true,
-    fn: async() => {
-      console.log('ttt');
-
-      const scene = sceneRef.current;
-      if (scene === undefined) {
-        throw new Error(`sceneRef.current is undefined.`);
-      }
-
-      // const card = MeshBuilder.CreateBox("box", { height: 3, width: 2, depth: 0.2 }, scene);
-      // card.position.y = 2;
-
-      const plane = MeshBuilder.CreatePlane("plane", { height: 3, width: 2 }, scene);
-      plane.position.y = 2;
-      plane.position.z = -0.11;
-
-      const panel = new StackPanel();
-      panel.verticalAlignment = 0;
-
-      const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-      advancedTexture.addControl(panel);
-
-      // title
-      const title = new TextBlock();
-      title.text = "제목입니다~~";
-      title.color = "black";
-      title.fontSize = 48;
-      title.height = "100px";
-      title.textHorizontalAlignment = 0;
-      title.textVerticalAlignment = 0;
-      title.paddingTop = 40;
-      title.paddingLeft = 40;
-      title.paddingRight = 40;
-      panel.addControl(title);
-
-      // date
-      const date = new TextBlock();
-      date.text = "2024년 07월 21일 일요일";
-      date.color = "black";
-      date.fontSize = 36;
-      date.height = "80px";
-      date.textHorizontalAlignment = 0;
-      date.textVerticalAlignment = 0;
-      date.paddingTop = 20;
-      date.paddingLeft = 40;
-      date.paddingRight = 40;
-      panel.addControl(date);
-
-      // note
-      const note = new TextBlock();
-      note.fontFamily = "Noto Sans KR, sans-serif";
-      note.text =
-        "안녕하세요, 이건 테스트 입니다. 1 이건 테스트 입니다. 2 이건 테스트 입니다. 3 이건 테스트 입니다. 4 이건 테스트 입니다. 5  이건 테스트 입니다. 6 이건 테스트 입니다. 7            이건 테스트 입니다. 8";
-      note.textWrapping = true;
-      note.color = "black";
-      note.fontSize = 24;
-      note.height = "660px";
-      note.textHorizontalAlignment = 0;
-      note.textVerticalAlignment = 0;
-      note.paddingTop = 20;
-      note.paddingLeft = 40;
-      note.paddingRight = 40;
-      panel.addControl(note);
-
-      return;
-    },
-    timeoutTime: 5000,
-  });
 
   if (authCheck.accessToken === undefined) {
     return <>Loading..</>;
