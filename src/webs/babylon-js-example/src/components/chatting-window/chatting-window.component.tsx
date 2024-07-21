@@ -11,13 +11,18 @@ export function ChattingWindow(props: IChattingWindow.Props) {
 
   const [chat, setChat] = useState('');
   const ulRef = useRef<HTMLUListElement>(null);
+  const ulContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const ul = ulRef.current;
     if (ul === null) return;
 
+    const ulContainer = ulContainerRef.current;
+    if (ulContainer === null) return;
+
     const ulRect = ul.getBoundingClientRect();
+    const ulContainerRect = ulContainer.getBoundingClientRect();
 
     let totalLiHeight = 0;
 
@@ -27,7 +32,7 @@ export function ChattingWindow(props: IChattingWindow.Props) {
       totalLiHeight += rect.height;
     }
 
-    ul.scrollTop = totalLiHeight - ulRect.height;
+    ulContainer.scrollTop = totalLiHeight - ulContainerRect.height + 100;
   }, [chatItems]);
 
   useEffect(() => {
@@ -40,9 +45,9 @@ export function ChattingWindow(props: IChattingWindow.Props) {
 
   return (
     <>
-      <div style={{ width: 'calc(100% - 24px)' }} className="h-[200px] bg-black/80 fixed bottom-3 left-3 z-20 flex flex-col items-stretch justify-stretch">
-        <div className="w-full relative h-full">
-          <ul className="w-full h-full relative overflow-y-scroll gap-1 p-2" ref={ulRef}>
+      <div style={{ width: 'calc(100% - 24px)' }} className="h-[200px] bg-black/80 fixed bottom-3 left-3 z-20 flex flex-col items-end">
+        <div className="w-full h-full overflow-y-scroll relative" ref={ulContainerRef}>
+          <ul className="w-full h-auto relative gap-1 p-2" ref={ulRef}>
             {
               chatItems.map((item, index) => {
                 return (
@@ -68,7 +73,7 @@ export function ChattingWindow(props: IChattingWindow.Props) {
             placeholder="입력하세요."
             value={chat}
             onChange={e => setChat(e.target.value)}
-            onKeyDown={(event) => {
+            onKeyUp={(event) => {
               if (chat.trim() === '') return;
 
               const key = event.key;

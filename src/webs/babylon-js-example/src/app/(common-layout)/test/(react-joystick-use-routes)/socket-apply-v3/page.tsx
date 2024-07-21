@@ -38,6 +38,13 @@ export default function Page() {
 
   const [isChattingWindowShow, setIsChattingWindowShow] = useState(false);
   const [chatItems, setChatItems] = useState<IChattingWindow.ChatItem[]>([]);
+  const chatItemsSorted = (function(){
+    const newArr = [...chatItems];
+    newArr.sort(function (a, b) {
+      return a.writedAt - b.writedAt;
+    });
+    return newArr;
+  })();
 
   useAddEventListener({
     windowEventRequiredInfo: {
@@ -852,8 +859,10 @@ export default function Page() {
       <ChattingWindow 
         isShow={isChattingWindowShow}
         setIsShow={setIsChattingWindowShow}
-        chatItems={chatItems}
+        chatItems={chatItemsSorted}
         onChatEmit={(content) => {
+          console.log('@onChatEmit', content);
+
           const writer = babylonCharacterController.getCharacter(characterId)?.characterNickName ?? 'undefined';
           const writedAt = Date.now();
 
