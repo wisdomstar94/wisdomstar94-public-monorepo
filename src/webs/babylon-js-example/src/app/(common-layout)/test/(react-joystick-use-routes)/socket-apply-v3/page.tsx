@@ -151,8 +151,8 @@ export default function Page() {
     fn: async() => {
       emitOpponentCurrentPositionAndRotation();
     },
-    intervalTime: 500,
-    callMaxCount: 4,
+    intervalTime: 200,
+    callMaxCount: 11,
     isAutoStart: false,
     isCallWhenStarted: true,
     isForceCallWhenFnExecuting: true,
@@ -302,6 +302,14 @@ export default function Page() {
               babylonCharacterController.setCharacterPositionAndRotation({
                 ...obj.data,
               });
+              
+              // babylonCharacterController.getCharactersMap().forEach((character, key) => {
+              //   if (character.characterId === characterId) return;
+              //   character.characterBoxPhysicsBody.mass = true;
+              //   setTimeout(() => {
+              //     character.characterBoxPhysicsBody.disableSync = false;
+              //   }, 100);
+              // });
             } break;
             case 'opponentMoving': {
               if (obj.data.characterId === characterId) return;
@@ -874,7 +882,7 @@ export default function Page() {
       camera,
       scene,
       characterInitPosition: { x: 5, y: 1, z: 0 },
-      characterSize: { x: 0.5, y: 2, z: 0.5 },
+      characterSize: { x: 1, y: 2, z: 1 },
       characterId,
       characterNickName: authCheck.payload?.characterNickName,
       characterAnimationGroupNames: {
