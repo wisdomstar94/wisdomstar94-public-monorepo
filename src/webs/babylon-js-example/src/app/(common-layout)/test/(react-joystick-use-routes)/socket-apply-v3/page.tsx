@@ -149,7 +149,9 @@ export default function Page() {
 
   const emitInitMeCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
-      emitOpponentCurrentPositionAndRotation();
+      emitOpponentCurrentPositionAndRotation({
+        // ..  
+      });
     },
     intervalTime: 200,
     callMaxCount: 11,
@@ -160,7 +162,9 @@ export default function Page() {
 
   const emitMeCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
-      emitOpponentCurrentPositionAndRotation();
+      emitOpponentCurrentPositionAndRotation({
+        // ..
+      });
       return;
     },
     intervalTime: 1000,
@@ -169,31 +173,25 @@ export default function Page() {
     isForceCallWhenFnExecuting: true,
   });
 
-  const emitMeCurrentPositionAndRotationTimeout = usePromiseTimeout({
+  const requestCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
-      emitOpponentCurrentPositionAndRotation();
+      webRtcManager.emitDataChannel<RtcData>({
+        channelName: oneChannelName,
+        data: {
+          event: 'requestConnectPositionAndRotation',
+          data: null,
+        },
+      });
     },
-    timeoutTime: 500,
+    intervalTime: 500,
     isAutoStart: false,
-    isCallWhenStarted: false,
+    isCallWhenStarted: true,
     isForceCallWhenFnExecuting: true,
   });
 
-  const checkCharacterPosition = usePromiseInterval({
-    isAutoStart: true,
-    intervalTime: 1000,
-    fn: async() => {
-      const characterMaps = babylonCharacterController.getCharactersMap();
-      const arr = Array.from(characterMaps);
-      for (const [key, character] of arr) {
-        if (character.characterBox.position.y < -6) {
-          babylonCharacterController.remove(character.characterId);
-        }
-      }
-    },
-  });
+  function emitOpponentCurrentPositionAndRotation(params: { peerConnectionInfos?: IUseWebRtcManager.RTCPeerConnectionInfo<MetaData>[] }) {
+    const { peerConnectionInfos } = params;
 
-  function emitOpponentCurrentPositionAndRotation() {
     const c = babylonCharacterController.getCharacter(characterId);
     if (c !== undefined) {
       const firstMesh: AbstractMesh | undefined = c.characterMeshes[0];
@@ -212,6 +210,7 @@ export default function Page() {
       };
       webRtcManager.emitDataChannel<RtcData>({
         channelName: oneChannelName,
+        rtcPeerConnections: peerConnectionInfos,
         data: {
           event: 'opponentCurrentPositionAndRotation',
           data,
@@ -271,6 +270,11 @@ export default function Page() {
           switch(obj.event) {
             case 'requestConnectInfo': {
               emitOpponentConnectInfo({ 
+                peerConnectionInfos: [peerConnectionInfo],
+              });
+            } break;
+            case 'requestConnectPositionAndRotation': {
+              emitOpponentCurrentPositionAndRotation({
                 peerConnectionInfos: [peerConnectionInfo],
               });
             } break;
@@ -929,10 +933,11 @@ export default function Page() {
   useEffect(() => {
     if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
       emitMeCurrentPositionAndRotationInterval.stop();
-      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 200 : 1000 });
+      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 150 : 1000 });
+      requestCurrentPositionAndRotationInterval.start();
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
-      emitMeCurrentPositionAndRotationTimeout.start();
+      requestCurrentPositionAndRotationInterval.stop();
       emitMeCurrentPositionAndRotationInterval.fnCall();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

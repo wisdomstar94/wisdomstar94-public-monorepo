@@ -15,6 +15,11 @@ export type OpponentCurrentPositionAndRotationRtcData = {
   data: IUseBabylonCharacterController.CharacterPositionAndRotationOptions;
 }
 
+export type RequestCurrentPositionAndRotationRtcData = {
+  event: 'requestConnectPositionAndRotation';
+  data?: null;
+}
+
 export type OpponentMovingRtcData = {
   event: 'opponentMoving';
   data: IUseBabylonCharacterController.CharacterMovingOptions;
@@ -37,6 +42,7 @@ export type RtcData =
   OpponentConnectInfoRtcData |
   RequestConnectInfoRtcData | 
   OpponentCurrentPositionAndRotationRtcData | 
+  RequestCurrentPositionAndRotationRtcData |
   OpponentMovingRtcData | 
   OpponentJumpingRtcData | 
   ChatInfoRtcData
