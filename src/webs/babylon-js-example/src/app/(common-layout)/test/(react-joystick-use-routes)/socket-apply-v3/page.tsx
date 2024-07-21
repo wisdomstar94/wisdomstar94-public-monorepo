@@ -90,7 +90,7 @@ export default function Page() {
       nicknameBgBox.parent = characterItem.characterBox;
   
       nicknameBgBox.position.x = 0;
-      nicknameBgBox.position.y = characterItem.characterSize.y;
+      nicknameBgBox.position.y = characterItem.characterSize.y - 0.1;
   
       const nicknameTextBox = MeshBuilder.CreateBox('nickname-bg-box', {
         width: nicknameBoxSize.width, // x 축 길이
@@ -692,7 +692,7 @@ export default function Page() {
         body.shape = new PhysicsShapeBox(
           new Vector3(0, 0, 0),
           Quaternion.Identity(),
-          new Vector3(2, 2, 2),
+          new Vector3(1.5, 1.5, 1.5),
           scene,
         );
         body.setMassProperties({ mass: 0 });
