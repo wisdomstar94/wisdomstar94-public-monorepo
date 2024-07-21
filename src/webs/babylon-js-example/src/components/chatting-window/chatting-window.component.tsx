@@ -47,7 +47,7 @@ export function ChattingWindow(props: IChattingWindow.Props) {
               chatItems.map((item, index) => {
                 return (
                   <li key={item.writer + item.writedAt + index} className="w-full relative flex flex-nowrap">
-                    <div className="w-[50px] text-xs text-white flex-shrink-0">
+                    <div className="w-[70px] text-xs text-white flex-shrink-0">
                       { item.writer } :
                     </div>
                     <div className="w-full text-xs text-white whitespace-pre-line break-all">
