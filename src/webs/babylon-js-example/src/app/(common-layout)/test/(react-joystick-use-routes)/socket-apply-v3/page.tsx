@@ -9,7 +9,7 @@ import { useSocketioManager } from "@wisdomstar94/react-socketio-manager";
 import { IUseWebRtcManager, useWebRtcManager } from "@wisdomstar94/react-web-rtc-manager";
 import { useEffect, useRef, useState } from "react";
 import "@babylonjs/loaders/glTF";
-import { RtcData } from "./type";
+import { ChatData, RtcData } from "./type";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
 import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
@@ -38,6 +38,10 @@ export default function Page() {
   const [meCharacterLoaded, setMeCharacterLoaded] = useState(false);
 
   const [isChattingWindowShow, setIsChattingWindowShow] = useState(false);
+  const [isChattingInputFocus, setIsChattingInputFocus] = useState(false);
+
+  const isCharacterControlBlock = isChattingInputFocus && isChattingWindowShow;
+
   const [chatItems, setChatItems] = useState<IChattingWindow.ChatItem[]>([]);
   const chatItemsSorted = (function(){
     const newArr = [...chatItems];
@@ -63,7 +67,7 @@ export default function Page() {
   const babylonCharacterController = useBabylonCharacterController({
     thisClientCharacterOptions: {
       characterId,
-      nearDistance: 1.4,
+      nearDistance: 3,
     },
     debugOptions: {
       isShowCharacterParentBoxMesh: false,
@@ -173,6 +177,20 @@ export default function Page() {
     isAutoStart: false,
     isCallWhenStarted: false,
     isForceCallWhenFnExecuting: true,
+  });
+
+  const checkCharacterPosition = usePromiseInterval({
+    isAutoStart: true,
+    intervalTime: 1000,
+    fn: async() => {
+      const characterMaps = babylonCharacterController.getCharactersMap();
+      const arr = Array.from(characterMaps);
+      for (const [key, character] of arr) {
+        if (character.characterBox.position.y < -6) {
+          babylonCharacterController.remove(character.characterId);
+        }
+      }
+    },
   });
 
   function emitOpponentCurrentPositionAndRotation() {
@@ -294,15 +312,25 @@ export default function Page() {
               babylonCharacterController.setCharacterJumping(obj.data.characterId, obj.data.jumpingOptions);
             } break;
             case 'chatInfo': {
-              setChatItems(prev => {
-                const newItems = [...prev];
-                newItems.push({
-                  writer: obj.data.writer,
-                  writedAt: obj.data.writedAt,
-                  content: obj.data.content,
-                });
-                return newItems;
+              const writerCharacter = babylonCharacterController.getCharacter(obj.data.writerId);
+              if (writerCharacter === undefined) return;
+
+              disposeChat(writerCharacter, {
+                writer: obj.data.writer,
+                writerId: obj.data.writerId,
+                writedAt: obj.data.writedAt,
+                content: obj.data.content,
               });
+              // setChatItems(prev => {
+              //   const newItems = [...prev];
+              //   newItems.push({
+              //     writer: obj.data.writer,
+              //     writerId: obj.data.writerId,
+              //     writedAt: obj.data.writedAt,
+              //     content: obj.data.content,
+              //   });
+              //   return newItems;
+              // });
             } break;
           }
         },
@@ -569,9 +597,103 @@ export default function Page() {
     }
   }
 
+  function disposeChat(characterItem: IUseBabylonCharacterController.CharacterItem, chatData: ChatData) {
+    const scene = sceneRef.current;
+    if (scene === undefined) return;
+
+    setChatItems(prev => {
+      const newItems = [...prev];
+      newItems.push(chatData);
+      return newItems;
+    });
+    characterItem.add({
+      groupName: 'chat-ballon',
+      isAutoDeleteTimeout: 4000,
+      babylonLogic: async() => {
+        console.log('@babylonLogic...');
+        const sizes = {
+          width: 2.3,
+          height: 1.3,
+          size: 0.1,
+        };
+        const mesh = MeshBuilder.CreateBox('chat-ballon-mesh', {
+          width: sizes.width,
+          height: sizes.height,
+          size: sizes.size,
+        }, scene);
+
+        const meshMaterial = new StandardMaterial("chat-ballon-mesh-material", scene);
+        const bgBoxColor = new Color3(0, 0, 0);
+        meshMaterial.ambientColor = bgBoxColor;
+        meshMaterial.specularColor = bgBoxColor;
+        meshMaterial.emissiveColor = bgBoxColor;
+        meshMaterial.diffuseColor = bgBoxColor;
+        meshMaterial.useLightmapAsShadowmap = true;
+        meshMaterial.alpha = 0.7;
+
+        mesh.material = meshMaterial;
+        mesh.parent = characterItem.characterBox;
+        mesh.visibility = 0;
+    
+        mesh.position.x = 0;
+        mesh.position.y = characterItem.characterSize.y + 0.2;
+
+        const planeHeight = sizes.height * 1.65;
+        console.log('@planeHeight', planeHeight);
+        const plane = MeshBuilder.CreatePlane('chat-ballon-plane', {
+          width: sizes.width,
+          height: planeHeight,
+          // size: sizes.size,
+        }, scene);
+        plane.parent = mesh;
+        plane.position.z = -0.01;
+        plane.position.y = -0.4;
+
+        // 
+        const panel = new StackPanel();
+        panel.zIndex = 10;
+        panel.verticalAlignment = 0;
+        panel.background = 'rgba(0, 0, 0, 0.7)';
+
+        const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
+        advancedTexture.addControl(panel);
+
+        const textBlock = new TextBlock();
+        textBlock.text = chatData.content;
+        textBlock.color = "#ffffff";
+        textBlock.paddingTop = 40;
+        textBlock.paddingLeft = 40;
+        textBlock.paddingRight = 40;
+        textBlock.fontSize = 60;
+        textBlock.fontFamily = "Noto Sans KR, sans-serif";
+        // textBlock.width = "800px";
+        textBlock.height = "600px";
+        // textBlock.textWrapping = true;
+        textBlock.textWrapping = 4;
+        textBlock.adjustWordWrappingHTMLElement = (element) => {
+          console.log('@element', element);
+          element.style.wordBreak = 'break-all';
+        };
+        textBlock.fontWeight = 'bold';
+        textBlock.shadowColor = 'black';
+        textBlock.shadowOffsetX = 0;
+        textBlock.shadowOffsetY = 0;
+        textBlock.shadowBlur = 15;
+        textBlock.textHorizontalAlignment = 0;
+        textBlock.textVerticalAlignment = 0;
+        panel.addControl(textBlock);
+
+        return {
+          meshes: [mesh, plane],
+          others: [panel, textBlock, advancedTexture, meshMaterial],
+        };
+      },
+    });
+  }
+
   useKeyboardManager({
     onChangeKeyMapStatus(keyMap) {
-      if (isChattingWindowShow) return;
+      if (isCharacterControlBlock) return;
 
       const isUpPress = keyMap.get('ArrowUp');
       const isDownPress = keyMap.get('ArrowDown');
@@ -799,7 +921,7 @@ export default function Page() {
   useEffect(() => {
     if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
       emitMeCurrentPositionAndRotationInterval.stop();
-      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 250 : 1000 });
+      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 200 : 1000 });
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
       emitMeCurrentPositionAndRotationTimeout.start();
@@ -844,7 +966,7 @@ export default function Page() {
       <div className="fixed bottom-10 right-10 z-10">
         <Joystick
           onPressed={(keys, isStrenth) => {
-            if (isChattingWindowShow) return;
+            if (isCharacterControlBlock) return;
             if (keys.includes('ArrowUp') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Up', isRunning: isStrenth }); } // ⬆
             if (keys.includes('ArrowDown') && !keys.includes('ArrowLeft') && !keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down', isRunning: isStrenth }); } // ⬇
             if (keys.includes('ArrowLeft') && !keys.includes('ArrowUp') && !keys.includes('ArrowDown')) { disposeMoving({ direction: 'Left', isRunning: isStrenth }); } // ⬅
@@ -855,7 +977,7 @@ export default function Page() {
             if (keys.includes('ArrowDown') && keys.includes('ArrowRight')) { disposeMoving({ direction: 'Down+Right', isRunning: isStrenth }); } // ⬇ + ⮕
           }}
           onPressOut={() => {
-            if (isChattingWindowShow) return;
+            if (isCharacterControlBlock) return;
             disposeMoving({ direction: undefined, isRunning: false });
           }}
           />
@@ -864,29 +986,36 @@ export default function Page() {
         <TouchContainer
           className="w-[100px] h-[100px] bg-red-500/50 hover:bg-red-500/70 rounded-full"
           onTouchStart={() => { 
-            if (isChattingWindowShow) return;
+            if (isCharacterControlBlock) return;
             disposeJumping();
           }}
           />
       </div>
       <ChattingWindow 
+        clientId={characterId}
         isShow={isChattingWindowShow}
         setIsShow={setIsChattingWindowShow}
         chatItems={chatItemsSorted}
+        onFocusChangeInput={(isFocus) => {
+          setIsChattingInputFocus(isFocus);
+        }}
         onChatEmit={(content) => {
-          console.log('@onChatEmit', content);
 
-          const writer = babylonCharacterController.getCharacter(characterId)?.characterNickName ?? 'undefined';
+          const writerCharacter = babylonCharacterController.getCharacter(characterId);
+          if (writerCharacter === undefined) return;
+
+          const scene = sceneRef.current;
+          if (scene === undefined) return;
+
+          const writer = writerCharacter.characterNickName ?? 'undefined';
+          const writerId = characterId;
           const writedAt = Date.now();
 
-          setChatItems(prev => {
-            const newItems = [...prev];
-            newItems.push({
-              writer,
-              writedAt,
-              content,
-            });
-            return newItems;
+          disposeChat(writerCharacter, {
+            writer,
+            writerId,
+            writedAt,
+            content,
           });
 
           webRtcManager.emitDataChannel<RtcData>({
@@ -895,6 +1024,7 @@ export default function Page() {
               event: 'chatInfo',
               data: {
                 writedAt,
+                writerId,
                 writer,
                 content,
               },

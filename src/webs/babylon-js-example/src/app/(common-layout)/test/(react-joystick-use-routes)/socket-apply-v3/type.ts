@@ -30,11 +30,7 @@ export type OpponentJumpingRtcData = {
 
 export type ChatInfoRtcData = {
   event: 'chatInfo';
-  data: {
-    writer: string;
-    writedAt: number;
-    content: string;
-  };
+  data: ChatData;
 }
 
 export type RtcData = 
@@ -45,3 +41,10 @@ export type RtcData =
   OpponentJumpingRtcData | 
   ChatInfoRtcData
 ;
+
+export type ChatData = {
+  writer: string;
+  writerId: string;
+  writedAt: number;
+  content: string;
+}

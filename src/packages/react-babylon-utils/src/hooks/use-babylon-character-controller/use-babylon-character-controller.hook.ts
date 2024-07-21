@@ -189,6 +189,50 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
         isRunning: false,
         jumpingInterval: undefined,
         addRequireInfo: params,
+        add: async(params2) => {
+          const {
+            groupName,
+            babylonLogic,
+            isAutoDeleteTimeout,
+          } = params2;
+          const isOriginalDeleteWhenDuplicated = params2.isOriginalDeleteWhenDuplicated ?? true;
+
+          const deleteGroup = () => {
+            const original = characterItem.addedGroups.get(groupName);
+            clearTimeout(original?.autoDeleteTimeouter);
+            if (original !== undefined) {
+              const babylonLogicResult = original.babylonLogicResult;
+              babylonLogicResult.meshes.forEach((mesh) => {
+                mesh.dispose();
+              });
+              (babylonLogicResult.others ?? []).forEach((other) => {
+                if (typeof other.dispose === 'function') {
+                  other.dispose();
+                }
+              });
+            }
+            characterItem.addedGroups.delete(groupName);
+          };
+
+          if (isOriginalDeleteWhenDuplicated === true) {
+            deleteGroup();
+          }
+
+          let autoDeleteTimeouter: NodeJS.Timeout | undefined = undefined;
+          if (typeof isAutoDeleteTimeout === 'number') {
+            autoDeleteTimeouter = setTimeout(() => {
+              deleteGroup();
+            }, isAutoDeleteTimeout);
+          }
+
+          const result = await babylonLogic();
+          characterItem.addedGroups.set(groupName, {
+            groupName,
+            babylonLogicResult: result,
+            autoDeleteTimeouter,
+          });
+        },
+        addedGroups: new Map(),
       };
       charactersRef.current.set(characterId, characterItem);
       charactersAddingRef.current.delete(characterId);

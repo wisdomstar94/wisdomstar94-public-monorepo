@@ -1,18 +1,38 @@
 import { useEffect, useRef, useState } from "react";
 import { IChattingWindow } from "./chatting-window.interface";
+import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
 
 export function ChattingWindow(props: IChattingWindow.Props) {
   const {
     isShow,
     setIsShow,
     chatItems,
+    clientId,
     onChatEmit,
+    onFocusChangeInput,
   } = props;
 
   const [chat, setChat] = useState('');
   const ulRef = useRef<HTMLUListElement>(null);
   const ulContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useAddEventListener({
+    windowEventRequiredInfo: {
+      eventName: 'keyup',
+      eventListener(event) {
+        const key = event.key;
+        // console.log('---key', key);
+        if (key.toLowerCase() === 'enter') {
+          if (isShow) {
+            inputRef.current?.focus();
+          }
+        } else if (key.toLowerCase() === 'escape') {
+          setIsShow(false);
+        }
+      },
+    },
+  });
 
   useEffect(() => {
     const ul = ulRef.current;
@@ -41,7 +61,20 @@ export function ChattingWindow(props: IChattingWindow.Props) {
     }
   }, [isShow]);
 
-  if (!isShow) return null;
+  if (!isShow) {
+    return (
+      <>
+        <div
+          className="cursor-pointer bg-black/70 hover:bg-black/90 w-[100px] fixed bottom-0 text-xs text-white flex flex-wrap justify-center items-center py-1.5" style={{ left: `calc((100% - 100px) / 2)` }}
+          onClick={() => {
+            setIsShow(true);
+          }}
+          >
+          chat open
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -51,11 +84,11 @@ export function ChattingWindow(props: IChattingWindow.Props) {
             {
               chatItems.map((item, index) => {
                 return (
-                  <li key={item.writer + item.writedAt + index} className="w-full relative flex flex-nowrap">
-                    <div className="w-[70px] text-xs text-white flex-shrink-0">
+                  <li key={item.writer + item.writedAt + index} className={`w-full relative flex flex-nowrap group/item ${item.writerId === clientId ? 'me' : ''}`}>
+                    <div className="w-[70px] text-xs text-white flex-shrink-0 group-[.me]/item:text-blue-400">
                       { item.writer } :
                     </div>
-                    <div className="w-full text-xs text-white whitespace-pre-line break-all">
+                    <div className="w-full text-xs text-white whitespace-pre-line break-all group-[.me]/item:text-blue-400">
                       { item.content }
                     </div>
                   </li>
@@ -69,7 +102,7 @@ export function ChattingWindow(props: IChattingWindow.Props) {
             ref={inputRef}
             type="text" 
             maxLength={100} 
-            className="border-0 outline-none p-2 text-white text-sm bg-transparent w-full h-full" 
+            className="border-0 outline-none p-2 text-white text-sm bg-transparent w-full h-full focus:outline-blue-200 outline-offset-3" 
             placeholder="입력하세요."
             value={chat}
             onChange={e => setChat(e.target.value)}
@@ -81,6 +114,12 @@ export function ChattingWindow(props: IChattingWindow.Props) {
                 onChatEmit(chat);
                 setChat('');
               }
+            }}
+            onFocus={() => {
+              if (typeof onFocusChangeInput === 'function') onFocusChangeInput(true);
+            }}
+            onBlur={() => {
+              if (typeof onFocusChangeInput === 'function') onFocusChangeInput(false);
             }}
             />
         </div>

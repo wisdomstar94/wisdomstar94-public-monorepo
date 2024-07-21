@@ -12,6 +12,8 @@ export declare namespace IUseBabylonCharacterController {
     'Down+Right'
   ;
 
+  export type GroupName = string;
+
   export interface GlbFileUrl {
     baseUrl: string;
     filename: string;
@@ -77,6 +79,24 @@ export declare namespace IUseBabylonCharacterController {
     characterBoxPhysicsBody: PhysicsBody;
   }
 
+  export interface AddInCharacterParamsBabylonLogicReturnParams {
+    meshes: AbstractMesh[];
+    others?: any[];
+  }
+
+  export interface AddInCharacterParams {
+    groupName: GroupName;
+    babylonLogic: () => Promise<AddInCharacterParamsBabylonLogicReturnParams>;
+    isOriginalDeleteWhenDuplicated?: boolean;
+    isAutoDeleteTimeout?: number;
+  }
+
+  export interface AddedGroupInfo {
+    groupName: GroupName;
+    autoDeleteTimeouter?: NodeJS.Timeout;
+    babylonLogicResult: AddInCharacterParamsBabylonLogicReturnParams;
+  }
+
   export interface CharacterItem {
     characterId: string;
     characterNickName?: string;
@@ -99,6 +119,8 @@ export declare namespace IUseBabylonCharacterController {
     isRunning: boolean;
     jumpingInterval: NodeJS.Timeout | undefined;
     addRequireInfo: AddRequireInfo;
+    add: (params: AddInCharacterParams) => Promise<any>;
+    addedGroups: Map<GroupName, AddedGroupInfo>;
   }
 
   export interface CharacterMovingOptions {
