@@ -24,11 +24,13 @@
     "@wisdomstar94/react-touch-container": "workspace:^",
     "@wisdomstar94/react-web-rtc-manager": "workspace:^",
     "axios": "^1.7.2",
+    "ipaddr.js": "^2.2.0",
     "luxon": "^3.4.4",
     "next": "14.2.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/luxon": "^3",

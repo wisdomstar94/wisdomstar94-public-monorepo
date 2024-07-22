@@ -21,6 +21,7 @@ export default function Layout({
     { name: 'test/react-touch-container', href: '/test/react-touch-container' },
     { name: 'test/react-socketio-manager', href: '/test/react-socketio-manager' },
     { name: 'test/react-web-rtc-manager', href: '/test/react-web-rtc-manager' },
+    { name: 'test/ipaddr.js', href: '/test/ipaddr.js' },
   ];
 
   return (
