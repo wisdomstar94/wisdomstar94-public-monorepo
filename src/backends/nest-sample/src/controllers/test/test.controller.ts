@@ -1,9 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
+import { AppService } from 'src/app.service';
+import { Response } from 'express';
 
 @Controller('test')
 export class TestController {
+  constructor(private appService: AppService) {
+
+  }
+
   @Get()
-  getHello(): string {
+  _(): string {
     return 'hi...';
+  }
+
+  @Get('/stackCount')
+  countStack(@Res() response: Response) {
+    this.appService.addCount();
+    return response
+      .status(200)
+      .json({
+        count: this.appService.stackCount,
+      });
   }
 }
