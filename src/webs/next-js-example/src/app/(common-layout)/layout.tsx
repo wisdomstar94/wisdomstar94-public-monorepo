@@ -18,6 +18,8 @@ export default function Layout({
     { name: 'test/api-call/basic', href: '/test/api-call/basic' },
     { name: 'test/parallel-routes-and-intercepting-routes', href: '/test/parallel-routes-and-intercepting-routes' },
     { name: 'test/image-response', href: '/test/image-response' },
+    { name: 'test/route-segment-config-test/page1', href: '/test/route-segment-config-test/page1' },
+    { name: 'test/route-segment-config-test/page2', href: '/test/route-segment-config-test/page2' },
   ];
 
   return (

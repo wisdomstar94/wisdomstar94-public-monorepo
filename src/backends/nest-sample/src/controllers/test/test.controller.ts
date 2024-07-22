@@ -16,10 +16,12 @@ export class TestController {
   @Get('/stackCount')
   countStack(@Res() response: Response) {
     this.appService.addCount();
-    return response
-      .status(200)
-      .json({
-        count: this.appService.stackCount,
-      });
+    
+    const responseData = {
+      count: this.appService.stackCount,
+    };
+    console.log('/test/stackCount api called! --> response:', responseData);
+
+    return response.status(200).json(responseData);
   }
 }

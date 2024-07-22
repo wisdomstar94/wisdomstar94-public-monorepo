@@ -5,6 +5,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "next-type.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
