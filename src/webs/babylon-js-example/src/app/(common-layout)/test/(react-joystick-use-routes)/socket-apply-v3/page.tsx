@@ -149,12 +149,13 @@ export default function Page() {
 
   const emitInitMeCurrentPositionAndRotationInterval = usePromiseInterval({
     fn: async() => {
+      console.log('@emitOpponentCurrentPositionAndRotation....');
       emitOpponentCurrentPositionAndRotation({
         // ..  
       });
     },
-    intervalTime: 200,
-    callMaxCount: 11,
+    intervalTime: 250,
+    callMaxCount: 12,
     isAutoStart: false,
     isCallWhenStarted: true,
     isForceCallWhenFnExecuting: true,
@@ -357,10 +358,14 @@ export default function Page() {
             },
           });
 
+          console.log('@opened emitInitMeCurrentPositionAndRotationInterval.start...');
+          emitInitMeCurrentPositionAndRotationInterval.stop();
           emitInitMeCurrentPositionAndRotationInterval.start();
         },
         // get offer 에 해당하는 peer 에서 발생하게 될 이벤트, 즉 data channel 을 받은 peer 에서 발생하게될 이벤트
         receivedChannel(peerConnectionInfo, event) {
+          console.log('@receivedChannel emitInitMeCurrentPositionAndRotationInterval.start...');
+          emitInitMeCurrentPositionAndRotationInterval.stop();
           emitInitMeCurrentPositionAndRotationInterval.start();
 
           // 상대편에게 상대편의 connectInfo 를 요청함
@@ -898,7 +903,7 @@ export default function Page() {
       characterJumpingOptions: {
         jumpingAnimationStartDelay: 450,
         jumpingAnimationDuration: 400,
-        jumpingTotalDuration: 1400,
+        jumpingTotalDuration: 1600,
       },
       glbFileUrl: {
         baseUrl: '/models/',
@@ -933,12 +938,14 @@ export default function Page() {
   useEffect(() => {
     if (babylonCharacterController.isThisClientCharacterControlling || babylonCharacterController.isExistThisClientCharacterNearOtherCharacters) {
       emitMeCurrentPositionAndRotationInterval.stop();
-      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isExistThisClientCharacterNearOtherCharacters ? 150 : 1000 });
+      emitMeCurrentPositionAndRotationInterval.start({ intervalTime: babylonCharacterController.isThisClientCharacterControlling ? 50 : 1000 });
       requestCurrentPositionAndRotationInterval.start();
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
       requestCurrentPositionAndRotationInterval.stop();
-      emitInitMeCurrentPositionAndRotationInterval.start();
+
+      emitInitMeCurrentPositionAndRotationInterval.stop();
+      emitInitMeCurrentPositionAndRotationInterval.start({ intervalTime: 50 });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [babylonCharacterController.isThisClientCharacterControlling, babylonCharacterController.isExistThisClientCharacterNearOtherCharacters])
