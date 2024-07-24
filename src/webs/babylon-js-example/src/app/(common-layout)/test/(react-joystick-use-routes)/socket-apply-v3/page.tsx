@@ -775,8 +775,8 @@ export default function Page() {
       manageName: 'ground',
       mesh: (params) => {
         const { manageName } = params;
-        const mesh = MeshBuilder.CreateBox(manageName, { width: 40, height: 0.1, depth: 40 }, scene);
-        mesh.position.y = 0;
+        const mesh = MeshBuilder.CreateBox(manageName, { width: 40, height: 2, depth: 40 }, scene);
+        mesh.position.y = -1;
 
         const groundMaterial = new StandardMaterial("ground", scene);
         // groundMaterial.ambientColor = new Color3(1, 1, 1);
@@ -794,7 +794,7 @@ export default function Page() {
         body.shape = new PhysicsShapeBox(
           new Vector3(0, 0, 0),
           Quaternion.Identity(),
-          new Vector3(40, 0.1, 40),
+          new Vector3(40, 2, 40),
           scene,
         );
         body.setMassProperties({ mass: 0 });
@@ -938,7 +938,7 @@ export default function Page() {
     } else {
       emitMeCurrentPositionAndRotationInterval.stop();
       requestCurrentPositionAndRotationInterval.stop();
-      emitMeCurrentPositionAndRotationInterval.fnCall();
+      emitInitMeCurrentPositionAndRotationInterval.start();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [babylonCharacterController.isThisClientCharacterControlling, babylonCharacterController.isExistThisClientCharacterNearOtherCharacters])

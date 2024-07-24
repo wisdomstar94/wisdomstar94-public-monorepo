@@ -1,9 +1,12 @@
 import { useRef, useState } from "react";
 import { IUseBabylonCharacterController } from "./use-babylon-character-controller.interface";
-import { AnimationGroup, AnimationPropertiesOverride, Axis, Color3, DynamicTexture, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsPrestepType, PhysicsShapeBox, PhysicsShapeCylinder, Quaternion, Ray, SceneLoader, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { AnimationGroup, AnimationPropertiesOverride, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, Quaternion, SceneLoader, Vector3 } from "@babylonjs/core";
 import { useRequestAnimationFrameManager } from "@wisdomstar94/react-request-animation-frame-manager";
 import { calculateDistance3D } from "@/libs/utils";
 import anime from "animejs";
+
+const defaultAngularDamping = 100;
+const defaultLinearDamping = 10000;
 
 export function useBabylonCharacterController(props: IUseBabylonCharacterController.Props) {
   const {
@@ -41,8 +44,8 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
     const characterNickName = params.characterNickName ?? 'no named';
 
-    const angularDamping = chracterPhysicsBodyOptions?.angularDamping ?? 100;
-    const linearDamping = chracterPhysicsBodyOptions?.linearDamping ?? 10;
+    const angularDamping = chracterPhysicsBodyOptions?.angularDamping ?? defaultAngularDamping;
+    const linearDamping = chracterPhysicsBodyOptions?.linearDamping ?? defaultLinearDamping;
 
     const t = charactersRef.current.get(characterId);
     if (charactersAddingRef.current.has(characterId) || t !== undefined) {
@@ -63,7 +66,7 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
     characterBox.position.x = characterInitPosition.x;
     characterBox.position.y = characterInitPosition.y;
     characterBox.position.z = characterInitPosition.z;
-    console.log(`characterBox.getPivotPoint()`, characterBox.getPivotPoint());
+    // console.log(`characterBox.getPivotPoint()`, characterBox.getPivotPoint());
     characterBox.rotationQuaternion = Quaternion.Identity();
     
     // characterBox.setPivotMatrix(Matrix.Translation(0, characterSize.y / 2, 0), false);
@@ -87,8 +90,9 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
       scene,
     );
     characterBoxPhysicsBody.setMassProperties({ 
-      mass: typeof characterVisibilityDelay === 'number' ? 0 : 1, 
-      inertia: new Vector3(0, 0, 0), 
+      // mass: typeof characterVisibilityDelay === 'number' ? 0 : 1, 
+      mass: 0.7,
+      // inertia: new Vector3(0, 0, 0), 
     });
     characterBoxPhysicsBody.setAngularDamping(angularDamping);
     characterBoxPhysicsBody.setLinearDamping(linearDamping);
@@ -233,6 +237,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
           });
         },
         addedGroups: new Map(),
+        snapshotDumpings: {
+          linearDamping,
+          angularDamping,
+        },
       };
       charactersRef.current.set(characterId, characterItem);
       charactersAddingRef.current.delete(characterId);
@@ -406,6 +414,10 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
     if (targetCharacter.isJumping) return;
     targetCharacter.isJumping = true;
+    if (thisClientCharacterIdRef.current !== characterId) {
+      targetCharacter.characterBoxPhysicsBody.setGravityFactor(0);
+      targetCharacter.characterBoxPhysicsBody.setLinearDamping(10000);
+    }
     if (jumpingOptions !== undefined) {
       targetCharacter.jumpingOptions = jumpingOptions;
     } else {
@@ -589,6 +601,11 @@ export function useBabylonCharacterController(props: IUseBabylonCharacterControl
 
             setTimeout(() => {
               characterItem.isJumpPossible = true;
+              if (characterItem.characterBoxPhysicsBody.getMotionType() !== PhysicsMotionType.DYNAMIC) {
+                characterItem.characterBoxPhysicsBody.setMotionType(PhysicsMotionType.DYNAMIC);
+              }
+              characterItem.characterBoxPhysicsBody.setGravityFactor(1);
+              characterItem.characterBoxPhysicsBody.setLinearDamping(characterItem.snapshotDumpings.linearDamping);
             }, characterItem.jumpingOptions.jumpingTotalDuration);
           }
         }

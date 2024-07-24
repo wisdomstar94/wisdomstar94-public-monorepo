@@ -97,6 +97,11 @@ export declare namespace IUseBabylonCharacterController {
     babylonLogicResult: AddInCharacterParamsBabylonLogicReturnParams;
   }
 
+  export interface SnapshotDumpings {
+    linearDamping: number;
+    angularDamping: number;
+  }
+
   export interface CharacterItem {
     characterId: string;
     characterNickName?: string;
@@ -121,6 +126,7 @@ export declare namespace IUseBabylonCharacterController {
     addRequireInfo: AddRequireInfo;
     add: (params: AddInCharacterParams) => Promise<any>;
     addedGroups: Map<GroupName, AddedGroupInfo>;
+    snapshotDumpings: SnapshotDumpings;
   }
 
   export interface CharacterMovingOptions {
