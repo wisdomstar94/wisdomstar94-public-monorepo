@@ -4419,7 +4419,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wisdomstar94/react-joystick@npm:0.0.2, @wisdomstar94/react-joystick@workspace:^, @wisdomstar94/react-joystick@workspace:src/packages/react-joystick":
+"@wisdomstar94/react-joystick@npm:0.0.2":
+  version: 0.0.2
+  resolution: "@wisdomstar94/react-joystick@npm:0.0.2"
+  dependencies:
+    "@wisdomstar94/react-add-event-listener": "workspace:^"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  checksum: 10c0/5f4c1e05e8a8b015154494627357b389952754d0e96e8ca1d7bb153af4c279c62fef01fe275633d4d2446f27efb3dbbc39163d40106bf526cf2e13ac01f758be
+  languageName: node
+  linkType: hard
+
+"@wisdomstar94/react-joystick@workspace:^, @wisdomstar94/react-joystick@workspace:src/packages/react-joystick":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/react-joystick@workspace:src/packages/react-joystick"
   dependencies:
