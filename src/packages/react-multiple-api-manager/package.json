@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/react-multiple-api-manager",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",

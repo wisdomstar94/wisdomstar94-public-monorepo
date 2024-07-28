@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/react-promise-timeout",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",

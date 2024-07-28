@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/react-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",
