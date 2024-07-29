@@ -33,16 +33,20 @@ export default function RootLayout({
     { name: "/test/anchor-static", href: "/test/anchor-static" },
     { name: "/test/anchor-selected-keep", href: "/test/anchor-selected-keep" },
     { name: "/test/breadcrumb", href: "/test/breadcrumb" },
-    
+    { name: "/test/menu", href: "/test/menu" },
   ];
 
   return (
-    <AntdRegistry>
-      <ConfigProvider theme={theme}>
-        <CommonRootLayout menus={menus}>
-          { children }
-        </CommonRootLayout>
-      </ConfigProvider>
-    </AntdRegistry>
+    <html lang="ko">
+      <body>
+        <AntdRegistry>
+          <ConfigProvider theme={theme}>
+            <CommonRootLayout menus={menus}>
+              { children }
+            </CommonRootLayout>
+          </ConfigProvider>
+        </AntdRegistry>
+      </body>
+    </html>
   );
 }
