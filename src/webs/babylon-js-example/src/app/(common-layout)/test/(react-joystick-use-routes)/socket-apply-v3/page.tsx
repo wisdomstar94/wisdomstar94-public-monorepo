@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuthCheck } from "@/hooks/use-auth-check/use-auth-check.hook";
-import { AbstractMesh, ActionManager, ArcRotateCamera, Color3, DirectionalLight, DynamicTexture, HavokPlugin, HemisphericLight, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, Quaternion, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { AbstractMesh, ActionManager, ArcRotateCamera, Color3, DirectionalLight, HavokPlugin, HemisphericLight, MeshBuilder, PhysicsBody, PhysicsMotionType, PhysicsShapeBox, Quaternion, Scene, ShadowGenerator, StandardMaterial, Vector3 } from "@babylonjs/core";
 import HavokPhysics from "@babylonjs/havok";
 import { BabylonCanvas, IBabylonCanvas, IUseBabylonCharacterController, useBabylonCharacterController, useBabylonMeshPhysicsManager } from "@wisdomstar94/react-babylon-utils";
 import { useBody } from "@wisdomstar94/react-body";
@@ -12,7 +12,6 @@ import "@babylonjs/loaders/glTF";
 import { ChatData, RtcData } from "./type";
 import { usePromiseInterval } from "@wisdomstar94/react-promise-interval";
 import { useKeyboardManager } from "@wisdomstar94/react-keyboard-manager";
-import { usePromiseTimeout } from "@wisdomstar94/react-promise-timeout";
 import { Joystick } from "@wisdomstar94/react-joystick";
 import { TouchContainer } from "@wisdomstar94/react-touch-container";
 import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
@@ -919,6 +918,57 @@ export default function Page() {
       });
       setMeCharacterLoaded(true);
     });
+
+    // 불
+    // babylonMeshPhysicsManager.injectObjectFromFile({
+    //   scene,
+    //   fileUrlInfo: {
+    //     baseUrl: '/models/',
+    //     // fileName: 'animated_fire.glb',
+    //     // fileName: 'fire_animation.glb',
+    //     fileName: 'gizmo.glb',
+    //   },
+    //   manageName: 'fire',
+    //   mesh(params) {
+    //     const { manageName, meshes, loaderResult } = params;
+
+    //     console.log('@@@loaderResult', loaderResult);
+    //     // loaderResult.animationGroups.at(0)?.start(true);
+    //     const f = loaderResult.animationGroups.at(1);
+    //     console.log('f', f);
+    //     f?.start();
+
+    //     const mesh = MeshBuilder.CreateBox('fire-mesh', {
+    //       width: 2,
+    //       height: 1,
+    //       size: 0.3,
+    //     });
+
+    //     meshes.forEach(m => {
+    //       m.parent = mesh;
+    //       m.scaling.scaleInPlace(0.5);
+    //       // m.visibility = 0;
+    //     });
+
+    //     mesh.position.x = 4;
+    //     mesh.position.y = 1;
+    //     mesh.visibility = 0;
+
+    //     return mesh;
+    //   },
+    //   physicsBody(params) {
+    //     const { manageName, mesh } = params;
+    //     const body = new PhysicsBody(mesh, PhysicsMotionType.STATIC, false, scene);
+    //     body.shape = new PhysicsShapeBox(
+    //       new Vector3(0, 0, 0),
+    //       Quaternion.Identity(),
+    //       new Vector3(2, 1, 0.3),
+    //       scene,
+    //     );
+    //     body.setMassProperties({ mass: 0 });
+    //     return body;
+    //   },
+    // });
   }
 
   useEffect(() => {

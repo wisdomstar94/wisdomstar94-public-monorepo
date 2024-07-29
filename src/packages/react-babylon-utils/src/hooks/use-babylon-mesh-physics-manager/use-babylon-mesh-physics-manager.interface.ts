@@ -1,6 +1,7 @@
-import { PhysicsBody, TransformNode } from "@babylonjs/core";
+import { AbstractMesh, ISceneLoaderAsyncResult, PhysicsBody, Scene, TransformNode } from "@babylonjs/core";
 
 export declare namespace IUseBabylonMeshPhysicsManager {
+  // ------------------------------------------------------------
   export interface MeshFnParams {
     manageName: string;
   }
@@ -12,7 +13,7 @@ export declare namespace IUseBabylonMeshPhysicsManager {
 
   export interface MeshPhysicBodyMapperInfo {
     manageName: string;
-    mesh: TransformNode;
+    mesh: AbstractMesh;
     physicsBody: PhysicsBody;
   }
 
@@ -22,6 +23,33 @@ export declare namespace IUseBabylonMeshPhysicsManager {
     physicsBody: (mesh: PhysicsBodyFnParams<T>) => PhysicsBody;
   }
 
+  // ------------------------------------------------------------
+  export interface MeshFileFnParams {
+    manageName: string;
+    meshes: AbstractMesh[];
+    loaderResult: ISceneLoaderAsyncResult;
+  }
+
+  export interface MeshFromFilePhysicBodyMapperInfo {
+    loaderResult: ISceneLoaderAsyncResult;
+    manageName: string;
+    mesh: AbstractMesh;
+    loadedMeshes: AbstractMesh[];
+    physicsBody: PhysicsBody;
+  }
+
+  export interface InjectObjectFormFileOptions<T> {
+    manageName: string;
+    scene: Scene;
+    fileUrlInfo: {
+      baseUrl: string;
+      fileName: string;
+    };
+    mesh: (params: MeshFileFnParams) => T;
+    physicsBody: (mesh: PhysicsBodyFnParams<T>) => PhysicsBody;
+  } 
+
+  // ------------------------------------------------------------
   export interface Props {
 
   }
