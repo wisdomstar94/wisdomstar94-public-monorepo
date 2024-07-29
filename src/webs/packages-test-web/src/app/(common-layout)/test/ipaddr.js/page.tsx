@@ -19,24 +19,33 @@ const getIpType = (format: string): 'range' | 'cidr' | 'onece' => {
   throw new Error(`@`);
 };
 
-const isMatched = (targetIp: string, format: string) => {
+const isIpMatch = (params: { ip: string; format: string; }) => {
+  const { ip, format } = params;
   const formatSplit = format.split('/');
   const formatIp = formatSplit[0];
   const formatBit = Number(formatSplit[1]);
 
   const parseFormatIp = ipaddr.parse(formatIp);
-  const parseTargetIp = ipaddr.parse(targetIp);
+  const parseIp = ipaddr.parse(ip);
 
-  const isMatch = parseFormatIp.match(parseTargetIp, formatBit);
-  console.log('@isMatch', isMatch);
+  const isMatch = parseFormatIp.match(parseIp, formatBit);
 
-  return true;
+  return isMatch;
 };
 
 export default function Page() {
   useEffect(() => {
-    isMatched('181.141.21.255', '181.141.21.0/24');
-    // isMatched('181.141.21.999', '181.141.21.0/24'); // throw error 발생됨!
+    const isMatch1 = isIpMatch({
+      ip: '181.141.21.255', 
+      format: '181.141.21.0/24'
+    });
+    console.log('@isMatch1', isMatch1);
+    
+    const isMatch2 = isIpMatch({
+      ip: '2001:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 
+      format: '2001::/16'
+    });
+    console.log('@isMatch2', isMatch2);
   }, []);
 
   return (
