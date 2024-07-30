@@ -23,7 +23,7 @@ export default function Layout({
     { name: 'test/template-test-page-1', href: '/test/template-test-page-1' },
     { name: 'test/template-test-page-2', href: '/test/template-test-page-2' },
     { name: 'test/template-test-page-3/t1/t2', href: '/test/template-test-page-3/t1/t2' },
-
+    { name: 'test/winston', href: '/test/winston' },
     { name: 'test2', href: '/test2' },
     { name: 'test2/t1', href: '/test2/t1' },
   ];
