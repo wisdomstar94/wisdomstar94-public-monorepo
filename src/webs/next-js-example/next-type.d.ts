@@ -18,3 +18,7 @@ type NextRouteSegmentConfigPreferredRegion = 'auto' | 'global' | 'home' | string
 
 // https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#maxduration
 type NextRouteSegmentConfigMaxDuration = number;
+
+type NextLayoutDefaultProps = {
+  children: React.ReactNode;
+}

@@ -24,6 +24,9 @@ export default function Layout({
     { name: 'test/template-test-page-2', href: '/test/template-test-page-2' },
     { name: 'test/template-test-page-3/t1/t2', href: '/test/template-test-page-3/t1/t2' },
     { name: 'test/winston', href: '/test/winston' },
+    { name: 'test/winston', href: '/test/winston' },
+    { name: 'test/cache/page1', href: '/test/cache/page1' },
+    { name: 'test/cache/page2', href: '/test/cache/page2' },
     { name: 'test2', href: '/test2' },
     { name: 'test2/t1', href: '/test2/t1' },
   ];
