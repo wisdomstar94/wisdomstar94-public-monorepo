@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false
+  reactStrictMode: false,
+  experimental: {
+    staleTimes: {
+      dynamic: 0,
+    },
+  },
 };
 
 export default nextConfig;

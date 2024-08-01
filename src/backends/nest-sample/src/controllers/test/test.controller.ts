@@ -1,6 +1,7 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Response } from 'express';
+import { setTimeout } from 'timers/promises';
 
 @Controller('test')
 export class TestController {
@@ -14,14 +15,16 @@ export class TestController {
   }
 
   @Get('/stackCount')
-  countStack(@Res() response: Response) {
+  async countStack(@Res() response: Response) {
+    console.log('/test/stackCount api called!');
     this.appService.addCount();
     
     const responseData = {
       count: this.appService.stackCount,
     };
-    console.log('/test/stackCount api called! --> response:', responseData);
 
+    await setTimeout(3000);
+    console.log('/test/stackCount api called! --> response:', responseData);
     return response.status(200).json(responseData);
   }
 }
