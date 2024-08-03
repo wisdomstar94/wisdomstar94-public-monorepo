@@ -1,0 +1,9 @@
+{
+  "name": "@wisdomstar94/nexus",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "build": "docker build --rm=true --tag=sonatype/nexus3 --no-cache -t rRMuHjaWdyr5Dk2yZhKf/nexus3:latest ./src",
+    "start": "docker run -d -p 8081:8081 --name nexus rRMuHjaWdyr5Dk2yZhKf/nexus3:latest"
+  }
+}

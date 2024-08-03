@@ -4227,6 +4227,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/nexus@workspace:src/dockers/nexus":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/nexus@workspace:src/dockers/nexus"
+  languageName: unknown
+  linkType: soft
+
 "@wisdomstar94/packages-common-lib@workspace:src/libs/packages-common-lib":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/packages-common-lib@workspace:src/libs/packages-common-lib"
