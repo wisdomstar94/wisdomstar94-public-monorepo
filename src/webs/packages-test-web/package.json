@@ -10,6 +10,7 @@
     "ncu:update": "ncu -u"
   },
   "dependencies": {
+    "@wisdomstar94/next-utils": "workspace:^",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "@wisdomstar94/react-api": "workspace:^",
     "@wisdomstar94/react-api-again-request-scheduler": "workspace:^",

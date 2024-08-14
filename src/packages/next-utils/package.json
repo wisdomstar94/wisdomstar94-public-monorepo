@@ -1,0 +1,50 @@
+{
+  "name": "@wisdomstar94/next-utils",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "ncu:update": "ncu -u",
+    "pack:build": "vite build && tsc",
+    "npm:publish": "npm publish --access=public"
+  },
+  "peerDependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "dependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@wisdomstar94/tsconfig-lib": "workspace:^",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4"
+  },
+  "type": "module",
+  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "files": [
+    "package.json",
+    "dist/*",
+    "!dist/*.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  }
+}

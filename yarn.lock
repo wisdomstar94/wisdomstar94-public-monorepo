@@ -4227,6 +4227,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/next-utils@workspace:^, @wisdomstar94/next-utils@workspace:src/packages/next-utils":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/next-utils@workspace:src/packages/next-utils"
+  dependencies:
+    "@types/node": "npm:^20.14.11"
+    "@types/react": "npm:^18.3.3"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    next: "npm:^14.2.5"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    typescript: "npm:^5.5.3"
+    vite: "npm:^5.3.4"
+  peerDependencies:
+    next: ^14.2.5
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  languageName: unknown
+  linkType: soft
+
 "@wisdomstar94/nexus@workspace:src/dockers/nexus":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/nexus@workspace:src/dockers/nexus"
@@ -4263,6 +4284,7 @@ __metadata:
     "@types/react": "npm:^18.3.3"
     "@types/react-dom": "npm:^18.3.0"
     "@types/uuid": "npm:^10"
+    "@wisdomstar94/next-utils": "workspace:^"
     "@wisdomstar94/react-add-event-listener": "workspace:^"
     "@wisdomstar94/react-api": "workspace:^"
     "@wisdomstar94/react-api-again-request-scheduler": "workspace:^"
@@ -10615,7 +10637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:14.2.5":
+"next@npm:14.2.5, next@npm:^14.2.5":
   version: 14.2.5
   resolution: "next@npm:14.2.5"
   dependencies:
