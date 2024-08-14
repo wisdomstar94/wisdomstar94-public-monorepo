@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/public-monorepo",
-  "packageManager": "yarn@4.3.1",
+  "packageManager": "yarn@4.4.0",
   "scripts": {
     "@wisdomstar94/packages-common-lib": "yarn workspace @wisdomstar94/packages-common-lib",
     "@wisdomstar94/react-add-event-listener": "yarn workspace @wisdomstar94/react-add-event-listener",
