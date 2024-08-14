@@ -8,8 +8,8 @@
     "ncu:update": "ncu -u"
   },
   "dependencies": {
-    "redis": "^4.6.15",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.4"
+    "redis": "^4.7.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
   }
 }

@@ -18,13 +18,13 @@
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
-    "@types/node": "^20.14.11",
+    "@types/node": "^22.3.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "@wisdomstar94/tsconfig-lib": "workspace:^",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.4"
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
   },
   "type": "module",
   "types": "./dist/src/index.d.ts",

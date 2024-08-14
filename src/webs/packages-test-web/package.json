@@ -16,7 +16,7 @@
     "@wisdomstar94/react-api-again-request-scheduler": "workspace:^",
     "@wisdomstar94/react-body": "workspace:^",
     "@wisdomstar94/react-indexeddb-manager": "workspace:^",
-    "@wisdomstar94/react-joystick": "0.0.2",
+    "@wisdomstar94/react-joystick": "0.0.3",
     "@wisdomstar94/react-keyboard-manager": "workspace:^",
     "@wisdomstar94/react-multiple-api-manager": "workspace:^",
     "@wisdomstar94/react-promise-interval": "workspace:^",
@@ -24,9 +24,9 @@
     "@wisdomstar94/react-socketio-manager": "workspace:^",
     "@wisdomstar94/react-touch-container": "workspace:^",
     "@wisdomstar94/react-web-rtc-manager": "workspace:^",
-    "axios": "^1.7.2",
+    "axios": "^1.7.4",
     "ipaddr.js": "^2.2.0",
-    "luxon": "^3.4.4",
+    "luxon": "^3.5.0",
     "next": "14.2.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -35,14 +35,14 @@
   },
   "devDependencies": {
     "@types/luxon": "^3",
-    "@types/node": "^20.14.11",
+    "@types/node": "^22.3.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/uuid": "^10",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.6",
-    "typescript": "^5.5.3"
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
   }
 }

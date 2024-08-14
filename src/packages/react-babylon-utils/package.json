@@ -14,7 +14,7 @@
     "react-dom": "^18.3.1"
   },
   "dependencies": {
-    "@babylonjs/core": "^7.16.0",
+    "@babylonjs/core": "^7.20.1",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^",
     "animejs": "^3.2.2",
@@ -23,13 +23,13 @@
   },
   "devDependencies": {
     "@types/animejs": "^3.1.12",
-    "@types/node": "^20.14.11",
+    "@types/node": "^22.3.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "@wisdomstar94/tsconfig-lib": "workspace:^",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.4"
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
   },
   "type": "module",
   "types": "./dist/src/index.d.ts",
