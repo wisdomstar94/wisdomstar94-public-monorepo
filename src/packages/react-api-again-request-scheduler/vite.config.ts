@@ -1,9 +1,10 @@
 import path from 'path';
-import { getCommonViteConfig } from '../../libs/packages-common-lib/src/configs/vite.common.config.mjs';
+import { getViteFrontendConfig } from '../../libs/packages-common-lib/src/configs/vite.frontend.config';
+import react from '@vitejs/plugin-react';
 
 const PACKAGE_ROOT = __dirname;
 
-const config = getCommonViteConfig({
+const config = getViteFrontendConfig({
   root: PACKAGE_ROOT,
   resolve: {
     alias: {
@@ -11,6 +12,7 @@ const config = getCommonViteConfig({
       '#react-promise-interval': path.join(PACKAGE_ROOT, '..', 'react-promise-interval', 'src', 'index.ts'),
     },
   },
+  plugins: [react()],
 });
 
 export default config;

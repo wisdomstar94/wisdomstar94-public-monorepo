@@ -26,6 +26,7 @@
     "typescript": "^5.5.3",
     "vite": "^5.3.4"
   },
+  "type": "module",
   "types": "./dist/react-api-again-request-scheduler/src/index.d.ts",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

@@ -4244,11 +4244,13 @@ __metadata:
     react-dom: "npm:^18"
     tailwindcss: "npm:^3"
     typescript: "npm:^5.5.3"
+    vite: "npm:^5.3.4"
   peerDependencies:
     next: ^14
     react: ^18
     react-dom: ^18
     tailwindcss: ^3
+    vite: ^5.3.4
   languageName: unknown
   linkType: soft
 

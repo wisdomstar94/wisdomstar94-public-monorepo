@@ -1,11 +1,7 @@
-/**
- * 
- * @param {Partial<import("tailwindcss").Config> | undefined} overrideConfig 
- * @returns 
- */
-export function getCommonTailwindConfig(overrideConfig) {
-  /** @type {import("tailwindcss").Config} */
-  const config = {
+import type { Config } from "tailwindcss";
+
+export function getCommonTailwindConfig(overrideConfig?: Partial<Config>) {
+  const config: Config = {
     ...overrideConfig,
     content: overrideConfig?.content ?? [
       "./src/**/*.{js,ts,jsx,tsx,mdx}",

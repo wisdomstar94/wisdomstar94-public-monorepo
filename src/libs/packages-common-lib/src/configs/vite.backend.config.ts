@@ -1,12 +1,7 @@
-/**
- * @param {import('vite').UserConfig} overrideConfig 
- */
-export function getBackendViteConfig(overrideConfig) {
-  /**
-   * @type {import('vite').UserConfig}
-   * @see https://vitejs.dev/config/
-   */
-  const config = {
+import { UserConfig } from "vite";
+
+export function getViteBackendConfig(overrideConfig: UserConfig) {
+  const config: UserConfig = {
     publicDir: false,
     ...overrideConfig,
     build: {

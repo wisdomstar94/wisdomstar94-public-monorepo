@@ -1,15 +1,12 @@
-import react from '@vitejs/plugin-react';
 import { join } from 'node:path';
+import { UserConfig } from 'vite';
 
-/**
- * @param {import('vite').UserConfig} overrideConfig 
- */
-export function getCommonViteConfig(overrideConfig) {
-  /**
-   * @type {import('vite').UserConfig}
-   * @see https://vitejs.dev/config/
-   */
-  const config = {
+export function getViteFrontendConfig(overrideConfig: UserConfig) {
+  if (typeof overrideConfig.root !== 'string') {
+    throw new Error(`overrideConfig.root is undefined..`);
+  }
+
+  const config: UserConfig = {
     publicDir: false,
     resolve: {
       alias: {
@@ -46,9 +43,7 @@ export function getCommonViteConfig(overrideConfig) {
         ],
       },
     },
-    plugins: overrideConfig.plugins ?? [
-      react(),
-    ],
+    plugins: overrideConfig.plugins ?? [],
     css: {
       ...overrideConfig?.css,
       modules: {

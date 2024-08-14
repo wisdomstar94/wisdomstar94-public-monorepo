@@ -1,9 +1,10 @@
-import { getCommonViteConfig } from '../../libs/packages-common-lib/src/configs/vite.common.config.mjs';
+import { getViteFrontendConfig } from '../../libs/packages-common-lib/src/configs/vite.frontend.config';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 
 const PACKAGE_ROOT = __dirname;
 
-const config = getCommonViteConfig({
+const config = getViteFrontendConfig({
   root: PACKAGE_ROOT,
   resolve: {
     alias: {
@@ -15,6 +16,7 @@ const config = getCommonViteConfig({
       external: ['react', 'react-dom', '@babylonjs/core', 'animejs'],
     },
   },
+  plugins: [react()],
 });
 
 export default config;
