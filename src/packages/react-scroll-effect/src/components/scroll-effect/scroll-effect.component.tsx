@@ -72,12 +72,12 @@ export const ScrollEffect: FC<IScrollEffect.Props> = (props) => {
       // consoleLog(`@divRect.y: ` + divRect.y);
       let linear = scaleLinear().domain([divShowStartY, divShowEndY]).range([0, 1]);
       if (result.factorMode === 'BOTTOM_APPEAR_OR_DISSPEAR') {
+        result.isHaveDoneFactorFulled = true;
         linear = scaleLinear().domain([divBottomAppearOrDissapearStartY, divBottomAppearOrDissapearEndY]).range([1, 0]);
       }
 
       result.factor = linear(divRect.y);
       if (result.factor >= 1) {
-        result.isHaveDoneFactorFulled = true;
         result.factor = 1;
       }
       if (result.factor <= 0) {
