@@ -28,6 +28,8 @@ export default function Layout({
     { name: 'test/cache/page2', href: '/test/cache/page2' },
     { name: 'test/server-component/test1', href: '/test/server-component/test1' },
     { name: 'test/search-params', href: '/test/search-params' },
+    { name: 'test/client-top', href: '/test/client-top' },
+    { name: 'test/client-top2', href: '/test/client-top2' },
     { name: 'test2', href: '/test2' },
     { name: 'test2/t1', href: '/test2/t1' },
   ];

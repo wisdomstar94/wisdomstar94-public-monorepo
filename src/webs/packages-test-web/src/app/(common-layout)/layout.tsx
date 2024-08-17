@@ -23,6 +23,7 @@ export default function Layout({
     { name: 'test/react-web-rtc-manager', href: '/test/react-web-rtc-manager' },
     { name: 'test/ipaddr.js', href: '/test/ipaddr.js' },
     { name: 'test/next-utils', href: '/test/next-utils' },
+    { name: 'test/react-scroll-effect', href: '/test/react-scroll-effect' },
   ];
 
   return (

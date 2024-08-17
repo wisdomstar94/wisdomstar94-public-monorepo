@@ -18,6 +18,6 @@
       "#packages-common-lib": ["../../libs/packages-common-lib/src/index"]
     }
   },
-  "include": ["next-env.d.ts", "src/index.ts", "../../libs/packages-common-lib/src/index.ts"],
+  "include": ["next-env.d.ts", "./src/**/*.ts", "./src/**/*.tsx", "../../libs/packages-common-lib/src/index.ts"],
   "exclude": ["node_modules"]
 }

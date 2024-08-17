@@ -23,6 +23,8 @@
 | [@wisdomstar94/react-socketio-manager](https://www.npmjs.com/package/@wisdomstar94/react-socketio-manager) | src/packages/react-socketio-manager | socket.io 클라이언트 패키지를 react 에서 사용하기 편한 `hook` 을 제공합니다. | 
 | [@wisdomstar94/react-promise-timeout](https://www.npmjs.com/package/@wisdomstar94/react-promise-timeout) | src/packages/react-promise-timeout | setTimeout 을 react 용으로 랩핑한 `hook` 을 제공합니다. | 
 | [@wisdomstar94/react-web-rtc-manager](https://www.npmjs.com/package/@wisdomstar94/react-web-rtc-manager) | src/packages/react-web-rtc-manager | web rtc 이용에 있어서 편의를 위한 리액트 `hook` 을 제공합니다. | 
+| [@wisdomstar94/react-scroll-effect](https://www.npmjs.com/package/@wisdomstar94/react-scroll-effect) | src/packages/react-scroll-effect | 스크롤에 따라 여러 효과를 줄 수 있는 react 용 `component` 를 제공합니다. | 
+| [@wisdomstar94/next-utils](https://www.npmjs.com/package/@wisdomstar94/next-utils) | src/packages/next-utils | next.js 에서 사용 가능한 여러 유틸 함수 및 컴포넌트를 제공합니다. | 
 
 <br />
 
