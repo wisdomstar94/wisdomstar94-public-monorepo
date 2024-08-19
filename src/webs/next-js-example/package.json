@@ -10,6 +10,7 @@
     "ncu:update": "ncu -u"
   },
   "dependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
     "next": "14.2.5",
     "react": "^18",

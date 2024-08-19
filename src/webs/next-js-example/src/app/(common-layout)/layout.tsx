@@ -30,6 +30,7 @@ export default function Layout({
     { name: 'test/search-params', href: '/test/search-params' },
     { name: 'test/client-top', href: '/test/client-top' },
     { name: 'test/client-top2', href: '/test/client-top2' },
+    { name: 'test/tailwindcss-container', href: '/test/tailwindcss-container' },
     { name: 'test2', href: '/test2' },
     { name: 'test2/t1', href: '/test2/t1' },
   ];
