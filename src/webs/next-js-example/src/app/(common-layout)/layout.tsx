@@ -31,6 +31,9 @@ export default function Layout({
     { name: 'test/client-top', href: '/test/client-top' },
     { name: 'test/client-top2', href: '/test/client-top2' },
     { name: 'test/tailwindcss-container', href: '/test/tailwindcss-container' },
+    { name: 'test/scss', href: '/test/scss' },
+    { name: 'test/less', href: '/test/less' },
+
     { name: 'test2', href: '/test2' },
     { name: 'test2/t1', href: '/test2/t1' },
   ];

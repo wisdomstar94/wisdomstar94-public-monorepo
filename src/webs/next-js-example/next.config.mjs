@@ -1,3 +1,5 @@
+// import withLess from "next-with-less";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -8,4 +10,6 @@ const nextConfig = {
   },
 };
 
+// const lessConfig = withLess(nextConfig);
+// export default lessConfig;
 export default nextConfig;

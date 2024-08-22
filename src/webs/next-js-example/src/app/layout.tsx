@@ -1,4 +1,7 @@
 import "./globals.css";
+
+import "./global-less.less";
+
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
