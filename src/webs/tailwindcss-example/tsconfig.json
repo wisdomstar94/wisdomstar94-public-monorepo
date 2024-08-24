@@ -1,0 +1,17 @@
+{
+  "extends": "@wisdomstar94/tsconfig-lib/src/tsconfig.next.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": [
+    "next-env.d.ts",
+    "next-type.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "../../libs/packages-common-lib/src/index.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

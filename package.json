@@ -26,6 +26,7 @@
     "@wisdomstar94/ant-design-example": "yarn workspace @wisdomstar94/ant-design-example",
     "@wisdomstar94/react-example": "yarn workspace @wisdomstar94/react-example",
     "@wisdomstar94/next-js-example": "yarn workspace @wisdomstar94/next-js-example",
+    "@wisdomstar94/tailwindcss-example": "yarn workspace @wisdomstar94/tailwindcss-example",
     "@wisdomstar94/socket-sample": "yarn workspace @wisdomstar94/socket-sample",
     "@wisdomstar94/redis-sample": "yarn workspace @wisdomstar94/redis-sample",
     "@wisdomstar94/typeorm-sample": "yarn workspace @wisdomstar94/typeorm-sample",
@@ -35,7 +36,8 @@
     "@wisdomstar94/nexus": "yarn workspace @wisdomstar94/nexus",
     "all": "yarn workspaces foreach -A run",
     "all:ncu:update": "yarn all ncu:update",
-    "all:pack:build": "yarn all pack:build"
+    "all:pack:build": "yarn all pack:build",
+    "prettier": "yarn prettier"
   },
   "workspaces": [
     "src/dockers/*",
@@ -48,6 +50,7 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "npm-check-updates": "^16.14.20",
+    "prettier": "^3.3.3",
     "typescript": "^5.5.3",
     "vite": "^5.3.3"
   },
