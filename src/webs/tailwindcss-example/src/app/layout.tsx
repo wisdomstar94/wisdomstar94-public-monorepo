@@ -14,8 +14,8 @@ export default function RootLayout({
 }>) {
   const menus: ICommonRootLayout.MenuItem[] = [
     { name: '/test/basic', href: '/test/basic' },
-    { name: '/test/variant', href: '/test/variant' },
-    { name: '/test/static-utilities', href: '/test/static-utilities' },
+    { name: '/test/static-variant', href: '/test/static-variant' }, // https://tailwindcss.com/docs/plugins#static-variants
+    { name: '/test/static-utilities', href: '/test/static-utilities' }, // https://tailwindcss.com/docs/plugins#static-utilities
   ];
 
   return (
