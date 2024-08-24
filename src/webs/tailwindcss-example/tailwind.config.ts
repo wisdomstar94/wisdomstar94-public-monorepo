@@ -4,6 +4,7 @@ import type { PluginCreator } from 'tailwindcss/types/config';
 // https://tailwindcss.com/docs/plugins#static-variants
 const staticVariantPlugin: PluginCreator = ({ addVariant }) => {
   addVariant('my-active', '.my-active &');
+  addVariant('hocus', ['&:hover', '&:focus']);
 };
 
 // https://tailwindcss.com/docs/plugins#static-utilities

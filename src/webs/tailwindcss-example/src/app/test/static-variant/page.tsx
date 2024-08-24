@@ -15,6 +15,7 @@ const Page: FC = () => {
         </div>
       </div>
       <div className="w-full relative gap-4">
+        <input className="hocus:bg-green-400" placeholder="focus or hover 해보세요." />
         <button
           className={classes('inline-flex px-2 py-0.5 cursor-pointer hover:bg-slate-200 border border-slate-200')}
           onClick={() => {
