@@ -15,7 +15,7 @@ export default function RootLayout({
   const menus: ICommonRootLayout.MenuItem[] = [
     { name: '/test/basic', href: '/test/basic' },
     { name: '/test/variant', href: '/test/variant' },
-    { name: '/test/utilities', href: '/test/utilities' },
+    { name: '/test/static-utilities', href: '/test/static-utilities' },
   ];
 
   return (
