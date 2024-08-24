@@ -16,6 +16,7 @@ export default function RootLayout({
     { name: '/test/basic', href: '/test/basic' },
     { name: '/test/static-variant', href: '/test/static-variant' }, // https://tailwindcss.com/docs/plugins#static-variants
     { name: '/test/static-utilities', href: '/test/static-utilities' }, // https://tailwindcss.com/docs/plugins#static-utilities
+    { name: '/test/dynamic-utilities', href: '/test/dynamic-utilities' }, // https://tailwindcss.com/docs/plugins#dynamic-utilities
   ];
 
   return (
