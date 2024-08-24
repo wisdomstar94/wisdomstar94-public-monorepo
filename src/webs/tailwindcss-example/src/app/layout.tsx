@@ -12,7 +12,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const menus: ICommonRootLayout.MenuItem[] = [{ name: '/test/basic', href: '/test/basic' }];
+  const menus: ICommonRootLayout.MenuItem[] = [
+    { name: '/test/basic', href: '/test/basic' },
+    { name: '/test/custom-parent-class', href: '/test/custom-parent-class' },
+  ];
+
   return (
     <html lang="ko">
       <body>
