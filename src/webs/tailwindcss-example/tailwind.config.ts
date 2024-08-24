@@ -7,6 +7,27 @@ const staticVariantPlugin: PluginCreator = ({ addVariant }) => {
   addVariant('hocus', ['&:hover', '&:focus']);
 };
 
+// https://tailwindcss.com/docs/plugins#dynamic-variants
+const dynamicVariantPlugin: PluginCreator = ({ matchVariant }) => {
+  matchVariant(
+    'nth',
+    (value) => {
+      return `&:nth-child(${value})`;
+    },
+    {
+      values: {
+        1: '1',
+        2: '2',
+        3: '3',
+        4: '4',
+        5: '5',
+        '2n': '2n',
+        '3n': '3n',
+      },
+    }
+  );
+};
+
 // https://tailwindcss.com/docs/plugins#static-utilities
 const staticUtilitiesPlugin: PluginCreator = ({ addUtilities }) => {
   addUtilities({
@@ -83,6 +104,6 @@ const config: Config = {
       // ...
     },
   },
-  plugins: [staticVariantPlugin, staticUtilitiesPlugin, dynamicUtilitiesPlugin, componentsPlugin, basePlugin],
+  plugins: [staticVariantPlugin, staticUtilitiesPlugin, dynamicUtilitiesPlugin, componentsPlugin, basePlugin, dynamicVariantPlugin],
 };
 export default config;

@@ -15,6 +15,7 @@ export default function RootLayout({
   const menus: ICommonRootLayout.MenuItem[] = [
     { name: '/test/basic', href: '/test/basic' },
     { name: '/test/static-variant', href: '/test/static-variant' }, // https://tailwindcss.com/docs/plugins#static-variants
+    { name: '/test/dynamic-variant', href: '/test/dynamic-variant' }, // https://tailwindcss.com/docs/plugins#dynamic-variants
     { name: '/test/static-utilities', href: '/test/static-utilities' }, // https://tailwindcss.com/docs/plugins#static-utilities
     { name: '/test/dynamic-utilities', href: '/test/dynamic-utilities' }, // https://tailwindcss.com/docs/plugins#dynamic-utilities
     { name: '/test/components', href: '/test/components' }, // https://tailwindcss.com/docs/plugins#adding-components
