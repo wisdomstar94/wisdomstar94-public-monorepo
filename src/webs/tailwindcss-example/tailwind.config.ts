@@ -41,8 +41,8 @@ const dynamicUtilitiesPlugin: PluginCreator = ({ matchUtilities, theme }) => {
   );
 };
 
-// tailwindcss.com/docs/plugins#adding-components
-https: const componentsPlugin: PluginCreator = ({ addComponents }) => {
+// https:tailwindcss.com/docs/plugins#adding-components
+const componentsPlugin: PluginCreator = ({ addComponents }) => {
   addComponents({
     '.btn': {
       padding: '.5rem 1rem',
