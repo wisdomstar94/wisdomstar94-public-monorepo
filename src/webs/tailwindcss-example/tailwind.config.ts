@@ -66,6 +66,15 @@ const componentsPlugin: PluginCreator = ({ addComponents }) => {
   });
 };
 
+// https://tailwindcss.com/docs/plugins#adding-base-styles
+const basePlugin: PluginCreator = ({ addBase, theme }) => {
+  addBase({
+    h1: { fontSize: theme('fontSize.2xl'), fontWeight: 'bolder' },
+    h2: { fontSize: theme('fontSize.xl') },
+    h3: { fontSize: theme('fontSize.lg') },
+  });
+};
+
 const config: Config = {
   content: ['./src/pages/**/*.{js,ts,jsx,tsx,mdx}', './src/components/**/*.{js,ts,jsx,tsx,mdx}', './src/app/**/*.{js,ts,jsx,tsx,mdx}', '../../libs/packages-common-lib/src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
@@ -73,6 +82,6 @@ const config: Config = {
       // ...
     },
   },
-  plugins: [staticVariantPlugin, staticUtilitiesPlugin, dynamicUtilitiesPlugin, componentsPlugin],
+  plugins: [staticVariantPlugin, staticUtilitiesPlugin, dynamicUtilitiesPlugin, componentsPlugin, basePlugin],
 };
 export default config;
