@@ -4977,6 +4977,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/next-js-jotai-sample@workspace:src/webs/next-js-jotai-sample":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/next-js-jotai-sample@workspace:src/webs/next-js-jotai-sample"
+  dependencies:
+    "@types/node": "npm:^20"
+    "@types/react": "npm:^18"
+    "@types/react-dom": "npm:^18"
+    eslint: "npm:^8"
+    eslint-config-next: "npm:14.2.6"
+    jotai: "npm:^2.9.3"
+    next: "npm:14.2.6"
+    postcss: "npm:^8"
+    react: "npm:^18"
+    react-dom: "npm:^18"
+    tailwindcss: "npm:^3.4.1"
+    typescript: "npm:^5"
+  languageName: unknown
+  linkType: soft
+
 "@wisdomstar94/next-js-zod-sample@workspace:src/webs/next-js-zod-sample":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/next-js-zod-sample@workspace:src/webs/next-js-zod-sample"
@@ -10892,6 +10911,21 @@ __metadata:
   version: 1.4.0
   resolution: "jju@npm:1.4.0"
   checksum: 10c0/f3f444557e4364cfc06b1abf8331bf3778b26c0c8552ca54429bc0092652172fdea26cbffe33e1017b303d5aa506f7ede8571857400efe459cb7439180e2acad
+  languageName: node
+  linkType: hard
+
+"jotai@npm:^2.9.3":
+  version: 2.9.3
+  resolution: "jotai@npm:2.9.3"
+  peerDependencies:
+    "@types/react": ">=17.0.0"
+    react: ">=17.0.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react:
+      optional: true
+  checksum: 10c0/d7a2aedeebd84f332b930c5dc06f6827c11a70c3b6bae0817e0c778f7c34996f3a47d5c544ff1b7ed2662083feed55ea6d77b281adf2e0fba65ad93b1723d687
   languageName: node
   linkType: hard
 
