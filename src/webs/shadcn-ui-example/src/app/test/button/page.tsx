@@ -7,6 +7,7 @@ const Page: FC = () => {
       <Button>버튼 입니다.</Button>
       <Button variant="secondary">버튼 입니다.</Button>
       <Button variant="outline">버튼 입니다.</Button>
+      <Button size="sm">버튼 입니다.</Button>
     </>
   );
 };
