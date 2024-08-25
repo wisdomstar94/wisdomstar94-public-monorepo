@@ -27,6 +27,7 @@
     "@wisdomstar94/react-example": "yarn workspace @wisdomstar94/react-example",
     "@wisdomstar94/next-js-example": "yarn workspace @wisdomstar94/next-js-example",
     "@wisdomstar94/tailwindcss-example": "yarn workspace @wisdomstar94/tailwindcss-example",
+    "@wisdomstar94/shadcn-ui-example": "yarn workspace @wisdomstar94/shadcn-ui-example",
     "@wisdomstar94/socket-sample": "yarn workspace @wisdomstar94/socket-sample",
     "@wisdomstar94/redis-sample": "yarn workspace @wisdomstar94/redis-sample",
     "@wisdomstar94/typeorm-sample": "yarn workspace @wisdomstar94/typeorm-sample",
