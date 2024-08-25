@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { CommonRootLayout, ICommonRootLayout } from '#packages-common-lib';
+import { RootLayoutClient } from './layout.client';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <CommonRootLayout menus={menus}>{children}</CommonRootLayout>
+        <CommonRootLayout menus={menus}>
+          <RootLayoutClient>{children}</RootLayoutClient>
+        </CommonRootLayout>
       </body>
     </html>
   );
