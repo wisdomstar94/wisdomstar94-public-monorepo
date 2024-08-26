@@ -6,3 +6,15 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+.ant-breadcrumb .ant-breadcrumb-separator {
+  background-color: #000;
+  color: #fff;
+}
+
+/* @layer antd {
+  .ant-breadcrumb .ant-breadcrumb-separator {
+    background-color: #000;
+    color: #fff;
+  }
+} */

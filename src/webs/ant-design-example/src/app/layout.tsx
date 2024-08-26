@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from 'antd';
 import { theme } from "@/theme/theme.config";
+import RootLayoutClient from "./layout.client";
 
 export const metadata: Metadata = {
   title: "ant-design-example",
@@ -34,18 +35,22 @@ export default function RootLayout({
     { name: "/test/anchor-selected-keep", href: "/test/anchor-selected-keep" },
     { name: "/test/breadcrumb", href: "/test/breadcrumb" },
     { name: "/test/menu", href: "/test/menu" },
+    { name: "/test/items-with-css", href: "/test/items-with-css" },
+    { name: "/test/items-with-css2", href: "/test/items-with-css2" },
   ];
 
   return (
     <html lang="ko">
       <body>
-        <AntdRegistry>
-          <ConfigProvider theme={theme}>
-            <CommonRootLayout menus={menus}>
-              { children }
-            </CommonRootLayout>
-          </ConfigProvider>
-        </AntdRegistry>
+        <RootLayoutClient>
+          <AntdRegistry>
+            <ConfigProvider theme={theme}>
+              <CommonRootLayout menus={menus}>
+                { children }
+              </CommonRootLayout>
+            </ConfigProvider>
+          </AntdRegistry>
+        </RootLayoutClient>
       </body>
     </html>
   );
