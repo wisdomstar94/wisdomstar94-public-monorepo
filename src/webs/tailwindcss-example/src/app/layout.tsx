@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import './globals.scss';
 import { CommonRootLayout, ICommonRootLayout } from '#packages-common-lib';
 
 export const metadata: Metadata = {
@@ -20,6 +20,7 @@ export default function RootLayout({
     { name: '/test/dynamic-utilities', href: '/test/dynamic-utilities' }, // https://tailwindcss.com/docs/plugins#dynamic-utilities
     { name: '/test/components', href: '/test/components' }, // https://tailwindcss.com/docs/plugins#adding-components
     { name: '/test/base', href: '/test/base' }, // https://tailwindcss.com/docs/plugins#adding-base-styles
+    { name: '/test/fonts', href: '/test/fonts' },
   ];
 
   return (

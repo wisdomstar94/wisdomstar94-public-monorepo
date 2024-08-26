@@ -157,7 +157,17 @@ const config: Config = {
   content: ['./src/pages/**/*.{js,ts,jsx,tsx,mdx}', './src/components/**/*.{js,ts,jsx,tsx,mdx}', './src/app/**/*.{js,ts,jsx,tsx,mdx}', '../../libs/packages-common-lib/src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
-      // ...
+      fontFamily: {
+        'paperlogy-thin': ['"Paperlogy-Thin"', 'sans-serif'],
+        'paperlogy-extralight': ['"Paperlogy-ExtraLight"', 'sans-serif'],
+        'paperlogy-light': ['"Paperlogy-Light"', 'sans-serif'],
+        'paperlogy-regular': ['"Paperlogy-Regular"', 'sans-serif'],
+        'paperlogy-medium': ['"Paperlogy-Medium"', 'sans-serif'],
+        'paperlogy-semibold': ['"Paperlogy-SemiBold"', 'sans-serif'],
+        'paperlogy-bold': ['"Paperlogy-Bold"', 'sans-serif'],
+        'paperlogy-extrabold': ['"Paperlogy-ExtraBold"', 'sans-serif'],
+        'paperlogy-black': ['"Paperlogy-Black"', 'sans-serif'],
+      },
     },
   },
   plugins: [staticVariantPlugin, staticUtilitiesPlugin, dynamicUtilitiesPlugin, componentsPlugin, basePlugin, dynamicVariantPlugin],
