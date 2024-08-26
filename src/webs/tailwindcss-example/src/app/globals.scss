@@ -9,7 +9,7 @@
     font-family: $font-family;
     font-weight: $font-weight;
     font-style: normal;
-    src: url('/fonts/#{$file-name}.woff') format('woff');
-    font-display: swap;
+    // src: url('/fonts/#{$file-name}.woff') format('woff');
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/#{$file-name}.woff2') format('woff2');
   }
 }
