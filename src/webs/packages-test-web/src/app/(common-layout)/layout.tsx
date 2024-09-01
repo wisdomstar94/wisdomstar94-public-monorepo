@@ -1,4 +1,4 @@
-import { CommonRootLayout, ICommonRootLayout } from "#packages-common-lib";
+import { CommonRootLayout, ICommonRootLayout } from '#packages-common-lib';
 
 export default function Layout({
   children,
@@ -24,11 +24,8 @@ export default function Layout({
     { name: 'test/ipaddr.js', href: '/test/ipaddr.js' },
     { name: 'test/next-utils', href: '/test/next-utils' },
     { name: 'test/react-scroll-effect', href: '/test/react-scroll-effect' },
+    { name: 'test/react-scroll-effect-2', href: '/test/react-scroll-effect-2' },
   ];
 
-  return (
-    <CommonRootLayout menus={menus}>
-      { children }
-    </CommonRootLayout>
-  );
+  return <CommonRootLayout menus={menus}>{children}</CommonRootLayout>;
 }

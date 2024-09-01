@@ -1,16 +1,10 @@
-import { FC, useEffect, useRef, useState } from "react";
-import { IScrollEffect } from "./scroll-effect.types";
-import { useAddEventListener } from "@wisdomstar94/react-add-event-listener";
-import { scaleLinear } from "d3";
+import { FC, useEffect, useRef, useState } from 'react';
+import { IScrollEffect } from './scroll-effect.types';
+import { useAddEventListener } from '@wisdomstar94/react-add-event-listener';
+import { scaleLinear } from 'd3';
 
 export const ScrollEffect: FC<IScrollEffect.Props> = (props) => {
-  const {
-    id,
-    wrapperClassName,
-    wrapperStyle,
-    showAreaReactionSensitive,
-    child,
-  } = props;
+  const { id, wrapperClassName, wrapperStyle, showAreaReactionSensitive, child, onChangeScrollParams } = props;
   const divRef = useRef<HTMLDivElement>(null);
 
   const [childParams, setChildParams] = useState<IScrollEffect.ChildParams>({
@@ -20,6 +14,7 @@ export const ScrollEffect: FC<IScrollEffect.Props> = (props) => {
     isHaveDoneFactorFulled: false,
     isContainShowArea: false,
     isHaveDoneContainShowArea: false,
+    boundingClientRect: null,
   });
 
   function consoleLog(message: any) {
@@ -27,21 +22,23 @@ export const ScrollEffect: FC<IScrollEffect.Props> = (props) => {
   }
 
   function onScroll() {
-    const newChildParams: IScrollEffect.ChildParams = (function(){
-      const result: IScrollEffect.ChildParams = {...childParams};
-  
+    const newChildParams: IScrollEffect.ChildParams = (function () {
+      const result: IScrollEffect.ChildParams = { ...childParams };
+
       if (typeof document === 'undefined') return result;
-      
+
       const scrollContainerHeight = window.innerHeight;
-  
+
       const div = divRef.current;
       if (div === null) return result;
-      
+
       result.scrollHeight = window.scrollY;
 
       const divRect = div.getBoundingClientRect();
+      result.boundingClientRect = divRect;
+
       const divHeight = divRect.height;
-      
+
       let divShowStartY = scrollContainerHeight;
       const divShowEndY = divShowStartY - divHeight;
 
@@ -102,9 +99,13 @@ export const ScrollEffect: FC<IScrollEffect.Props> = (props) => {
     onScroll();
   }, []);
 
+  useEffect(() => {
+    onChangeScrollParams && onChangeScrollParams(childParams);
+  }, [childParams]);
+
   return (
     <div ref={divRef} className={wrapperClassName} style={wrapperStyle}>
-      { child(childParams) }
+      {child(childParams)}
     </div>
   );
 };

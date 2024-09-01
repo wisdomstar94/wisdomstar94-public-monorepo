@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from "react";
+import { CSSProperties, ReactNode } from 'react';
 
 export declare namespace IScrollEffect {
   export type FactorMode = 'TOP_APPEAR_OR_DISSAPEAR' | 'BOTTOM_APPEAR_OR_DISSPEAR';
@@ -10,6 +10,7 @@ export declare namespace IScrollEffect {
     isHaveDoneFactorFulled: boolean;
     isContainShowArea: boolean;
     isHaveDoneContainShowArea: boolean;
+    boundingClientRect: DOMRect | null;
   }
 
   export interface Props {
@@ -17,6 +18,7 @@ export declare namespace IScrollEffect {
     wrapperClassName?: string;
     wrapperStyle?: CSSProperties;
     showAreaReactionSensitive?: number;
+    onChangeScrollParams?: (params: ChildParams) => void;
     child: (params: ChildParams) => ReactNode;
   }
 }

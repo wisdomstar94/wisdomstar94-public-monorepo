@@ -4,5 +4,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.quickSuggestions": {
     "strings": true
-  }
+  },
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass", ".*Classes", ".*ClassName"]
 }
