@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
 import { cn } from '@/lib/utils';
 import './globals.css';
-import { CommonRootLayout, ICommonRootLayout } from '#packages-common-lib';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,12 +20,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const menus: ICommonRootLayout.MenuItem[] = [{ name: '/test/button', href: '/test/button' }];
+  const cookieStore = cookies();
+  const sidebarState = cookieStore.get('sidebar_state');
 
   return (
     <html lang="ko">
-      <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-        <CommonRootLayout menus={menus}>{children}</CommonRootLayout>
+      <body
+        className={cn(
+          'min-h-screen bg-background antialiased',
+          // 'font-sans',
+          sidebarState?.value,
+          // fontSans.variable
+          GeistSans.className
+        )}
+      >
+        {children}
       </body>
     </html>
   );

@@ -25,6 +25,7 @@ export default function Layout({
     { name: 'test/next-utils', href: '/test/next-utils' },
     { name: 'test/react-scroll-effect', href: '/test/react-scroll-effect' },
     { name: 'test/react-scroll-effect-2', href: '/test/react-scroll-effect-2' },
+    { name: 'test/react-scroll-effect-3', href: '/test/react-scroll-effect-3' },
   ];
 
   return <CommonRootLayout menus={menus}>{children}</CommonRootLayout>;

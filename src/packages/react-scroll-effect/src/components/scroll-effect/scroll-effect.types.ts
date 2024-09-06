@@ -14,11 +14,14 @@ export declare namespace IScrollEffect {
   }
 
   export interface Props {
-    id?: string;
+    id: string;
     wrapperClassName?: string;
     wrapperStyle?: CSSProperties;
     showAreaReactionSensitive?: number;
-    onChangeScrollParams?: (params: ChildParams) => void;
-    child: (params: ChildParams) => ReactNode;
+    onWrapperElement?: (wrapperElement: HTMLDivElement) => void;
+    // offWrapperElement?: (wrapperElement: HTMLDivElement) => void;
+    onChangeScrollParams?: (params: ChildParams | undefined) => void;
+    child: (params: ChildParams | undefined) => ReactNode;
+    childParams?: ChildParams;
   }
 }
