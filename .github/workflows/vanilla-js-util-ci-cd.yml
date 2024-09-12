@@ -1,0 +1,24 @@
+name: vanilla-js-util-ci-cd
+
+on:
+  push:
+    tags:
+      - 'vanilla-js-util-v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish-release-registry:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - run: yarn install
+      - run: yarn @wisdomstar94/vanilla-js-util pack:build
+      - run: yarn @wisdomstar94/vanilla-js-util npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.PACKAGE_PUBLISH_KEY_NPM}}

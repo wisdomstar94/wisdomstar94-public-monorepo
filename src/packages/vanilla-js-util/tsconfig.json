@@ -1,0 +1,9 @@
+{
+  "extends": "@wisdomstar94/tsconfig-lib/src/tsconfig.package.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist"
+  },
+  "include": ["./next-env.d.ts", "./src/index.ts"],
+  "exclude": ["node_modules"]
+}

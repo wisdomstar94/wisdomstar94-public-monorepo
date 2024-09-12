@@ -5785,6 +5785,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wisdomstar94/vanilla-js-util@workspace:src/packages/vanilla-js-util":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/vanilla-js-util@workspace:src/packages/vanilla-js-util"
+  dependencies:
+    "@types/node": "npm:^22.3.0"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    ipaddr.js: "npm:^2.2.0"
+    typescript: "npm:^5.5.4"
+    vite: "npm:^5.4.0"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
+  languageName: unknown
+  linkType: soft
+
 "@xtuc/ieee754@npm:^1.2.0":
   version: 1.2.0
   resolution: "@xtuc/ieee754@npm:1.2.0"
