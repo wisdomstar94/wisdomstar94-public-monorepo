@@ -3,3 +3,10 @@ export * from './functions/get-random-number.function';
 export * from './functions/get-random-string.function';
 export * from './functions/get-unique-token.function';
 export * from './functions/is-ip-match.function';
+export * from './functions/apply-overlay-scroll.function';
+export * from './functions/get-percentage.function';
+export * from './functions/split-class-name.function';
+export * from './functions/apply-class-name-to-element.function';
+
+// libs
+export * from './libs/version';

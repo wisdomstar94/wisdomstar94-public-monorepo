@@ -5295,6 +5295,7 @@ __metadata:
     "@wisdomstar94/react-socketio-manager": "workspace:^"
     "@wisdomstar94/react-touch-container": "workspace:^"
     "@wisdomstar94/react-web-rtc-manager": "workspace:^"
+    "@wisdomstar94/vanilla-js-util": "workspace:^"
     axios: "npm:^1.7.4"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.5"
@@ -5785,7 +5786,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wisdomstar94/vanilla-js-util@workspace:src/packages/vanilla-js-util":
+"@wisdomstar94/vanilla-js-util@workspace:^, @wisdomstar94/vanilla-js-util@workspace:src/packages/vanilla-js-util":
   version: 0.0.0-use.local
   resolution: "@wisdomstar94/vanilla-js-util@workspace:src/packages/vanilla-js-util"
   dependencies:
