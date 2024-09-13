@@ -22,6 +22,16 @@ type GetOverlayElementParams<T> = {
   scrollBarClassName?: string;
 };
 
+/**
+ * params.target 을 인자로 넘길 때 target 요소의 사이즈는 100% 로 잡고, 부모 요소에 사이즈가 지정되어 있는 구조여야 합니다.
+ * ```
+ * <div className="w-[600px] h-[600px] relative">
+ *     <div className="w-full h-full" data-description="this is a target element!">
+ *
+ *     </div>
+ * </div>
+ * ```
+ */
 export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlayScrollParams<T>): ApplyOverlayScrollResult {
   const { target, width = 8, padding = 3, scrollBarClassName, scrollEndedHideDelay = 300 } = params;
 
