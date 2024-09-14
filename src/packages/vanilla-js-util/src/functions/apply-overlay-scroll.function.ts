@@ -134,6 +134,14 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
     disappearScrollBar();
   });
 
+  target.addEventListener('mouseover', () => {
+    if (target.clientHeight >= target.scrollHeight) {
+      wrapperDiv.style.visibility = 'hidden';
+    } else {
+      wrapperDiv.style.visibility = 'visible';
+    }
+  });
+
   return {
     isSuccess: true,
     cleanup() {
@@ -201,6 +209,11 @@ function getOverlayElement<T extends HTMLElement>(params: GetOverlayElementParam
   div.style.position = 'absolute';
   div.style.top = '0';
   div.style.left = '0';
+
+  target.addEventListener('mouseover', () => {
+    const { scrollBarHeight } = getTargetInfo(target, padding);
+    div.style.height = `${scrollBarHeight}px`;
+  });
 
   return { wrapperDiv, wrapperDiv2, div };
 }
