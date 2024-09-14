@@ -29,6 +29,7 @@ export default function Layout({
 
     // test/vanilla-js-util
     { name: 'test/vanilla-js-util/apply-overlay-scroll', href: '/test/vanilla-js-util/apply-overlay-scroll' },
+    { name: 'test/vanilla-js-util/set-position-target-element', href: '/test/vanilla-js-util/set-position-target-element' },
   ];
 
   return <CommonRootLayout menus={menus}>{children}</CommonRootLayout>;
