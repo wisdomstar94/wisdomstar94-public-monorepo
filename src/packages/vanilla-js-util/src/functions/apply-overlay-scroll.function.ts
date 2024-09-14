@@ -92,7 +92,15 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
 
   let hideTimeout: NodeJS.Timeout | undefined;
 
-  target.addEventListener('scroll', () => {
+  const disappearScrollBar = () => {
+    clearTimeout(hideTimeout);
+    if (!wrapperDiv.classList.contains('hide-overlay-scrollbar')) {
+      wrapperDiv.classList.remove('show-overlay-scrollbar');
+      wrapperDiv.classList.add('hide-overlay-scrollbar');
+    }
+  };
+
+  const appearScrollBar = () => {
     clearTimeout(hideTimeout);
     const { scrollBarAbsoluteTop } = getTargetInfo(target, padding);
     div.style.top = `${scrollBarAbsoluteTop}px`;
@@ -101,16 +109,29 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
       wrapperDiv.classList.remove('hide-overlay-scrollbar');
       wrapperDiv.classList.add('show-overlay-scrollbar');
     }
+  };
+
+  const disappearScrollBarTimeout = () => {
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+      disappearScrollBar();
+    }, scrollEndedHideDelay);
+  };
+
+  target.addEventListener('scroll', () => {
+    appearScrollBar();
   });
 
   target.addEventListener('scrollend', () => {
-    clearTimeout(hideTimeout);
-    hideTimeout = setTimeout(() => {
-      if (!wrapperDiv.classList.contains('hide-overlay-scrollbar')) {
-        wrapperDiv.classList.remove('show-overlay-scrollbar');
-        wrapperDiv.classList.add('hide-overlay-scrollbar');
-      }
-    }, scrollEndedHideDelay);
+    disappearScrollBarTimeout();
+  });
+
+  target.addEventListener('mouseover', () => {
+    appearScrollBar();
+  });
+
+  target.addEventListener('mouseout', () => {
+    disappearScrollBar();
   });
 
   return {
