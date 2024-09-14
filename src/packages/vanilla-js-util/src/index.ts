@@ -8,6 +8,7 @@ export * from './functions/get-percentage.function';
 export * from './functions/split-class-name.function';
 export * from './functions/apply-class-name-to-element.function';
 export * from './functions/set-position-target-element.function';
+export * from './functions/get-info-by-scroll.function';
 
 // libs
 export * from './libs/version';
