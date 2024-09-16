@@ -13,7 +13,7 @@ export function getTimeAgoInfo(date: Date, option?: GetTimeAgoInfoOption) {
     return undefined;
   }
 
-  const { isMoreDetail = true } = option ?? {};
+  const { isMoreDetail = false } = option ?? {};
 
   const diffTime = nowTime - time;
 
