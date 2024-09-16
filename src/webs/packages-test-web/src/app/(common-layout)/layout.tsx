@@ -31,6 +31,7 @@ export default function Layout({
     { name: 'test/vanilla-js-util/apply-overlay-scroll', href: '/test/vanilla-js-util/apply-overlay-scroll' },
     { name: 'test/vanilla-js-util/set-position-target-element', href: '/test/vanilla-js-util/set-position-target-element' },
     { name: 'test/vanilla-js-util/get-info-by-scroll', href: '/test/vanilla-js-util/get-info-by-scroll' },
+    { name: 'test/vanilla-js-util/get-time-ago-info', href: '/test/vanilla-js-util/get-time-ago-info' },
   ];
 
   return <CommonRootLayout menus={menus}>{children}</CommonRootLayout>;
