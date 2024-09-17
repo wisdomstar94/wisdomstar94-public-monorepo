@@ -1,6 +1,6 @@
 {
   "name": "@wisdomstar94/vanilla-js-util",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "MIT",
   "scripts": {
     "ncu:update": "ncu -u",

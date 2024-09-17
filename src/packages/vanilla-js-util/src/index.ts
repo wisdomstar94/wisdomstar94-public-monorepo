@@ -12,6 +12,7 @@ export * from './functions/get-info-by-scroll.function';
 export * from './functions/unwrap.function';
 export * from './functions/get-rendered-element-size.function';
 export * from './functions/get-time-ago-info.function';
+export * from './functions/subscribe-element.function';
 
 // libs
 export * from './libs/version';
