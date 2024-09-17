@@ -8,6 +8,7 @@ export type ApplyOverlayScrollParams<T> = {
   padding?: number;
   scrollBarClassName?: string;
   scrollEndedHideDelay?: number;
+  isRoot?: boolean;
 };
 
 export type ApplyOverlayScrollResult = {
@@ -20,6 +21,7 @@ type GetOverlayElementParams<T> = {
   padding: number;
   target: T;
   scrollBarClassName?: string;
+  isRoot: boolean;
 };
 
 /**
@@ -33,7 +35,7 @@ type GetOverlayElementParams<T> = {
  * ```
  */
 export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlayScrollParams<T>): ApplyOverlayScrollResult {
-  const { target, width = 8, padding = 3, scrollBarClassName, scrollEndedHideDelay = 300 } = params;
+  const { target, width = 8, padding = 3, scrollBarClassName, scrollEndedHideDelay = 300, isRoot = false } = params;
 
   const head = document.querySelector<HTMLElement>('head');
   if (head === null) {
@@ -57,11 +59,11 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
       transition: 0.3s all;
     }
 
-    .${className} ~ .overlay-scrollbar-container.show-overlay-scrollbar {
+    .${className} ${isRoot ? '' : '~ '}.overlay-scrollbar-container.show-overlay-scrollbar {
       /* animation: ${className}-show 0.3s ease-out 0ms 1 normal both; */
       opacity: 1;
     } 
-    .${className} ~ .overlay-scrollbar-container.hide-overlay-scrollbar {
+    .${className} ${isRoot ? '' : '~ '}.overlay-scrollbar-container.hide-overlay-scrollbar {
       /* animation: ${className}-hide 0.3s ease-out 0ms 1 normal both; */
       opacity: 0;
     } 
@@ -87,8 +89,13 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
 
   head.appendChild(style);
 
-  const { wrapperDiv, wrapperDiv2, div } = getOverlayElement({ target, width, padding, scrollBarClassName });
-  target.parentElement?.appendChild(wrapperDiv);
+  const { wrapperDiv, wrapperDiv2, div } = getOverlayElement({ target, width, padding, scrollBarClassName, isRoot });
+
+  if (isRoot) {
+    target?.appendChild(wrapperDiv);
+  } else {
+    target.parentElement?.appendChild(wrapperDiv);
+  }
 
   let hideTimeout: NodeJS.Timeout | undefined;
 
@@ -102,7 +109,7 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
 
   const appearScrollBar = () => {
     clearTimeout(hideTimeout);
-    const { scrollBarAbsoluteTop } = getTargetInfo(target, padding);
+    const { scrollBarAbsoluteTop } = getTargetInfo(target, padding, isRoot);
     div.style.top = `${scrollBarAbsoluteTop}px`;
 
     if (!wrapperDiv.classList.contains('show-overlay-scrollbar')) {
@@ -118,24 +125,29 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
     }, scrollEndedHideDelay);
   };
 
-  target.addEventListener('scroll', () => {
+  const eventTarget = isRoot ? window : target;
+
+  eventTarget.addEventListener('scroll', () => {
     appearScrollBar();
   });
 
-  target.addEventListener('scrollend', () => {
+  eventTarget.addEventListener('scrollend', () => {
     disappearScrollBarTimeout();
   });
 
-  target.addEventListener('mouseover', () => {
+  eventTarget.addEventListener('mouseover', () => {
     appearScrollBar();
   });
 
-  target.addEventListener('mouseout', () => {
+  eventTarget.addEventListener('mouseout', () => {
     disappearScrollBar();
   });
 
-  target.addEventListener('mouseover', () => {
-    if (target.clientHeight >= target.scrollHeight) {
+  eventTarget.addEventListener('mouseover', () => {
+    const clientHeight = isRoot ? window.innerHeight : target.clientHeight;
+    const scrollHeight = isRoot ? document.body.clientHeight : target.scrollHeight;
+
+    if (clientHeight >= scrollHeight) {
       wrapperDiv.style.visibility = 'hidden';
     } else {
       wrapperDiv.style.visibility = 'visible';
@@ -153,13 +165,13 @@ export function applyOverlayScroll<T extends HTMLElement>(params: ApplyOverlaySc
   };
 }
 
-function getTargetInfo<T extends HTMLElement>(target: T, padding: number) {
-  const scrollHeight = target.scrollHeight;
-  const clientHeight = target.clientHeight;
+function getTargetInfo<T extends HTMLElement>(target: T, padding: number, isRoot: boolean) {
+  const scrollHeight = isRoot ? document.body.clientHeight : target.scrollHeight;
+  const clientHeight = isRoot ? window.innerHeight : target.clientHeight;
   const percentage = getPercentage(scrollHeight, clientHeight);
 
   const maxScrollTop = scrollHeight - clientHeight;
-  const currentScrollTop = target.scrollTop;
+  const currentScrollTop = isRoot ? window.scrollY : target.scrollTop;
   const scrollTopPercentage = getPercentage(maxScrollTop, currentScrollTop);
 
   const scrollBarMaxHeight = clientHeight - padding * 2;
@@ -178,18 +190,19 @@ function getTargetInfo<T extends HTMLElement>(target: T, padding: number) {
 }
 
 function getOverlayElement<T extends HTMLElement>(params: GetOverlayElementParams<T>) {
-  const { target, width, padding, scrollBarClassName } = params;
+  const { target, width, padding, scrollBarClassName, isRoot } = params;
 
-  const { scrollBarHeight } = getTargetInfo(target, padding);
+  const { scrollBarHeight } = getTargetInfo(target, padding, isRoot);
 
   const wrapperDiv = document.createElement('div');
   wrapperDiv.style.width = `${width}px`;
   wrapperDiv.style.boxSizing = 'border-box';
-  wrapperDiv.style.height = '100%';
-  wrapperDiv.style.position = 'absolute';
+  wrapperDiv.style.height = isRoot ? '100vh' : '100%';
+  wrapperDiv.style.position = isRoot ? 'fixed' : 'absolute';
   wrapperDiv.style.top = '0';
   wrapperDiv.style.right = '0';
   wrapperDiv.style.padding = `${padding}px`;
+  wrapperDiv.style.zIndex = '4';
   wrapperDiv.classList.add('overlay-scrollbar-container');
 
   const wrapperDiv2 = document.createElement('div');
@@ -210,8 +223,10 @@ function getOverlayElement<T extends HTMLElement>(params: GetOverlayElementParam
   div.style.top = '0';
   div.style.left = '0';
 
-  target.addEventListener('mouseover', () => {
-    const { scrollBarHeight } = getTargetInfo(target, padding);
+  const eventTarget = isRoot ? window : target;
+
+  eventTarget.addEventListener('mouseover', () => {
+    const { scrollBarHeight } = getTargetInfo(target, padding, isRoot);
     div.style.height = `${scrollBarHeight}px`;
   });
 
