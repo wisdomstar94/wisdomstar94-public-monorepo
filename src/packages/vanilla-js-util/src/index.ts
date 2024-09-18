@@ -13,6 +13,7 @@ export * from './functions/unwrap.function';
 export * from './functions/get-rendered-element-size.function';
 export * from './functions/get-time-ago-info.function';
 export * from './functions/subscribe-element.function';
+export * from './functions/compare-version.function';
 
 // libs
 export * from './libs/version';
