@@ -12,7 +12,7 @@
   "dependencies": {
     "@tailwindcss/container-queries": "^0.1.1",
     "@wisdomstar94/react-add-event-listener": "workspace:^",
-    "next": "14.2.5",
+    "next": "14.2.13",
     "react": "^18",
     "react-dom": "^18",
     "winston": "^3.14.2"
@@ -22,11 +22,11 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "14.2.13",
     "next-with-less": "^3.0.1",
     "postcss": "^8",
-    "sass": "^1.77.8",
-    "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "sass": "^1.79.3",
+    "tailwindcss": "^3.4.12",
+    "typescript": "^5.6.2"
   }
 }

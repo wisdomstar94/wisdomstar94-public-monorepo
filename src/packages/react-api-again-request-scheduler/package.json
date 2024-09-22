@@ -13,18 +13,18 @@
     "react-dom": "^18.3.1"
   },
   "dependencies": {
-    "axios": "^1.7.4",
+    "axios": "^1.7.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@types/node": "^22.3.0",
-    "@types/react": "^18.3.3",
+    "@types/node": "^22.5.5",
+    "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "@wisdomstar94/tsconfig-lib": "workspace:^",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.0"
+    "typescript": "^5.6.2",
+    "vite": "^5.4.7"
   },
   "type": "module",
   "types": "./dist/react-api-again-request-scheduler/src/index.d.ts",
