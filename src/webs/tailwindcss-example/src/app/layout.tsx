@@ -21,6 +21,7 @@ export default function RootLayout({
     { name: '/test/components', href: '/test/components' }, // https://tailwindcss.com/docs/plugins#adding-components
     { name: '/test/base', href: '/test/base' }, // https://tailwindcss.com/docs/plugins#adding-base-styles
     { name: '/test/fonts', href: '/test/fonts' },
+    { name: '/test/grid-layout', href: '/test/grid-layout' },
   ];
 
   return (
