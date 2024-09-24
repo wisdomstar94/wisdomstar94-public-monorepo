@@ -1,4 +1,4 @@
-import { CommonRootLayout, ICommonRootLayout } from "#packages-common-lib";
+import { CommonRootLayout, ICommonRootLayout } from '#packages-common-lib';
 
 export default function Layout({
   children,
@@ -11,6 +11,7 @@ export default function Layout({
     { name: 'test/use-transition/no', href: '/test/use-transition/no' },
     { name: 'test/use-transition/with-suspense', href: '/test/use-transition/with-suspense' },
     { name: 'test/use-layout-effect', href: '/test/use-layout-effect' },
+    { name: 'test/use-layout-effect2', href: '/test/use-layout-effect2' },
     { name: 'test/use-sync-external-store', href: '/test/use-sync-external-store' },
     { name: 'test/use-reducer/basic', href: '/test/use-reducer/basic' },
     { name: 'test/use-optimistic', href: '/test/use-optimistic' },
@@ -38,9 +39,5 @@ export default function Layout({
     { name: 'test2/t1', href: '/test2/t1' },
   ];
 
-  return (
-    <CommonRootLayout menus={menus}>
-      { children }
-    </CommonRootLayout>
-  );
+  return <CommonRootLayout menus={menus}>{children}</CommonRootLayout>;
 }

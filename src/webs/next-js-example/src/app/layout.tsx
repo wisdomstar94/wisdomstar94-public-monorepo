@@ -1,11 +1,9 @@
-import "./globals.css";
+import './globals.css';
 
-import "./global-less.less";
-
-import { Metadata } from "next";
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'next-js-example'
+  title: 'next-js-example',
 };
 
 export default function RootLayout({
@@ -15,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>
-        { children }
-      </body>
+      <body>{children}</body>
     </html>
-  )
-};
+  );
+}
