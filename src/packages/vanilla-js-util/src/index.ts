@@ -14,6 +14,7 @@ export * from './functions/get-rendered-element-size.function';
 export * from './functions/get-time-ago-info.function';
 export * from './functions/subscribe-element.function';
 export * from './functions/compare-version.function';
+export * from './functions/fetch-instance.function';
 
 // libs
 export * from './libs/version';
