@@ -1,5 +1,6 @@
 export type PreProcesserReturnParams = {
   headers?: Record<string, string>;
+  credentials?: RequestCredentials;
 };
 
 export type FetchInstanceParams = {
@@ -23,6 +24,10 @@ export function fetchInstance(params: FetchInstanceParams) {
           headersClone.append(key, value);
         }
         requestInitClone.headers = headersClone;
+      }
+      // 요청 전 credentials 조작
+      if (preProcesserParams.credentials !== undefined) {
+        requestInitClone.credentials = preProcesserParams.credentials;
       }
     }
 
