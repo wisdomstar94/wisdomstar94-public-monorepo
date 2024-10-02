@@ -6,6 +6,8 @@ export default function Layout(props: { children: ReactNode }) {
     { name: '/test/button', href: '/test/button' },
     { name: '/test/carousel', href: '/test/carousel' },
     { name: '/test/shadcn-ui-sidebar', href: '/test/shadcn-ui-sidebar' },
+    { name: '/test/context-menu', href: '/test/context-menu' },
+    { name: '/test/menubar', href: '/test/menubar' },
   ];
   return <CommonRootLayout menus={menus}>{props.children}</CommonRootLayout>;
 }
