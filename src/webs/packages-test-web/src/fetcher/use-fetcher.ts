@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 
 // next.js client side 용 (client component 에서 사용)
 export function useFetcher() {
-  const createInstance = (url: string, requestInit?: RequestInit) => {
+  const createFetchInstance = (url: string, requestInit?: RequestInit) => {
     return fetchInstance({
       url,
       requestInit,
@@ -19,5 +19,5 @@ export function useFetcher() {
     });
   };
 
-  return { createInstance };
+  return { createFetchInstance };
 }
