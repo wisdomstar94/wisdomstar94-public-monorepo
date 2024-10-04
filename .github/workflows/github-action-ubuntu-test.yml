@@ -17,8 +17,8 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: apt update -y
-      - run: apt upgrade -y
-      - run: apt install -y pkg-config
+      - run: apt-get update -y
+      - run: apt-get upgrade -y
+      - run: apt-get install -y pkg-config
       - run: openssl version
       - run: openssl version -d
