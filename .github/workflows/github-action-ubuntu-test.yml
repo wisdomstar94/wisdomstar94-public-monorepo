@@ -24,6 +24,6 @@ jobs:
       - run: sudo apt-get install -y pkg-config wget gcc make
       - run: wget https://github.com/openssl/openssl/releases/download/openssl-3.3.2/openssl-3.3.2.tar.gz
       - run: tar -xvf openssl-3.3.2.tar.gz
-      - run: cd openssl-3.3.2 && ./config && make && make install
+      - run: cd openssl-3.3.2 && ./config && sudo make && sudo make install
       - run: openssl version
       - run: openssl version -d
