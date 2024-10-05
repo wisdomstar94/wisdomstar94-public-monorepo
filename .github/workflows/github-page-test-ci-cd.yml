@@ -35,3 +35,5 @@ jobs:
     steps:
       - name: Deploy Docs
         uses: actions/deploy-pages@v4
+      - name: page_url Check
+        run: echo "${{ steps.deployment.outputs.page_url }}";
