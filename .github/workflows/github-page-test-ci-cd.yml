@@ -6,11 +6,8 @@ on:
       - 'github-page-test-v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  publish-release-registry:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -21,8 +18,23 @@ jobs:
       - run: yarn install
       - run: yarn @wisdomstar94/github-page-test build
 
-      - name: Deploy Docs
-        uses: peaceiris/actions-gh-pages@v4
+  upload-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./src/webs/github-page-test/out
+          path: './src/webs/github-page-test/out'
+
+  github-page-deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Docs
+        uses: actions/deploy-pages@v4
