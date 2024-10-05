@@ -19,6 +19,7 @@ jobs:
       - run: yarn @wisdomstar94/github-page-test build
 
   upload-artifact:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Upload Artifact
@@ -27,7 +28,7 @@ jobs:
           path: './src/webs/github-page-test/out'
 
   github-page-deploy:
-    needs: build
+    needs: upload-artifact
     runs-on: ubuntu-latest
     permissions:
       pages: write
