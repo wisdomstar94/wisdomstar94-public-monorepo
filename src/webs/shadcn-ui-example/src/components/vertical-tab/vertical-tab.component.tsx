@@ -13,9 +13,7 @@ export type VerticalTabPropsType<T extends string = string> = {
   layoutRenderer?: (tabButtonArea: ReactNode, tabContentArea: ReactNode) => ReactNode;
 };
 
-export function VerticalTab<T extends string = string>({ items, layoutRenderer }: VerticalTabPropsType<T>) {
-  const [showKey, setShowKey] = useState<T>();
-
+export function VerticalTab<T extends string = string>({ showKey, setShowKey, items, layoutRenderer }: VerticalTabPropsType<T>) {
   const tabButtonArea = (
     <>
       <ul className="w-full flex flex-wrap gap-2 relative">
