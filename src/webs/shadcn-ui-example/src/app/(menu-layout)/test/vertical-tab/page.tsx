@@ -26,7 +26,7 @@ const Page: FC = () => {
 
   return (
     <>
-      <div className="w-[200px] relative">
+      <div className="w-full relative">
         <VerticalTab showKey={showKey} setShowKey={setShowKey} items={tabItems} />
       </div>
     </>

@@ -60,8 +60,8 @@ export function VerticalTab<T extends string = string>({ showKey, setShowKey, it
   // 렌더러가 제공되지 않았을 경우에는 기본 레이아웃으로 제공합니다.
   return (
     <>
-      <div className="w-full flex gap-2 relative">
-        <div className="w-[280px] flex-grow-0 flex-shrink-0 relative">{tabButtonArea}</div>
+      <div className="w-full flex gap-2 relative flex-col md:flex-row">
+        <div className="w-full md:w-[280px] flex-grow-0 flex-shrink-0 relative">{tabButtonArea}</div>
         <div className="w-full min-w-0 relative">{tabContentArea}</div>
       </div>
     </>
