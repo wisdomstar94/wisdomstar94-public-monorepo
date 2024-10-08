@@ -10,6 +10,8 @@ export default function Layout(props: { children: ReactNode }) {
     { name: '/test/menubar', href: '/test/menubar' },
     { name: '/test/popover', href: '/test/popover' },
     { name: '/test/content-drop-down', href: '/test/content-drop-down' },
+    { name: '/test/vertical-tab', href: '/test/vertical-tab' },
+    { name: '/test/vertical-tab-custom', href: '/test/vertical-tab-custom' },
   ];
   return <CommonRootLayout menus={menus}>{props.children}</CommonRootLayout>;
 }
