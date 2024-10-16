@@ -5322,6 +5322,7 @@ __metadata:
     react-dom: "npm:^18"
     tailwindcss: "npm:^3.4.1"
     typescript: "npm:^5"
+    webpack: "npm:^5.95.0"
   languageName: unknown
   linkType: soft
 
@@ -5490,6 +5491,7 @@ __metadata:
     "@wisdomstar94/react-request-animation-frame-manager": "workspace:^"
     "@wisdomstar94/react-scroll-effect": "workspace:^"
     "@wisdomstar94/react-socketio-manager": "workspace:^"
+    "@wisdomstar94/react-sse-manager": "workspace:^"
     "@wisdomstar94/react-touch-container": "workspace:^"
     "@wisdomstar94/react-web-rtc-manager": "workspace:^"
     "@wisdomstar94/vanilla-js-util": "workspace:^"
@@ -5828,6 +5830,25 @@ __metadata:
     react: ^18.3.1
     react-dom: ^18.3.1
     socket.io-client: ^4.7.5
+  languageName: unknown
+  linkType: soft
+
+"@wisdomstar94/react-sse-manager@workspace:^, @wisdomstar94/react-sse-manager@workspace:src/packages/react-sse-manager":
+  version: 0.0.0-use.local
+  resolution: "@wisdomstar94/react-sse-manager@workspace:src/packages/react-sse-manager"
+  dependencies:
+    "@types/node": "npm:^22.5.5"
+    "@types/react": "npm:^18.3.8"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    "@wisdomstar94/tsconfig-lib": "workspace:^"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
+    typescript: "npm:^5.6.2"
+    vite: "npm:^5.4.7"
+  peerDependencies:
+    react: ^18.3.1
+    react-dom: ^18.3.1
   languageName: unknown
   linkType: soft
 
@@ -18072,6 +18093,42 @@ __metadata:
   bin:
     webpack: bin/webpack.js
   checksum: 10c0/b4d1b751f634079bd177a89eef84d80fa5bb8d6fc15d72ab40fc2b9ca5167a79b56585e1a849e9e27e259803ee5c4365cb719e54af70a43c06358ec268ff4ebf
+  languageName: node
+  linkType: hard
+
+"webpack@npm:^5.95.0":
+  version: 5.95.0
+  resolution: "webpack@npm:5.95.0"
+  dependencies:
+    "@types/estree": "npm:^1.0.5"
+    "@webassemblyjs/ast": "npm:^1.12.1"
+    "@webassemblyjs/wasm-edit": "npm:^1.12.1"
+    "@webassemblyjs/wasm-parser": "npm:^1.12.1"
+    acorn: "npm:^8.7.1"
+    acorn-import-attributes: "npm:^1.9.5"
+    browserslist: "npm:^4.21.10"
+    chrome-trace-event: "npm:^1.0.2"
+    enhanced-resolve: "npm:^5.17.1"
+    es-module-lexer: "npm:^1.2.1"
+    eslint-scope: "npm:5.1.1"
+    events: "npm:^3.2.0"
+    glob-to-regexp: "npm:^0.4.1"
+    graceful-fs: "npm:^4.2.11"
+    json-parse-even-better-errors: "npm:^2.3.1"
+    loader-runner: "npm:^4.2.0"
+    mime-types: "npm:^2.1.27"
+    neo-async: "npm:^2.6.2"
+    schema-utils: "npm:^3.2.0"
+    tapable: "npm:^2.1.1"
+    terser-webpack-plugin: "npm:^5.3.10"
+    watchpack: "npm:^2.4.1"
+    webpack-sources: "npm:^3.2.3"
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
+  bin:
+    webpack: bin/webpack.js
+  checksum: 10c0/b9e6d0f8ebcbf0632494ac0b90fe4acb8f4a9b83f7ace4a67a15545a36fe58599c912ab58e625e1bf58ab3b0916c75fe99da6196d412ee0cab0b5065edd84238
   languageName: node
   linkType: hard
 

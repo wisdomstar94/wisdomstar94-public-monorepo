@@ -19,6 +19,7 @@
     "@wisdomstar94/react-socketio-manager": "yarn workspace @wisdomstar94/react-socketio-manager",
     "@wisdomstar94/react-web-rtc-manager": "yarn workspace @wisdomstar94/react-web-rtc-manager",
     "@wisdomstar94/react-scroll-effect": "yarn workspace @wisdomstar94/react-scroll-effect",
+    "@wisdomstar94/react-sse-manager": "yarn workspace @wisdomstar94/react-sse-manager",
     "@wisdomstar94/next-utils": "yarn workspace @wisdomstar94/next-utils",
     "@wisdomstar94/vanilla-js-util": "yarn workspace @wisdomstar94/vanilla-js-util",
     "@wisdomstar94/electron-keyboard-event-listener": "yarn workspace @wisdomstar94/electron-keyboard-event-listener",
