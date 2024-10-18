@@ -9,8 +9,10 @@ export default function Page() {
     <>
       <button
         onClick={() => {
-          const instance = fetcher.createInstance('https://cat-fact.herokuapp.com/facts/?a=bbb');
-          instance.call();
+          const instance = fetcher.createFetchInstance('https://cat-fact.herokuapp.com/facts/?a=bbb');
+          instance.call().then((res) => {
+            console.log('@res', res);
+          });
         }}
       >
         fetch!

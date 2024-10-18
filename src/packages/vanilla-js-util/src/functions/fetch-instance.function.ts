@@ -3,14 +3,29 @@ export type PreProcesserReturnParams = {
   credentials?: RequestCredentials;
 };
 
+export type PostProcesserReturnParamsRetry = {
+  type: 'retry';
+  retry: FetchInstanceParams;
+};
+export type PostProcesserReturnParamsPass = {
+  type: 'pass';
+};
+export type PostProcesserReturnParamsTransform = {
+  type: 'transform';
+  transform: unknown;
+};
+
+export type PostProcesserReturnParams = PostProcesserReturnParamsRetry | PostProcesserReturnParamsPass | PostProcesserReturnParamsTransform;
+
 export type FetchInstanceParams = {
   url: string;
   requestInit?: RequestInit;
   preProcesser?: () => Promise<PreProcesserReturnParams>; // 서버 사이드 또는 클라이언트 사이드에서 요청 전 특정 조작이 필요할 경우 사용
+  postProcesser?: (url: string, requestInit: RequestInit, res: Response) => Promise<PostProcesserReturnParams>;
 };
 
 export function fetchInstance(params: FetchInstanceParams) {
-  const { url, requestInit, preProcesser } = params;
+  const { url, requestInit, preProcesser, postProcesser } = params;
 
   const call = async () => {
     const requestInitClone = { ...requestInit };
@@ -31,7 +46,24 @@ export function fetchInstance(params: FetchInstanceParams) {
       }
     }
 
-    return fetch(url, requestInitClone);
+    return fetch(url, requestInitClone).then(async (res) => {
+      if (typeof postProcesser !== 'function') {
+        return res;
+      }
+      const result = await postProcesser(url, requestInitClone, res);
+      if (result === null || result === undefined) return res;
+
+      if (result.type === 'pass') {
+        return res;
+      }
+
+      if (result.type === 'transform') {
+        return result.transform;
+      }
+
+      const { retry } = result;
+      return fetch(retry.url, retry.requestInit);
+    });
   };
 
   return {

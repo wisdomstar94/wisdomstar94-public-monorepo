@@ -16,6 +16,16 @@ export function useFetcher() {
           },
         };
       },
+      postProcesser: async (url, requestInit, res) => {
+        console.log('@postProcesser', { url, requestInit, res });
+        return {
+          type: 'retry',
+          retry: {
+            url: url + '&timestamp=' + new Date().getTime(),
+            requestInit,
+          },
+        };
+      },
     });
   };
 
